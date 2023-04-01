@@ -1,0 +1,64 @@
+{
+	"info": {
+		"_postman_id": "67040eba-0283-40fc-bf94-6d89cc6ad434",
+		"name": "Caruso",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "6691809"
+	},
+	"item": [
+		{
+			"name": "https://api.caruso-dataplace.com/delivery/v1/in-vehicle",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Subscription-Id",
+						"value": "ada3836d-bd98-483e-86d4-bc0b8cc8e470",
+						"type": "text"
+					},
+					{
+						"key": "X-API-Key",
+						"value": "ah30goc8c8bstjo6af0c4br52l4lket7bdqm8fob8iqft4e4p8u906t32gssa5d83BDA",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"version\": \"1.0\",\r\n    \"vehicles\": [\r\n        {\r\n            \"identifier\": {\r\n                \"type\": \"VIN\",\r\n                \"value\": \"V1RTUALV1N0000001\"\r\n            }\r\n        }\r\n    ],\r\n    \"dataItems\": [\r\n        \"mileage\",\"geolocation\"\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api.caruso-dataplace.com/delivery/v1/in-vehicle",
+					"protocol": "https",
+					"host": [
+						"api",
+						"caruso-dataplace",
+						"com"
+					],
+					"path": [
+						"delivery",
+						"v1",
+						"in-vehicle"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "X-Subscription-Id",
+							"value": "",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
