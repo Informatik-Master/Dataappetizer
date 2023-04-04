@@ -1,0 +1,18 @@
+<nb-layout>
+
+  <nb-layout-header fixed>
+    <a class="logo" href="#"> DataAppetizer
+    </a>
+  </nb-layout-header>
+
+  <nb-layout-column>
+    <div echarts [options]="option" class="overview--chart"></div>
+    <router-outlet></router-outlet>
+
+  </nb-layout-column>
+
+  <nb-layout-footer fixed>
+    Mit ❤️ in Mannheim gemacht
+  </nb-layout-footer>
+
+</nb-layout>
