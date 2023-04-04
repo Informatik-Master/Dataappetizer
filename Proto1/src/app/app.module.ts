@@ -1,12 +1,13 @@
+import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, HammerModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
+import { ThemeModule } from './@theme/theme.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NbThemeModule, NbLayoutModule } from '@nebular/theme';
-import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { NgxEchartsModule } from 'ngx-echarts';
+import { NbAuthModule } from '@nebular/auth';
 
 @NgModule({
   declarations: [
@@ -14,16 +15,16 @@ import { NgxEchartsModule } from 'ngx-echarts';
   ],
   imports: [
     BrowserModule,
+    HammerModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    NbThemeModule.forRoot({ name: 'default' }),
-    NbLayoutModule,
-    NbEvaIconsModule,
+    HttpClientModule,
+    ThemeModule.forRoot(),
+    NbAuthModule.forRoot(),
     NgxEchartsModule.forRoot({
       echarts: () => import('echarts'),
     }),
   ],
-  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
