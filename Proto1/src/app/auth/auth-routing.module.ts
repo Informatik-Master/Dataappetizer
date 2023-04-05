@@ -14,9 +14,14 @@ const routes: Routes = [
         component: LoginComponent,
       },
       {
-        path: 'onboarding',
+        path: 'config',
         loadChildren: () =>
-          import('./onbording/onbording.module').then((m) => m.OnbordingModule),
+          import('./config/config.module').then((m) => m.ConfigModule),
+      },
+      {
+        path: 'systems',
+        loadChildren: () =>
+          import('./systems/systems.module').then((m) => m.SystemsModule),
       },
       {
         path: '',

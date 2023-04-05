@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import {
   NbMediaBreakpointsService,
   NbMenuItem,
@@ -17,6 +18,7 @@ export class HeaderComponent {
 
   public constructor(
     private readonly menuService: NbMenuService,
+    private readonly router: Router
   ) {
   }
 
@@ -24,5 +26,14 @@ export class HeaderComponent {
     this.menuService.navigateHome();
     return false;
   }
+
+  navigateToCars() {
+    this.router.navigate(['pages/car']);
+  }
+
+  navigateToSettings() {
+    this.router.navigate(['pages/settings']);
+  }
+
 
 }

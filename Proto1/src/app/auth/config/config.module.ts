@@ -6,18 +6,18 @@ import {
   NbIconModule,
   NbStepperModule,
 } from '@nebular/theme';
-import { OnbordingRoutingModule } from './onbording-routing.module';
-import { OnbordingComponent } from './onbording.component';
+import { ConfigRoutingModule } from './config-routing.module';
+import { ConfigComponent } from './config.component';
 
 @NgModule({
-  declarations: [OnbordingComponent],
+  declarations: [ConfigComponent],
   imports: [
     CommonModule,
-    OnbordingRoutingModule,
+    ConfigRoutingModule,
     NbCardModule,
     NbStepperModule,
     NbButtonModule,
     NbIconModule
   ],
 })
-export class OnbordingModule {}
+export class ConfigModule {}

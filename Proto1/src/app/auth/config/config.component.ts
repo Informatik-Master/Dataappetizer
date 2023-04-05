@@ -2,17 +2,17 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'ngx-onbording',
-  templateUrl: './onbording.component.html',
-  styleUrls: ['./onbording.component.scss'],
+  selector: 'ngx-config',
+  templateUrl: './config.component.html',
+  styleUrls: ['./config.component.scss'],
 })
-export class OnbordingComponent {
+export class ConfigComponent {
   selectedIndex = 1;
 
   constructor(private readonly router: Router) {}
 
 
-  createCustomerSystem() {
+  finish() {
     this.router.navigate(['pages']);
   }
 }

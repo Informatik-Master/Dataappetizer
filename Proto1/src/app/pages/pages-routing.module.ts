@@ -8,13 +8,19 @@ const routes: Routes = [
     component: PagesComponent,
     children: [
       {
+        path: 'dashboard',
+        loadChildren: () =>
+          import('./dashboard/dashboard.module').then((m) => m.DashboardModule),
+      },
+      {
         path: 'car',
         loadChildren: () =>
           import('./car/car.module').then((m) => m.CarModule),
       },
+      //TODO: Settings
       {
         path: '',
-        redirectTo: 'car',
+        redirectTo: 'dashboard',
         pathMatch: 'full',
       },
     ],

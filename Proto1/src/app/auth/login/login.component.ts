@@ -24,7 +24,7 @@ export class LoginComponent {
    }
 
   login() {
-    this.router.navigate(['pages']);
+    this.router.navigate(['auth/systems']);
   }
 
 }

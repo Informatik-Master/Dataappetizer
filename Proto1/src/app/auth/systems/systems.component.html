@@ -1,0 +1,19 @@
+<h1 id="title" class="title">Hallo Gwen!</h1>
+
+<nb-card size="medium">
+  <nb-card-header>
+    Kundensysteme
+  </nb-card-header>
+  <nb-list>
+    <nb-list-item *ngFor="let system of systems">
+      {{ system.title }}
+    </nb-list-item>
+  </nb-list>
+  <nb-card-footer>
+    <button nbButton status="primary" (click)="createCustomerSystem()" fullWidth>
+      Neues System erstellen
+    </button>
+    
+  </nb-card-footer>
+</nb-card>
+

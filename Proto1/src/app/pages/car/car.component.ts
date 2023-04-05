@@ -8,37 +8,21 @@ import { Router } from '@angular/router';
 })
 export class CarComponent {
  
+
+  
   echartOptions = {
-    legend: {
-      top: 'bottom'
+    xAxis: {
+      type: 'category',
+      data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
     },
-    toolbox: {
-      show: true,
-      feature: {
-        mark: { show: true },
-        dataView: { show: true, readOnly: false },
-        restore: { show: true },
-        saveAsImage: { show: true }
-      }
+    yAxis: {
+      type: 'value'
     },
     series: [
       {
-        name: 'Nightingale Chart',
-        type: 'pie',
-        center: ['50%', '50%'],
-        roseType: 'area',
-        itemStyle: {
-          borderRadius: 8
-        },
-        data: [
-          { value: 4, name: 'VW' },
-          { value: 3, name: 'BMW' },
-          { value: 3, name: 'SEAT' },
-          { value: 5, name: 'AUDI' },
-          { value: 2, name: 'FORD' },
-          { value: 3, name: 'OPEL' },
-          { value: 1, name: 'PORSCHE' }
-        ]
+        data: [820, 932, 901, 934, 1290, 1330, 1320],
+        type: 'line',
+        smooth: true
       }
     ]
   };
