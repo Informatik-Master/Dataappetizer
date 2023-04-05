@@ -11,11 +11,8 @@ export class OnbordingComponent {
 
   constructor(private readonly router: Router) {}
 
-  nextStep() {
-    this.selectedIndex++;
-  }
 
-  finish() {
+  createCustomerSystem() {
     this.router.navigate(['pages']);
   }
 }

@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { NbAuthComponent } from '@nebular/auth';
+import { LoginComponent } from './login/login.component';
 
 
 const routes: Routes = [
@@ -9,13 +10,17 @@ const routes: Routes = [
     component: NbAuthComponent,
     children: [
       {
+        path: 'login',
+        component: LoginComponent,
+      },
+      {
         path: 'onboarding',
         loadChildren: () =>
           import('./onbording/onbording.module').then((m) => m.OnbordingModule),
       },
       {
         path: '',
-        redirectTo: 'onboarding',
+        redirectTo: 'login',
         pathMatch: 'full',
       },
     ],

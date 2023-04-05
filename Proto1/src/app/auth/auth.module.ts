@@ -16,6 +16,7 @@ import {
 
 import { ThemeModule } from '../@theme/theme.module';
 import { AuthRoutingModule } from './auth-routing.module';
+import { LoginComponent } from './login/login.component';
 
 
 @NgModule({
@@ -33,6 +34,9 @@ import { AuthRoutingModule } from './auth-routing.module';
     NbSpinnerModule,
     NbAuthModule,
     HttpClientModule
-  ]
+  ],
+  declarations: [
+    LoginComponent
+  ],
 })
 export class AuthModule {}

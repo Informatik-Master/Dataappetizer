@@ -31,13 +31,13 @@ export class CarComponent {
           borderRadius: 8
         },
         data: [
-          { value: 40, name: 'VW' },
-          { value: 38, name: 'BMW' },
-          { value: 32, name: 'SEAT' },
-          { value: 32, name: 'AUDI' },
-          { value: 32, name: 'FORD' },
-          { value: 32, name: 'OPEL' },
-          { value: 18, name: 'PORSCHE' }
+          { value: 4, name: 'VW' },
+          { value: 3, name: 'BMW' },
+          { value: 3, name: 'SEAT' },
+          { value: 5, name: 'AUDI' },
+          { value: 2, name: 'FORD' },
+          { value: 3, name: 'OPEL' },
+          { value: 1, name: 'PORSCHE' }
         ]
       }
     ]
