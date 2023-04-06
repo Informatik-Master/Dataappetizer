@@ -5,6 +5,7 @@ import {
   NbCardModule,
   NbIconModule,
   NbInputModule,
+  NbLayoutModule,
   NbSelectModule,
   NbStepperModule,
 } from '@nebular/theme';
@@ -23,7 +24,8 @@ import { FormsModule } from '@angular/forms';
     NbIconModule,
     FormsModule,
     NbSelectModule,
-    NbInputModule
+    NbInputModule,
+    NbLayoutModule
   ],
 })
 export class ConfigModule {}

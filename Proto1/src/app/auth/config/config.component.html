@@ -32,10 +32,21 @@
   </nb-step>
   <nb-step label="Datenvisualisierung">
     <nb-card>
-      <nb-card-body> Hier kommt noch was hin </nb-card-body>
+      <nb-card-body>
+        Hier kommt noch was hin
+        <!-- <nb-layout>
+          <nb-layout-column>
+            ABC
+          </nb-layout-column>
+          <nb-layout-column>
+            XYZ
+          </nb-layout-column>
+         </nb-layout> -->
+
+      </nb-card-body>
       <nb-card-footer style="display: flex; justify-content: end">
         <button nbButton status="secondary" (click)="previous()">Zurück</button>
-        <button nbButton status="primary" (click)="next()">Weiter</button>
+        <button nbButton status="primary" (click)="finish()">Weiter</button>
       </nb-card-footer>
     </nb-card>
   </nb-step>
