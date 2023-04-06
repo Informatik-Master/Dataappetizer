@@ -29,4 +29,8 @@ export class SystemsComponent {
   createCustomerSystem() {
     this.router.navigate(['auth/config']);
   }
+
+  selectSystem() {
+    this.router.navigate(['pages']);
+  }
 }

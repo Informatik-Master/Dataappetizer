@@ -5,15 +5,17 @@
     Kundensysteme
   </nb-card-header>
   <nb-list>
-    <nb-list-item *ngFor="let system of systems">
-      {{ system.title }}
+    <nb-list-item *ngFor="let system of systems" class="system-entry" (click)="selectSystem()">
+      <span style="flex:1">{{ system.title }}</span>
+      <nb-icon icon="arrow-forward-outline"></nb-icon>
     </nb-list-item>
   </nb-list>
   <nb-card-footer>
     <button nbButton status="primary" (click)="createCustomerSystem()" fullWidth>
       Neues System erstellen
+      <nb-icon icon="plus-outline"></nb-icon>
     </button>
-    
+
   </nb-card-footer>
 </nb-card>
 

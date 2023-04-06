@@ -7,10 +7,21 @@ import { Router } from '@angular/router';
   styleUrls: ['./config.component.scss'],
 })
 export class ConfigComponent {
-  selectedIndex = 1;
+  selectedIndex = 0;
+
+  organization = 0;
+
+  systemName = 'System Name';
 
   constructor(private readonly router: Router) {}
 
+  previous() {
+    this.selectedIndex--;
+  }
+
+  next() {
+    this.selectedIndex++;
+  }
 
   finish() {
     this.router.navigate(['pages']);

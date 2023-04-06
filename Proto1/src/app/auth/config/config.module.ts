@@ -4,10 +4,13 @@ import {
   NbButtonModule,
   NbCardModule,
   NbIconModule,
+  NbInputModule,
+  NbSelectModule,
   NbStepperModule,
 } from '@nebular/theme';
 import { ConfigRoutingModule } from './config-routing.module';
 import { ConfigComponent } from './config.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [ConfigComponent],
@@ -17,7 +20,10 @@ import { ConfigComponent } from './config.component';
     NbCardModule,
     NbStepperModule,
     NbButtonModule,
-    NbIconModule
+    NbIconModule,
+    FormsModule,
+    NbSelectModule,
+    NbInputModule
   ],
 })
 export class ConfigModule {}
