@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { EChartsOption } from 'echarts';
 
 @Component({
   selector: 'ngx-car',
@@ -7,10 +8,10 @@ import { Router } from '@angular/router';
   styleUrls: ['./car.component.scss'],
 })
 export class CarComponent {
- 
 
-  
-  echartOptions = {
+
+
+  echartOptions: EChartsOption = {
     xAxis: {
       type: 'category',
       data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']

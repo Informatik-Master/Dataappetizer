@@ -8,6 +8,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { NbAuthModule } from '@nebular/auth';
+import { SocketIoModule } from 'ngx-socket-io';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { NbAuthModule } from '@nebular/auth';
     HttpClientModule,
     ThemeModule.forRoot(),
     NbAuthModule.forRoot(),
+    SocketIoModule.forRoot({ url: 'http://localhost:3000', options: {} }),
     NgxEchartsModule.forRoot({
       echarts: () => import('echarts'),
     }),
