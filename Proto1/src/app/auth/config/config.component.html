@@ -25,7 +25,7 @@
           <nb-option value="4">Option 4</nb-option>
         </nb-select>
       </nb-card-body>
-      <nb-card-footer style="display: flex; justify-content: end">
+      <nb-card-footer style="display: flex; justify-content: end; gap: 15px;">
         <button nbButton status="primary" (click)="next()">Weiter</button>
       </nb-card-footer>
     </nb-card>
@@ -33,18 +33,49 @@
   <nb-step label="Datenvisualisierung">
     <nb-card>
       <nb-card-body>
-        Hier kommt noch was hin
-        <!-- <nb-layout>
+        <nb-layout>
           <nb-layout-column>
-            ABC
+            <nb-tabset>
+              <nb-tab tabTitle="Allgemeiner Überblick">
+                <nb-list>
+                  <nb-list-item
+                    *ngFor="let dashboardConfig of dashboardConfigs"
+                    style="gap: 5px"
+                    (mouseover)="hoveredChart = dashboardConfig"
+                  >
+                    <nb-checkbox
+                      [(checked)]="dashboardConfig.selected"
+                    ></nb-checkbox
+                    >{{ dashboardConfig.name }}
+                  </nb-list-item>
+                </nb-list>
+              </nb-tab>
+              <nb-tab tabTitle="Fahrzeugübersicht">
+                <nb-list>
+                  <nb-list-item
+                    *ngFor="let carConfig of carConfigs"
+                    style="gap: 5px"
+                    (mouseover)="hoveredChart = carConfig"
+                  >
+                    <nb-checkbox [(checked)]="carConfig.selected"></nb-checkbox>
+                    {{ carConfig.name }}
+                  </nb-list-item>
+                </nb-list>
+              </nb-tab>
+            </nb-tabset>
           </nb-layout-column>
           <nb-layout-column>
-            XYZ
+            
+            <ng-container *ngIf="hoveredChart?.chart" >
+             
+              <div  [@fadeInOut]  echarts [options]="hoveredChart!.chart!" class="echart"></div>  
+            </ng-container>
+            
+          
           </nb-layout-column>
-         </nb-layout> -->
-
+        </nb-layout>
       </nb-card-body>
-      <nb-card-footer style="display: flex; justify-content: end">
+      <nb-card-footer style="display: flex; justify-content: end; gap: 15px;">
         <button nbButton status="secondary" (click)="previous()">Zurück</button>
         <button nbButton status="primary" (click)="finish()">Weiter</button>
       </nb-card-footer>

@@ -48,6 +48,7 @@ export class SocketGateway {
   server!: Server;
 
   async handleConnection(socket: WebSocket) {
+    console.dir(socket);
     console.log('socket.OPEN', socket.OPEN);
   }
 

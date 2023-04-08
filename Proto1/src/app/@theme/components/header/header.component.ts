@@ -17,14 +17,12 @@ import { map, Observable, Subject, takeUntil } from 'rxjs';
 export class HeaderComponent {
 
   public constructor(
-    private readonly menuService: NbMenuService,
     private readonly router: Router
   ) {
   }
 
   navigateHome() {
-    this.menuService.navigateHome();
-    return false;
+    this.router.navigate(['pages']);
   }
 
   navigateToCars() {

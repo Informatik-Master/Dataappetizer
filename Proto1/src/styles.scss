@@ -13,3 +13,8 @@
 nb-action i {
   color: var(--actions-icon-color);
 }
+
+nb-auth-block {
+  max-width: unset !important;
+  width: calc(100% - 30px) !important;
+}
