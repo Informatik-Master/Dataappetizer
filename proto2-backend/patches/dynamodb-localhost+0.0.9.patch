@@ -1,0 +1,19 @@
+diff --git a/node_modules/dynamodb-localhost/dynamodb/installer.js b/node_modules/dynamodb-localhost/dynamodb/installer.js
+index c2789c7..9d425b0 100644
+--- a/node_modules/dynamodb-localhost/dynamodb/installer.js
++++ b/node_modules/dynamodb-localhost/dynamodb/installer.js
+@@ -3,12 +3,13 @@
+ var tar = require("tar"),
+   zlib = require("zlib"),
+   path = require("path"),
+-  http = require("http"),
++  http = require("https"),
+   fs = require("fs"),
+   ProgressBar = require("progress"),
+   utils = require("./utils");
+ 
+ var download = function(downloadUrl, installPath, callback) {
++  downloadUrl = 'https://s3.us-west-2.amazonaws.com/dynamodb-local/dynamodb_local_latest.tar.gz'
+   console.log(
+     `Started downloading dynamodb-local from ${downloadUrl} into ${installPath}. Process may take few minutes.`
+   );

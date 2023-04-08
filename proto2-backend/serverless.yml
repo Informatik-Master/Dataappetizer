@@ -1,0 +1,59 @@
+service: proto2-backend
+frameworkVersion: '3'
+
+custom:
+  tableName: 'users-table-${sls:stage}'
+  dynamodb:
+    stages:
+      - dev
+    start:
+      port: 8002
+      inMemory: true
+      migrate: true
+
+plugins:
+  - serverless-webpack
+  - serverless-offline-dynamodb-streams
+  - serverless-offline
+  - serverless-dynamodb-local
+
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: us-east-1
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource:
+            - Fn::GetAtt: [ UsersTable, Arn ]
+  environment:
+    USERS_TABLE: ${self:custom.tableName}
+
+functions:
+  api:
+    handler: index.handler
+    events:
+      - httpApi: '*'
+
+resources:
+  Resources:
+    UsersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: userId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: userId
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.tableName}
