@@ -1,6 +1,7 @@
-import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb';
+import { DynamoDBClient  } from '@aws-sdk/client-dynamodb';
+import { DynamoDBDocumentClient, PutCommand, ScanCommand } from '@aws-sdk/lib-dynamodb';
 import fetch from 'cross-fetch';
+import { ApiGatewayManagementApiClient, PostToConnectionCommand } from "@aws-sdk/client-apigatewaymanagementapi";
 
 const TABLE = process.env['DATAPOINT_TABLE'];
 const client = new DynamoDBClient({
@@ -8,6 +9,10 @@ const client = new DynamoDBClient({
   endpoint: 'http://localhost:8002',
 });
 const dynamoDbClient = DynamoDBDocumentClient.from(client);
+
+const apigatewaymanagementapi = new ApiGatewayManagementApiClient({
+  endpoint: 'http://localhost:3001',
+});
 
 export const handler = async () => {
   console.log('refreshing data...');
@@ -38,6 +43,21 @@ export const handler = async () => {
   );
 
   const data = await subRes.json();
+
+  const { Items } = await dynamoDbClient.send(
+    new ScanCommand({
+      TableName: process.env['CONNECTIONS_TABLE'],
+    }),
+  );
+
+  for (const item of Items!) {
+    apigatewaymanagementapi.send(new PostToConnectionCommand({
+      ConnectionId: item["connectionId"],
+      Data: Buffer.from(JSON.stringify(data)),
+    }))
+  }
+
+
 
   for (const inVehicleData of data.inVehicleData) {
     for (const [datapointName, datapointValue] of Object.entries(
