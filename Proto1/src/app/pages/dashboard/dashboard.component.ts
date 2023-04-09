@@ -5,6 +5,17 @@ import { Socket } from 'ngx-socket-io';
 import { map, tap } from 'rxjs/operators';
 import { EChartsOption } from 'echarts';
 
+import {
+  control,
+  LatLng,
+  latLng,
+  LayerGroup,
+  Map,
+  MapOptions,
+  marker,
+  tileLayer,
+} from 'leaflet';
+
 @Component({
   selector: 'ngx-dashboard',
   templateUrl: './dashboard.component.html',
@@ -33,18 +44,6 @@ export class DashboardComponent implements OnInit {
   }
 
   echartOptions: EChartsOption = {
-    legend: {
-      top: 'bottom'
-    },
-    toolbox: {
-      show: true,
-      feature: {
-        mark: { show: true },
-        dataView: { show: true, readOnly: false },
-        restore: { show: true },
-        saveAsImage: { show: true }
-      }
-    },
     series: [
       {
         name: 'Nightingale Chart',
@@ -66,4 +65,65 @@ export class DashboardComponent implements OnInit {
       }
     ]
   };
+
+  echartOptions2: EChartsOption = {
+    xAxis: {
+      type: 'category',
+      data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+    },
+    yAxis: {
+      type: 'value'
+    },
+    grid: {
+      right: '10px',
+      left: '50px',
+      bottom: '25px',
+      top: '15px',
+    },
+    series: [
+      {
+
+        data: [820, 932, 901, 934, 1290, 1330, 1320],
+        type: 'line',
+        smooth: true
+      }
+    ]
+  };
+
+  notifications = [
+    'Neuer Kilometerstand: 12301km',
+    'Neuer Reifendruck: 2.3bar',
+    'Neuer Standort: Mannheim',
+    'Neuer Tankfüllstand: 30L',
+  ]
+
+
+  private readonly markerLayer = new LayerGroup();
+  mapOptions: MapOptions = {
+    zoomControl: false,
+    layers: [
+      tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 18,
+      }),
+      this.markerLayer,
+    ],
+    zoom: 5,
+    center: latLng({ lat: 49.488888, lng: 8.469167 }),
+    minZoom: 5,
+  };
+
+  map: Map | null = null;
+
+  onMapReady(map: Map) {
+    this.map = map;
+    this.map.setZoom(13);
+    control
+      .zoom({
+        position: 'topright',
+      })
+      .addTo(this.map);
+      setTimeout(() => {
+        map.invalidateSize();
+      }, 10);
+    }
 }

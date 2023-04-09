@@ -1,4 +1,5 @@
 import { AnimationTriggerMetadata, animate, style, transition, trigger } from '@angular/animations';
+import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { EChartsOption } from 'echarts';
@@ -41,7 +42,7 @@ export class ConfigComponent {
     {
       name: 'Anzahl der Fahrzeuge',
       selected: false,
-      
+
     },
     {
       name: 'Herstellerverteilung',
@@ -165,7 +166,8 @@ export class ConfigComponent {
     },
   ];
 
-  constructor(private readonly router: Router) {}
+  constructor(private readonly router: Router) {
+  }
 
   previous() {
     this.selectedIndex--;
