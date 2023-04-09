@@ -3,12 +3,14 @@ import { NgModule } from '@angular/core';
 import {
   NbButtonModule,
   NbCardModule,
-  NbIconModule
+  NbIconModule,
+  NbListModule
 } from '@nebular/theme';
 import { DashboardComponent } from './dashboard.component';
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { SocketIoModule } from 'ngx-socket-io';
+import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 
 @NgModule({
   declarations: [DashboardComponent],
@@ -19,7 +21,9 @@ import { SocketIoModule } from 'ngx-socket-io';
     NbButtonModule,
     NbIconModule,
     NgxEchartsModule.forChild(),
-    SocketIoModule
+    SocketIoModule,
+    NbListModule,
+    LeafletModule
   ],
 })
 export class DashboardModule {}
