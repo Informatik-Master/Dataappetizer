@@ -8,6 +8,9 @@ import {
 import { CarComponent } from './car.component';
 import { CarRoutingModule } from './car-routing.module';
 import { NgxEchartsModule } from 'ngx-echarts';
+import { MatTableModule, MatTableDataSource } from "@angular/material/table";
+import { MatSortModule } from "@angular/material/sort";
+
 
 @NgModule({
   declarations: [CarComponent],
@@ -18,6 +21,8 @@ import { NgxEchartsModule } from 'ngx-echarts';
     NbButtonModule,
     NbIconModule,
     NgxEchartsModule.forChild(),
-  ],
+    MatTableModule,
+    MatSortModule,
+  ]
 })
 export class CarModule {}
