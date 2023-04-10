@@ -50,10 +50,26 @@ export const handler = async () => {
     }),
   );
 
+  const pushData = {
+    event: 'getDiagram',
+    data: [
+      { value: 4, name: 'VW' },
+      { value: 3, name: 'BMW' },
+      { value: 3, name: 'SEAT' },
+      { value: 5, name: 'AUDI' },
+      { value: 2, name: 'FORD' },
+      { value: 3, name: 'OPEL' },
+      { value: 1, name: 'PORSCHE' },
+    ].map((item: any) => {
+      item.value = Math.floor(Math.random() * 10);
+      return item;
+    })
+  }
+
   for (const item of Items!) {
     apigatewaymanagementapi.send(new PostToConnectionCommand({
       ConnectionId: item["connectionId"],
-      Data: Buffer.from(JSON.stringify(data)),
+      Data: Buffer.from(JSON.stringify(pushData.data)),
     }))
   }
 

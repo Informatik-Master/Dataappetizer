@@ -1,8 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import {webSocket, WebSocketSubject} from 'rxjs/webSocket';
-import { Socket } from 'ngx-socket-io';
-import { map, tap } from 'rxjs/operators';
 import { EChartsOption } from 'echarts';
 
 import {
@@ -22,26 +18,51 @@ import {
   styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit {
-
-  constructor(private socket: Socket) {}
+  constructor() {}
 
   ngOnInit(): void {
-    setInterval(() => {
-      this.socket.emit('getDiagram');
-    }, 1000)
+    const socket = new WebSocket('ws://localhost:3001');
 
-    this.socket.fromEvent('getDiagram').pipe(map((data) => data), tap((data) => console.log(data))).subscribe((data: any) => {
-      console.log(data);
-      this.echartMerge={
-        series: [{
-          data: data
-        }]
+    socket.addEventListener('open',  (event) => {
+      console.log('socket open');
+      console.log(event);
+    });
+
+    socket.addEventListener('message',  (event) => {
+      console.log('Message from server ', event.data, typeof event.data);
+      this.echartMerge = {
+        series: [
+          {
+            data: JSON.parse(event.data),
+          },
+        ],
       };
-    })
+    });
+
+    socket.addEventListener('error', (event) => {
+      console.log('error', event);
+
+    });
+
+    socket.addEventListener('close', function (event) {
+      console.log('socket close');
+    });
+
+    // setInterval(() => {
+    //   this.socket.emit('getDiagram');
+    // }, 1000)
+
+    // this.socket.fromEvent('getDiagram').pipe(map((data) => data), tap((data) => console.log(data))).subscribe((data: any) => {
+    //   console.log(data);
+    //   this.echartMerge={
+    //     series: [{
+    //       data: data
+    //     }]
+    //   };
+    // })
   }
 
-  echartMerge: EChartsOption = {
-  }
+  echartMerge: EChartsOption = {};
 
   echartOptions: EChartsOption = {
     series: [
@@ -51,7 +72,7 @@ export class DashboardComponent implements OnInit {
         center: ['50%', '50%'],
         roseType: 'area',
         itemStyle: {
-          borderRadius: 8
+          borderRadius: 8,
         },
         data: [
           { value: 4, name: 'VW' },
@@ -60,10 +81,10 @@ export class DashboardComponent implements OnInit {
           { value: 5, name: 'AUDI' },
           { value: 2, name: 'FORD' },
           { value: 3, name: 'OPEL' },
-          { value: 1, name: 'PORSCHE' }
-        ]
-      }
-    ]
+          { value: 1, name: 'PORSCHE' },
+        ],
+      },
+    ],
   };
 
   echartOptions2: EChartsOption = {
@@ -72,7 +93,7 @@ export class DashboardComponent implements OnInit {
       data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
     },
     yAxis: {
-      type: 'value'
+      type: 'value',
     },
     grid: {
       right: '10px',
@@ -82,12 +103,11 @@ export class DashboardComponent implements OnInit {
     },
     series: [
       {
-
         data: [820, 932, 901, 934, 1290, 1330, 1320],
         type: 'line',
-        smooth: true
-      }
-    ]
+        smooth: true,
+      },
+    ],
   };
 
   notifications = [
@@ -95,8 +115,7 @@ export class DashboardComponent implements OnInit {
     'Neuer Reifendruck: 2.3bar',
     'Neuer Standort: Mannheim',
     'Neuer Tankfüllstand: 30L',
-  ]
-
+  ];
 
   private readonly markerLayer = new LayerGroup();
   mapOptions: MapOptions = {
@@ -122,8 +141,8 @@ export class DashboardComponent implements OnInit {
         position: 'topright',
       })
       .addTo(this.map);
-      setTimeout(() => {
-        map.invalidateSize();
-      }, 10);
-    }
+    setTimeout(() => {
+      map.invalidateSize();
+    }, 10);
+  }
 }
