@@ -57,25 +57,32 @@ export class SocketGateway {
     console.log('getDiagram');
     const newDiagram = JSON.parse(JSON.stringify(BASE_DIAGRAMM));
 
-    newDiagram.series[0].data = newDiagram.series[0].data.map((item: any) => {
-      item.value = Math.floor(Math.random() * 10);
-      return item;
-    });
-    // return { event: 'getDiagram', data: newDiagram };
-    return {
-      event: 'getDiagram',
-      data: [
-        { value: 4, name: 'VW' },
-        { value: 3, name: 'BMW' },
-        { value: 3, name: 'SEAT' },
-        { value: 5, name: 'AUDI' },
-        { value: 2, name: 'FORD' },
-        { value: 3, name: 'OPEL' },
-        { value: 1, name: 'PORSCHE' },
-      ].map((item: any) => {
-        item.value = Math.floor(Math.random() * 10);
-        return item;
-      }),
-    };
+        return {
+          event: 'getDiagram',
+          data : [
+            "test"
+          ]
+        };
+
+    // newDiagram.series[0].data = newDiagram.series[0].data.map((item: any) => {
+    //   item.value = Math.floor(Math.random() * 10);
+    //   return item;
+    // });
+    // // return { event: 'getDiagram', data: newDiagram };
+    // return {
+    //   event: 'getDiagram',
+    //   data: [
+    //     { value: 4, name: 'VW' },
+    //     { value: 3, name: 'BMW' },
+    //     { value: 3, name: 'SEAT' },
+    //     { value: 5, name: 'AUDI' },
+    //     { value: 2, name: 'FORD' },
+    //     { value: 3, name: 'OPEL' },
+    //     { value: 1, name: 'PORSCHE' },
+    //   ].map((item: any) => {
+    //     item.value = Math.floor(Math.random() * 10);
+    //     return item;
+    //   }),
+    // };
   }
 }
