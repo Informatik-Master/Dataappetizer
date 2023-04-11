@@ -6,6 +6,8 @@ import {
 } from '@nestjs/websockets';
 
 import { Server } from 'ws';
+import { CarService } from './car/car.service';
+import { firstValueFrom } from 'rxjs';
 
 const BASE_DIAGRAMM = {
   legend: {
@@ -44,6 +46,9 @@ const BASE_DIAGRAMM = {
 
 @WebSocketGateway({ cors: true })
 export class SocketGateway {
+
+  constructor(private readonly carService: CarService) { }
+
   @WebSocketServer()
   server!: Server;
 
@@ -53,29 +58,40 @@ export class SocketGateway {
   }
 
   @SubscribeMessage('getDiagram')
-  handleEvent(): any {
+  async handleEvent(): Promise<any> {
     console.log('getDiagram');
     const newDiagram = JSON.parse(JSON.stringify(BASE_DIAGRAMM));
+    const data = await firstValueFrom(this.carService.getVehicleInformation());
 
-    newDiagram.series[0].data = newDiagram.series[0].data.map((item: any) => {
-      item.value = Math.floor(Math.random() * 10);
-      return item;
-    });
-    // return { event: 'getDiagram', data: newDiagram };
     return {
       event: 'getDiagram',
       data: [
-        { value: 4, name: 'VW' },
-        { value: 3, name: 'BMW' },
-        { value: 3, name: 'SEAT' },
-        { value: 5, name: 'AUDI' },
-        { value: 2, name: 'FORD' },
-        { value: 3, name: 'OPEL' },
-        { value: 1, name: 'PORSCHE' },
-      ].map((item: any) => {
-        item.value = Math.floor(Math.random() * 10);
-        return item;
-      }),
+        { value: 2, name: data[0].vin },
+        { value: 3, name: data[1].vin },
+        { value: 1, name: data[2].vin },
+        { value: 4, name: data[3].vin }
+      ]
     };
+
+    // newDiagram.series[0].data = newDiagram.series[0].data.map((item: any) => {
+    //   item.value = Math.floor(Math.random() * 10);
+    //   return item;
+    // });
+    // // return { event: 'getDiagram', data: newDiagram };
+    // return {
+    //   event: 'getDiagram',
+    //   data: [
+    //     { value: 4, name: 'VW' },
+    //     { value: 3, name: 'BMW' },
+    //     { value: 3, name: 'SEAT' },
+    //     { value: 5, name: 'AUDI' },
+    //     { value: 2, name: 'FORD' },
+    //     { value: 3, name: 'OPEL' },
+    //     { value: 1, name: 'PORSCHE' },
+    //   ].map((item: any) => {
+    //     item.value = Math.floor(Math.random() * 10);
+    //     return item;
+    //   }),
+    // };
   }
 }
