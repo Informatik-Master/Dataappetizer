@@ -1,1 +1,57 @@
-<div echarts [options]="echartOptions"></div>
+<h3>Fahrzeuge</h3>
+<div>
+    <mat-table class="lessons-table mat-elevation-z8" [dataSource]="dataSource">
+        <ng-container matColumnDef="vin">
+            <mat-header-cell *matHeaderCellDef>VIN</mat-header-cell>
+            <mat-cell *matCellDef="let car">{{car.vin}}</mat-cell>
+        </ng-container>
+    
+        <ng-container matColumnDef="oem">
+            <mat-header-cell *matHeaderCellDef>Hersteller</mat-header-cell>
+            <mat-cell class="oem-cell"
+                      *matCellDef="let car">{{car.oem}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="drive">
+            <mat-header-cell *matHeaderCellDef>Antriebstyp</mat-header-cell>
+            <mat-cell class="drive-cell"
+                      *matCellDef="let car">{{car.drive}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="kilometer">
+            <mat-header-cell *matHeaderCellDef>Kilometerstand</mat-header-cell>
+            <mat-cell class="kilometer-cell"
+                      *matCellDef="let car">{{car.kilometer}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="fuel">
+            <mat-header-cell *matHeaderCellDef>Tankfüllstand (%)</mat-header-cell>
+            <mat-cell class="fuel-cell"
+                      *matCellDef="let car">{{car.fuel}}</mat-cell>
+        </ng-container>
+    
+        <ng-container matColumnDef="status">
+            <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
+            <mat-cell class="status-cell"
+                      *matCellDef="let car">{{car.status}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="notifi">
+            <mat-header-cell *matHeaderCellDef>Wichtige Meldung</mat-header-cell>
+            <mat-cell class="notifi-cell"
+                      *matCellDef="let car">{{car.notifi}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="detail">
+            <mat-header-cell *matHeaderCellDef>Zum Fahrzeug</mat-header-cell>
+            <mat-cell class="detail-cell"
+                      *matCellDef="let car">{{car.detail}}</mat-cell>
+        </ng-container>
+    
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    
+        <mat-row *matRowDef="let row; columns: displayedColumns"
+        (click)="onRowClicked(row)"></mat-row>
+    
+    </mat-table>
+</div>
