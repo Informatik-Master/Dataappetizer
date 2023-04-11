@@ -6,7 +6,12 @@ export class CarController {
     constructor(private readonly singleVehicleService: CarService) { }
 
     @Get()
-    getVehicleInformation() {
-        return this.singleVehicleService.getVehicleInformation();
+    getCarsInformation() {
+        return this.singleVehicleService.getCarsInformation();
+    }
+
+    @Post()
+    getSingleCarDetailInformation(){
+        return this.singleVehicleService.getSingleCarDetailInformation();
     }
 }
