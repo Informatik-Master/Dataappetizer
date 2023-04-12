@@ -62,63 +62,47 @@ export class SocketGateway {
   async handleDashboardEvent(): Promise<any> {
     let carController = new CarController(this.carService);
     const data = await firstValueFrom(carController.getCarsInformation());
+    let carData = [];
+    for(let i = 0; i < data.length; i++){
+      const singleCarData = await firstValueFrom(carController.getSingleCarDetailInformation(data[i].vin, ["averagedistance"]));
+      let averageDistance = singleCarData.inVehicleData[0].response.averagedistance.dataPoint.value.toFixed(0);
+      carData.push({
+        value: averageDistance,
+        name: "Fahrzeug: " + data[i].vin
+      })
+    }
 
     return {
       event: 'getDiagram',
-      data: [
-        { value: 2, name: data[0].vin },
-        { value: 3, name: data[1].vin },
-        { value: 1, name: data[2].vin },
-        { value: 4, name: data[3].vin }
-      ]
+      data: carData
     };
   }
 
   @SubscribeMessage('carList')
   async handleCarListEvent(): Promise<any> {
-
     let carController = new CarController(this.carService);
     const data = await firstValueFrom(carController.getCarsInformation());
-    const singleCarData = await firstValueFrom(carController.getSingleCarDetailInformation());
-    
-    let averageDistance = singleCarData.inVehicleData[0].response.averagedistance.dataPoint.value.toFixed(2);
-    let averageDistanceUnit = singleCarData.inVehicleData[0].response.averagedistance.dataPoint.unit;
-    let enginestatusTemp = singleCarData.inVehicleData[0].response.enginestatus.dataPoint.value;
-    let batteryvoltage = singleCarData.inVehicleData[0].response.batteryvoltage.dataPoint.value.toFixed(2);
-    let batteryvoltageUnit = singleCarData.inVehicleData[0].response.batteryvoltage.dataPoint.unit;
+    let carData = [];
+    for(let i = 0; i < data.length; i++){
+      const singleCarData = await firstValueFrom(carController.getSingleCarDetailInformation(data[i].vin, ["averagedistance","batteryvoltage","enginestatus"]));
+      let averageDistance = singleCarData.inVehicleData[0].response.averagedistance.dataPoint.value.toFixed(2);
+      let averageDistanceUnit = singleCarData.inVehicleData[0].response.averagedistance.dataPoint.unit;
+      let enginestatusTemp = singleCarData.inVehicleData[0].response.enginestatus.dataPoint.value;
+      let batteryvoltage = singleCarData.inVehicleData[0].response.batteryvoltage.dataPoint.value.toFixed(2);
+      let batteryvoltageUnit = singleCarData.inVehicleData[0].response.batteryvoltage.dataPoint.unit;
+      let enginestatus = enginestatusTemp == "ON" ? "Motor ist eingeschaltet.":"Motor ist ausgeschaltet.";
 
-    console.log("ENGINESTATUS:" + enginestatusTemp);
-    let enginestatus = enginestatusTemp == "ON" ? "Engine is ON.":"Engine is OFF.";
+      carData.push({
+        vin: data[i].vin,
+        kilometer: averageDistance + " " + averageDistanceUnit,
+        fuel: batteryvoltage + " " + batteryvoltageUnit,
+        status: enginestatus
+      });
+    }
 
     return {
       event: 'carList',
-      data: [
-        {
-          vin: data[0].vin,
-          kilometer: averageDistance + " " + averageDistanceUnit,
-          fuel: batteryvoltage + " " + batteryvoltageUnit,
-          status: enginestatus
-        },
-        {
-          vin: data[1].vin,
-          kilometer: averageDistance + " " + averageDistanceUnit,
-          fuel: batteryvoltage + " " + batteryvoltageUnit,
-          status: enginestatus
-        },
-        {
-          vin: data[2].vin,
-          kilometer: averageDistance + " " + averageDistanceUnit,
-          fuel: batteryvoltage + " " + batteryvoltageUnit,
-          status: enginestatus
-        },
-        {
-          vin: data[3].vin,
-          kilometer: averageDistance + " " + averageDistanceUnit,
-          fuel: batteryvoltage + " " + batteryvoltageUnit,
-          status: enginestatus
-        },
-      ]
+      data: carData
     }
   }
-
 }

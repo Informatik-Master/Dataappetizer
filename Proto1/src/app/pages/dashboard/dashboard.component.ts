@@ -31,7 +31,10 @@ export class DashboardComponent implements OnInit {
     }, 1000)
 
     this.socket.fromEvent('getDiagram').pipe(map((data) => data), tap((data) => console.log(data))).subscribe((data: any) => {
-      console.log(data);
+      this.amountVehicle = data.length;
+      for(let i = 0; i < data.length; i++){
+        this.notifications.push(""+ data[i].name + " | Average Distance: " + data[i].value + "km");
+      }
       this.echartMerge={
         series: [{
           data: data
@@ -39,6 +42,15 @@ export class DashboardComponent implements OnInit {
       };
     })
   }
+
+  amountVehicle = 0;
+
+  notifications: String[] = [
+    // 'Neuer Kilometerstand: 12301km',
+    // 'Neuer Reifendruck: 2.3bar',
+    // 'Neuer Standort: Mannheim',
+    // 'Neuer Tankfüllstand: 30L',
+  ];
 
   echartMerge: EChartsOption = {
   }
@@ -89,14 +101,6 @@ export class DashboardComponent implements OnInit {
       }
     ]
   };
-
-  notifications = [
-    'Neuer Kilometerstand: 12301km',
-    'Neuer Reifendruck: 2.3bar',
-    'Neuer Standort: Mannheim',
-    'Neuer Tankfüllstand: 30L',
-  ]
-
 
   private readonly markerLayer = new LayerGroup();
   mapOptions: MapOptions = {
