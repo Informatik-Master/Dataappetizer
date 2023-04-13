@@ -51,7 +51,7 @@ provider:
 
   environment:
     DATAPOINT_TABLE: ${self:custom.datapointTable}
-    # DATAPOINT_TABLE_DATAPOINT_INDEX: ${self:custom.datapointTableDatapointIndex}
+    DATAPOINT_TABLE_DATAPOINT_INDEX: ${self:custom.datapointTableDatapointIndex}
     CONNECTIONS_TABLE: ${self:custom.connectionsTable}
     CONNECTIONS_TABLE_VIN_INDEX: ${self:custom.connectionsTableVinIndex}
 
@@ -106,6 +106,8 @@ resources:
             AttributeType: S
           - AttributeName: timestamp
             AttributeType: N
+          - AttributeName: vinWithDataPointName
+            AttributeType: S
         KeySchema:
           - AttributeName: vin
             KeyType: HASH
@@ -113,12 +115,12 @@ resources:
             KeyType: RANGE
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:custom.datapointTable}
-        # GlobalSecondaryIndexes:
-        # - IndexName: ${self:custom.datapointTableDatapointIndex}
-        #   Projection:
-        #     ProjectionType: ALL
-        #   KeySchema:
-        #     - AttributeName: vin
-        #       KeyType: HASH
-        #     - AttributeName: dataPointWithTimestamp
-        #       KeyType: RANGE
+        GlobalSecondaryIndexes:
+        - IndexName: ${self:custom.datapointTableDatapointIndex}
+          Projection:
+            ProjectionType: ALL
+          KeySchema:
+            - AttributeName: vinWithDataPointName
+              KeyType: HASH
+            - AttributeName: timestamp
+              KeyType: RANGE
