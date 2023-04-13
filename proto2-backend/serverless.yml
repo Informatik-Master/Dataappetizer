@@ -3,6 +3,7 @@ frameworkVersion: "3"
 
 custom:
   datapointTable: "datapoint-${sls:stage}"
+  datapointTableDatapointIndex: "datapoint-${sls:stage}-datapointIndex"
   connectionsTable: "connections-${sls:stage}"
   connectionsTableVinIndex: "connections-${sls:stage}-vinIndex"
   dynamodb:
@@ -15,7 +16,7 @@ custom:
 
 plugins:
   - serverless-webpack
-  - serverless-offline-dynamodb-streams
+  # - serverless-offline-dynamodb-streams
   - serverless-offline
   - serverless-dynamodb-local
 
@@ -36,6 +37,11 @@ provider:
             - dynamodb:DeleteItem
           Resource:
             - Fn::GetAtt: [DataPointTable, Arn]
+            # - Fn::Join:
+            #     - "/"
+            #     - - Fn::GetAtt: [Connections, Arn]
+            #       - "index"
+            #       - ${self:custom.datapointTableDatapointIndex}
             - Fn::GetAtt: [Connections, Arn]
             - Fn::Join:
                 - "/"
@@ -45,6 +51,7 @@ provider:
 
   environment:
     DATAPOINT_TABLE: ${self:custom.datapointTable}
+    # DATAPOINT_TABLE_DATAPOINT_INDEX: ${self:custom.datapointTableDatapointIndex}
     CONNECTIONS_TABLE: ${self:custom.connectionsTable}
     CONNECTIONS_TABLE_VIN_INDEX: ${self:custom.connectionsTableVinIndex}
 
@@ -56,7 +63,7 @@ functions:
   refresh:
     handler: refresh.handler
     events:
-      - schedule: rate(1 minutes)
+      - schedule: rate(1 minute)
   connect:
     handler: src/connect/handler.connect
     events:
@@ -106,3 +113,12 @@ resources:
             KeyType: RANGE
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:custom.datapointTable}
+        # GlobalSecondaryIndexes:
+        # - IndexName: ${self:custom.datapointTableDatapointIndex}
+        #   Projection:
+        #     ProjectionType: ALL
+        #   KeySchema:
+        #     - AttributeName: vin
+        #       KeyType: HASH
+        #     - AttributeName: dataPointWithTimestamp
+        #       KeyType: RANGE

@@ -1,7 +1,30 @@
-import { DynamoDBClient  } from '@aws-sdk/client-dynamodb';
-import { DynamoDBDocumentClient, PutCommand, ScanCommand } from '@aws-sdk/lib-dynamodb';
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
+import {
+  DynamoDBDocumentClient,
+  PutCommand,
+  ScanCommand,
+} from '@aws-sdk/lib-dynamodb';
 import fetch from 'cross-fetch';
-import { ApiGatewayManagementApiClient, PostToConnectionCommand } from "@aws-sdk/client-apigatewaymanagementapi";
+import {
+  ApiGatewayManagementApiClient,
+  PostToConnectionCommand,
+} from '@aws-sdk/client-apigatewaymanagementapi';
+
+const VEHICLES = [
+  'V1RTUALV1N0000001',
+  'V1RTUALV1N0000002',
+  'V1RTUALV1N0000003',
+  'V1RTUALV1N0000004',
+  // 'V1RTUALV1N0000S05',
+  // 'V1RTUALV1N0000S06',
+  // 'V1RTUALV1N0000S07',
+  // 'V1RTUALV1N0000S08',
+  // 'V1RTUALV1N0000S09',
+  // 'V1RTUALV1N0000S10',
+  // 'V1RTUALV1N0000S11',
+  // 'V1RTUALV1N0000S12',
+  // 'V1RTUALV1N0000S13',
+];
 
 const TABLE = process.env['DATAPOINT_TABLE'];
 const client = new DynamoDBClient({
@@ -29,61 +52,79 @@ export const handler = async () => {
       },
       body: JSON.stringify({
         version: '1.0',
-        vehicles: [
-          {
-            identifier: {
-              type: 'VIN',
-              value: 'V1RTUALV1N0000S09',
-            },
+        vehicles: VEHICLES.map((v) => ({
+          identifier: {
+            type: 'VIN',
+            value: v,
           },
-        ],
-        dataItems: ['geolocation'],
+        })),
+        dataItems: ['geolocation', 'mileage'],
       }),
     },
   );
 
   const data = await subRes.json();
-
-  const { Items } = await dynamoDbClient.send(
-    new ScanCommand({
-      TableName: process.env['CONNECTIONS_TABLE'],
-    }),
-  );
-
-  const pushData = {
-    event: 'getDiagram',
-    data: [
-      { value: 4, name: 'VW' },
-      { value: 3, name: 'BMW' },
-      { value: 3, name: 'SEAT' },
-      { value: 5, name: 'AUDI' },
-      { value: 2, name: 'FORD' },
-      { value: 3, name: 'OPEL' },
-      { value: 1, name: 'PORSCHE' },
-    ].map((item: any) => {
-      item.value = Math.floor(Math.random() * 10);
-      return item;
-    })
-  }
-
-  for (const item of Items!) {
-    apigatewaymanagementapi.send(new PostToConnectionCommand({
-      ConnectionId: item["connectionId"],
-      Data: Buffer.from(JSON.stringify(pushData)),
-    }))
-
-    apigatewaymanagementapi.send(new PostToConnectionCommand({
-      ConnectionId: item["connectionId"],
-      Data: Buffer.from(JSON.stringify({
-        event: 'geolocation',
-        data: data.inVehicleData[0].response.geolocation.dataPoint,
-      })),
-    }))
-  }
+    console.log('data', data)
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+  // const { Items } = await dynamoDbClient.send(
+  //   new ScanCommand({
+  //     TableName: process.env['CONNECTIONS_TABLE'],
+  //   }),
+  // );
+
+  // const pushData = {
+  //   event: 'getDiagram',
+  //   data: [
+  //     { value: 4, name: 'VW' },
+  //     { value: 3, name: 'BMW' },
+  //     { value: 3, name: 'SEAT' },
+  //     { value: 5, name: 'AUDI' },
+  //     { value: 2, name: 'FORD' },
+  //     { value: 3, name: 'OPEL' },
+  //     { value: 1, name: 'PORSCHE' },
+  //   ].map((item: any) => {
+  //     item.value = Math.floor(Math.random() * 10);
+  //     return item;
+  //   }),
+  // };
+
+  // for (const item of Items!) {
+  //   apigatewaymanagementapi.send(
+  //     new PostToConnectionCommand({
+  //       ConnectionId: item['connectionId'],
+  //       Data: Buffer.from(JSON.stringify(pushData)),
+  //     }),
+  //   );
+
+  //   apigatewaymanagementapi.send(
+  //     new PostToConnectionCommand({
+  //       ConnectionId: item['connectionId'],
+  //       Data: Buffer.from(
+  //         JSON.stringify({
+  //           event: 'geolocation',
+  //           data: data.inVehicleData[0].response.geolocation.dataPoint,
+  //         }),
+  //       ),
+  //     }),
+  //   );
+  // }
 
   for (const inVehicleData of data.inVehicleData) {
+    console.log(inVehicleData)
     for (const [datapointName, datapointValue] of Object.entries(
       inVehicleData.response,
     )) {
@@ -91,9 +132,10 @@ export const handler = async () => {
         new PutCommand({
           TableName: TABLE,
           Item: {
-            vin: inVehicleData.identifier.value, // type: 'VIN',
+            vin: `${inVehicleData.identifier.value}`, // type: 'VIN',
             timestamp: Date.now(),
-            datapoint: datapointName,
+            datapointName,
+            vinWithDataPointName: `${inVehicleData.identifier.value}#${datapointName}`,
             value: (datapointValue as any).dataPoint,
           },
         }),
