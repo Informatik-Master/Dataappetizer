@@ -33,11 +33,11 @@ export const handler = async () => {
           {
             identifier: {
               type: 'VIN',
-              value: 'V1RTUALV1N0000001',
+              value: 'V1RTUALV1N0000S09',
             },
           },
         ],
-        dataItems: ['mileage', 'geolocation'],
+        dataItems: ['geolocation'],
       }),
     },
   );
@@ -69,7 +69,15 @@ export const handler = async () => {
   for (const item of Items!) {
     apigatewaymanagementapi.send(new PostToConnectionCommand({
       ConnectionId: item["connectionId"],
-      Data: Buffer.from(JSON.stringify(pushData.data)),
+      Data: Buffer.from(JSON.stringify(pushData)),
+    }))
+
+    apigatewaymanagementapi.send(new PostToConnectionCommand({
+      ConnectionId: item["connectionId"],
+      Data: Buffer.from(JSON.stringify({
+        event: 'geolocation',
+        data: data.inVehicleData[0].response.geolocation.dataPoint,
+      })),
     }))
   }
 

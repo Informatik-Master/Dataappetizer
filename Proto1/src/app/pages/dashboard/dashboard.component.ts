@@ -30,13 +30,32 @@ export class DashboardComponent implements OnInit {
 
     socket.addEventListener('message',  (event) => {
       console.log('Message from server ', event.data, typeof event.data);
-      this.echartMerge = {
-        series: [
-          {
-            data: JSON.parse(event.data),
-          },
-        ],
-      };
+
+      const parsed = JSON.parse(event.data);
+      console.log('parsed', parsed)
+
+      if(parsed.event === 'getDiagram') {
+        this.echartMerge = {
+          series: [
+            {
+              data: parsed.data,
+            },
+          ],
+        };
+      } else if (parsed.event === 'geolocation') {
+        const data = parsed.data;
+        const lat = data.latitude;
+        const lng = data.longitude;
+        const latLng = new LatLng(lat, lng);
+        console.log('latlng',latLng)
+        this.markerLayer.clearLayers();
+        this.markerLayer.addLayer(
+          marker(latLng),
+        );
+        this.map?.setView(latLng, 13);
+      }
+
+
     });
 
     socket.addEventListener('error', (event) => {
