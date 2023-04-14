@@ -1,9 +1,11 @@
-import { DynamoDBClient, QueryCommand } from '@aws-sdk/client-dynamodb';
-import { DynamoDBDocumentClient, ScanCommand } from '@aws-sdk/lib-dynamodb';
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
+import {
+  DynamoDBDocumentClient,
+  ScanCommand,
+  QueryCommand,
+} from '@aws-sdk/lib-dynamodb';
 import express from 'express';
 import serverless from 'serverless-http';
-//
-// sls dynamodb start --migrat
 
 const app = express();
 
@@ -32,9 +34,7 @@ app.get('/datapoints-vin', async function (req, res) {
       ScanIndexForward: false,
       KeyConditionExpression: 'vin = :vin',
       ExpressionAttributeValues: {
-        ':vin': {
-          S: vin,
-        },
+        ':vin': vin
       },
       // Limit: 1,
     }),
@@ -55,17 +55,23 @@ app.get('/datapoints-vin-latest', async function (req, res) {
         ScanIndexForward: false,
         KeyConditionExpression: 'vinWithDataPointName = :searchKey',
         ExpressionAttributeValues: {
-          ':searchKey': {
-            S: searchKey,
-          },
+          ':searchKey': searchKey,
         },
         Limit: 1,
       }),
-    )
-  }
-  );
+    );
+  });
 
   res.json((await Promise.all(queries)).flatMap((v) => v.Items));
+});
+
+app.get('/vehicles', async function (req, res) {
+  const { Items } = await dynamoDbClient.send(
+    new ScanCommand({
+      TableName: process.env['VEHICLES_TABLE'],
+    }),
+  );
+  res.json(Items);
 });
 
 app.get('/connections', async function (req, res) {

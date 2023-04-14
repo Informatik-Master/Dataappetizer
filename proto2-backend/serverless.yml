@@ -6,6 +6,7 @@ custom:
   datapointTableDatapointIndex: "datapoint-${sls:stage}-datapointIndex"
   connectionsTable: "connections-${sls:stage}"
   connectionsTableVinIndex: "connections-${sls:stage}-vinIndex"
+  vehiclesTable: "vehicles-${sls:stage}"
   dynamodb:
     stages:
       - dev
@@ -13,10 +14,17 @@ custom:
       port: 8002
       inMemory: true
       migrate: true
+  serverless-offline-dynamodb-streams:
+    endpoint: http://0.0.0.0:8002
+    region: us-east-1
+    accessKeyId: root
+    secretAccessKey: root
+    skipCacheInvalidation: false
+    readInterval: 500
 
 plugins:
   - serverless-webpack
-  # - serverless-offline-dynamodb-streams
+  - serverless-offline-dynamodb-streams
   - serverless-offline
   - serverless-dynamodb-local
 
@@ -48,20 +56,26 @@ provider:
                 - - Fn::GetAtt: [Connections, Arn]
                   - "index"
                   - ${self:custom.connectionsTableVinIndex}
+            - Fn::GetAtt: [VehiclesTable, Arn]
 
   environment:
     DATAPOINT_TABLE: ${self:custom.datapointTable}
     DATAPOINT_TABLE_DATAPOINT_INDEX: ${self:custom.datapointTableDatapointIndex}
     CONNECTIONS_TABLE: ${self:custom.connectionsTable}
     CONNECTIONS_TABLE_VIN_INDEX: ${self:custom.connectionsTableVinIndex}
+    VEHICLES_TABLE: ${self:custom.vehiclesTable}
 
 functions:
   api:
     handler: index.handler
     events:
       - httpApi: "*"
-  refresh:
-    handler: refresh.handler
+  # pullVehicles:
+  #   handler: src/pullVehicles/handler.handler
+  #   events:
+  #     - schedule: rate(1 minute)
+  pullVehicleData:
+    handler: src/pullVehicleData/handler.handler
     events:
       - schedule: rate(1 minute)
   connect:
@@ -75,6 +89,17 @@ functions:
     events:
       - websocket:
           route: $disconnect
+  dispatcher:
+    handler: src/dispatcher/handler.dispatcher
+    events:
+      - stream:
+          type: dynamodb
+          batchSize: 1
+          startingPosition: LATEST
+          arn:
+            Fn::GetAtt:
+              - DataPointTable
+              - StreamArn
 
 resources:
   Resources:
@@ -101,6 +126,8 @@ resources:
     DataPointTable:
       Type: AWS::DynamoDB::Table
       Properties:
+        StreamSpecification:
+          StreamViewType: NEW_IMAGE
         AttributeDefinitions:
           - AttributeName: vin
             AttributeType: S
@@ -124,3 +151,14 @@ resources:
               KeyType: HASH
             - AttributeName: timestamp
               KeyType: RANGE
+    VehiclesTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: vin
+            AttributeType: S
+        KeySchema:
+          - AttributeName: vin
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.vehiclesTable}

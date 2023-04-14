@@ -3,11 +3,13 @@ import { EChartsOption } from 'echarts';
 
 import {
   control,
+  FeatureGroup,
   LatLng,
   latLng,
   LayerGroup,
-  Map,
+  Map as LefletMap,
   MapOptions,
+  Marker,
   marker,
   tileLayer,
 } from 'leaflet';
@@ -19,6 +21,10 @@ import {
 })
 export class DashboardComponent implements OnInit {
   constructor() {}
+
+  vehicles = new Map<string, number>();
+
+  markers = new Map<string, Marker>();
 
   ngOnInit(): void {
     const socket = new WebSocket('ws://localhost:3001');
@@ -34,6 +40,7 @@ export class DashboardComponent implements OnInit {
       const parsed = JSON.parse(event.data);
       console.log('parsed', parsed)
 
+
       if(parsed.event === 'getDiagram') {
         this.echartMerge = {
           series: [
@@ -43,20 +50,32 @@ export class DashboardComponent implements OnInit {
           ],
         };
       } else if (parsed.event === 'geolocation') {
-        const data = parsed.data;
-        const lat = data.latitude;
-        const lng = data.longitude;
+        const {vin, value} = parsed.data
+        const lat = value.latitude;
+        const lng = value.longitude;
         const latLng = new LatLng(lat, lng);
         console.log('latlng',latLng)
+        this.markers.set(vin, marker(latLng)),
+
+
         this.markerLayer.clearLayers();
-        this.markerLayer.addLayer(
-          marker(latLng),
-        );
-        this.map?.setView(latLng, 13);
+        [...this.markers.values()].forEach((marker) => {
+          this.markerLayer.addLayer(marker);
+        });
+        this.map?.fitBounds(this.markerLayer.getBounds().pad(.2), {animate: true, duration: 1});
+      } else if (parsed.event === 'message') {
+         const newMessage = `[${parsed.data.vin}] hat einen neuen Datenpunkt ${parsed.data.datapointName} mit dem Wert ${JSON.stringify(parsed.data.value||{})}`
+         this.notifications = [newMessage, ...this.notifications];
+
+         //TODO: This is still in the works
+         this.vehicles.set(parsed.data.vin, (this.vehicles.get(parsed.data.vin) || 0) + 1);
+
       }
 
 
     });
+
+
 
     socket.addEventListener('error', (event) => {
       console.log('error', event);
@@ -79,6 +98,10 @@ export class DashboardComponent implements OnInit {
     //     }]
     //   };
     // })
+  }
+
+  getDatapointCount() {
+    return [...this.vehicles.values()].reduce((a, b) => a + b, 0);
   }
 
   echartMerge: EChartsOption = {};
@@ -136,7 +159,7 @@ export class DashboardComponent implements OnInit {
     'Neuer Tankfüllstand: 30L',
   ];
 
-  private readonly markerLayer = new LayerGroup();
+  private readonly markerLayer = new FeatureGroup();
   mapOptions: MapOptions = {
     zoomControl: false,
     layers: [
@@ -150,9 +173,9 @@ export class DashboardComponent implements OnInit {
     minZoom: 5,
   };
 
-  map: Map | null = null;
+  map: LefletMap | null = null;
 
-  onMapReady(map: Map) {
+  onMapReady(map: LefletMap) {
     this.map = map;
     this.map.setZoom(13);
     control
