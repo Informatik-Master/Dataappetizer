@@ -17,8 +17,6 @@ const apigatewaymanagementapi = new ApiGatewayManagementApiClient({
 });
 
 export const dispatcher = async ({ Records }: any) => {
-  console.log('dispatching', Records);
-
   const { Items } = await dynamoDbClient.send(
     new ScanCommand({
       TableName: process.env['CONNECTIONS_TABLE'],
@@ -29,7 +27,6 @@ export const dispatcher = async ({ Records }: any) => {
     const { dynamodb } = record;
 
     const payload = dynamodb?.NewImage;
-    console.log('payload', payload);
     if (!payload) continue;
 
     const unmarshalledPayload = unmarshall(payload);
@@ -47,10 +44,29 @@ export const dispatcher = async ({ Records }: any) => {
         ),
       );
 
+      
     //TODO: push all this on connect
     if (unmarshalledPayload['datapointName'] === 'geolocation') {
       await sendToAll({
         event: 'geolocation',
+        data: {
+          vin: unmarshalledPayload['vin'],
+          value: unmarshalledPayload['value'],
+        },
+      });
+    }
+    if (unmarshalledPayload['datapointName'] === 'averagedistance') {
+      await sendToAll({
+        event: 'averagedistance',
+        data: {
+          vin: unmarshalledPayload['vin'],
+          value: unmarshalledPayload['value'],
+        },
+      });
+    }
+    if (unmarshalledPayload['datapointName'] === 'mileage') {
+      await sendToAll({
+        event: 'mileage',
         data: {
           vin: unmarshalledPayload['vin'],
           value: unmarshalledPayload['value'],

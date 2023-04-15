@@ -5,16 +5,21 @@
         <nb-card style="max-height: 25dvh">
           <nb-card-header> Deine Flotte </nb-card-header>
           <nb-card-body>
-            <h2>{{vehicles.size}} Fahrzeuge</h2>
-            Gelieferte Datenpunkte: {{getDatapointCount()}}
+            <h2>{{ vehicles.size }} Fahrzeuge</h2>
+            Gelieferte Datenpunkte: {{ getDatapointCount() }}
           </nb-card-body>
         </nb-card>
       </div>
       <div class="col" style="max-height: 25dvh">
         <nb-card>
-          <nb-card-header> Hersteller </nb-card-header>
+          <nb-card-header> Durchschnittsdistanz </nb-card-header>
           <nb-card-body>
-            <div echarts [options]="echartOptions" [merge]="echartMerge" style="height:100%"></div>
+            <div
+              echarts
+              [options]="echartOptions"
+              [merge]="echartMerge"
+              style="height: 100%"
+            ></div>
           </nb-card-body>
         </nb-card>
       </div>
@@ -22,9 +27,14 @@
     <div class="row">
       <div class="col" style="height: 25dvh">
         <nb-card>
-          <nb-card-header> Tankfüllstand </nb-card-header>
+          <nb-card-header> Kilometerstand </nb-card-header>
           <nb-card-body class="p-0">
-            <div echarts [options]="echartOptions2"  style="height:100%"></div>
+            <div
+              echarts
+              [options]="echartOptions2"
+              [merge]="echartOptions2Merge"
+              style="height: 100%"
+            ></div>
           </nb-card-body>
         </nb-card>
       </div>
@@ -45,7 +55,7 @@
 </div>
 <div class="row">
   <div class="col">
-    <nb-card style="    height: unset; max-height: 20dvh;">
+    <nb-card style="height: unset; max-height: 20dvh">
       <nb-card-header> Informationsticker </nb-card-header>
       <nb-card-body class="p-0">
         <nb-list>
@@ -53,7 +63,6 @@
             {{ notification }}
           </nb-list-item>
         </nb-list>
-
       </nb-card-body>
     </nb-card>
   </div>

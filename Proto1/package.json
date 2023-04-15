@@ -30,6 +30,7 @@
     "leaflet": "^1.9.3",
     "ngx-echarts": "^14.0.0",
     "ngx-socket-io": "~4.3.0",
+    "reconnecting-websocket": "^4.4.0",
     "resize-observer-polyfill": "^1.5.1",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",

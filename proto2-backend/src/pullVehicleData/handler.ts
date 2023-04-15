@@ -1,15 +1,6 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import {
-  DynamoDBDocumentClient,
-  QueryCommand,
-  ScanCommand,
-  PutCommand,
-
-  ScanCommandInput,
-} from '@aws-sdk/lib-dynamodb';
+import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb';
 import fetch from 'cross-fetch';
-import { ApiGatewayManagementApiClient } from '@aws-sdk/client-apigatewaymanagementapi';
-
 import chunk from 'lodash.chunk';
 
 const VEHICLES = [
@@ -28,16 +19,23 @@ const VEHICLES = [
   // 'V1RTUALV1N0000S13',
 ];
 
+const DATA_POINTS = [
+  'averagedistance',
+  'geolocation',
+  'mileage',
+  'batteryvoltage',
+  'enginestatus',
+  'trunkstatus',
+  'dtcconfirmed',
+  'coolanttemperature',
+];
+
 const TABLE = process.env['DATAPOINT_TABLE'];
 const client = new DynamoDBClient({
   region: 'us-east-1',
   endpoint: 'http://localhost:8002',
 });
 const dynamoDbClient = DynamoDBDocumentClient.from(client);
-
-const apigatewaymanagementapi = new ApiGatewayManagementApiClient({
-  endpoint: 'http://localhost:3001',
-});
 
 export const handler = async () => {
   console.log('refreshing data...');
@@ -58,7 +56,8 @@ export const handler = async () => {
   const chunks = chunk(VEHICLES, 10);
 
   await Promise.all(
-    chunks.map(async (chunk) => { //TODO: Batch
+    chunks.map(async (chunk) => {
+      //TODO: Batch
       const subRes = await fetch(
         'https://api.caruso-dataplace.com/delivery/v1/in-vehicle',
         {
@@ -78,17 +77,18 @@ export const handler = async () => {
                 value: v,
               },
             })),
-            dataItems: ['geolocation', 'mileage'],
+            dataItems: DATA_POINTS,
           }),
         },
       );
       const data = await subRes.json();
-
+      console.log(data.inVehicleData)
       const promises: Promise<any>[] = [];
       for (const inVehicleData of data.inVehicleData) {
         for (const [datapointName, datapointValue] of Object.entries(
           inVehicleData.response,
         )) {
+          if (!(datapointValue as any).dataPoint) continue
           promises.push(
             dynamoDbClient.send(
               new PutCommand({

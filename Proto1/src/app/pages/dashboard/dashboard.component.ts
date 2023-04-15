@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { EChartsOption } from 'echarts';
+import { EChartsOption, SeriesOption } from 'echarts';
 
 import {
   control,
@@ -13,6 +13,7 @@ import {
   marker,
   tileLayer,
 } from 'leaflet';
+import ReconnectingWebSocket from 'reconnecting-websocket';
 
 @Component({
   selector: 'ngx-dashboard',
@@ -27,21 +28,18 @@ export class DashboardComponent implements OnInit {
   markers = new Map<string, Marker>();
 
   ngOnInit(): void {
-    const socket = new WebSocket('ws://localhost:3001');
+    const socket = new ReconnectingWebSocket('ws://localhost:3001');
 
-    socket.addEventListener('open',  (event) => {
+    socket.addEventListener('open', (event) => {
       console.log('socket open');
       console.log(event);
     });
 
-    socket.addEventListener('message',  (event) => {
-      console.log('Message from server ', event.data, typeof event.data);
-
+    socket.addEventListener('message', (event) => {
       const parsed = JSON.parse(event.data);
-      console.log('parsed', parsed)
+      console.log('parsed', parsed);
 
-
-      if(parsed.event === 'getDiagram') {
+      if (parsed.event === 'getDiagram') {
         this.echartMerge = {
           series: [
             {
@@ -50,61 +48,88 @@ export class DashboardComponent implements OnInit {
           ],
         };
       } else if (parsed.event === 'geolocation') {
-        const {vin, value} = parsed.data
+        const { vin, value } = parsed.data;
         const lat = value.latitude;
         const lng = value.longitude;
         const latLng = new LatLng(lat, lng);
-        console.log('latlng',latLng)
-        this.markers.set(vin, marker(latLng)),
-
-
-        this.markerLayer.clearLayers();
+        this.markers.set(
+          vin,
+          marker(latLng, {
+            title: vin,
+          })
+        ),
+          this.markerLayer.clearLayers();
         [...this.markers.values()].forEach((marker) => {
           this.markerLayer.addLayer(marker);
         });
-        this.map?.fitBounds(this.markerLayer.getBounds().pad(.2), {animate: true, duration: 1});
+        this.map?.fitBounds(this.markerLayer.getBounds().pad(0.2), {
+          animate: true,
+          duration: 1,
+        }); //TODO: only on init
       } else if (parsed.event === 'message') {
-         const newMessage = `[${parsed.data.vin}] hat einen neuen Datenpunkt ${parsed.data.datapointName} mit dem Wert ${JSON.stringify(parsed.data.value||{})}`
-         this.notifications = [newMessage, ...this.notifications];
+        const newMessage = `[${parsed.data.vin}] hat einen neuen Datenpunkt ${
+          parsed.data.datapointName
+        } mit dem Wert ${JSON.stringify(parsed.data.value || {})}`;
+        this.notifications = [newMessage, ...this.notifications];
 
-         //TODO: This is still in the works
-         this.vehicles.set(parsed.data.vin, (this.vehicles.get(parsed.data.vin) || 0) + 1);
-
+        //TODO: This is still in the works
+        this.vehicles.set(
+          parsed.data.vin,
+          (this.vehicles.get(parsed.data.vin) || 0) + 1
+        );
+      } else if (parsed.event === 'averagedistance') {
+        const currentVal = (
+          (this.echartMerge.series as SeriesOption[])[0].data as any[]
+        )?.find((d) => d.name === parsed.data.vin);
+        if (currentVal) {
+          currentVal.data = parsed.data.value.value;
+        } else {
+          ((this.echartMerge.series as SeriesOption[])[0].data as any[])?.push({
+            name: parsed.data.vin,
+            value: parsed.data.value.value,
+          });
+        }
+        this.echartMerge = {
+          ...this.echartMerge,
+        };
+      } else if (parsed.event === 'mileage') {
+        const s = this.echartOptions2Merge.series as SeriesOption[];
+        let dataset = s.find((s) => s.name === parsed.data.vin)
+        if (!dataset){
+          dataset ={
+            name: parsed.data.vin,
+            type: 'line',
+            smooth: true,
+            symbol: 'none',
+            areaStyle: {},
+            data: [],
+          }
+          s.push(dataset)
+        }
+        (dataset.data as any).push([Date.parse(parsed.data.value.timestamp), parsed.data.value.value])
+        this.echartOptions2Merge = {
+          ...this.echartOptions2Merge,
+        };
+        console.log(this.echartOptions2Merge)
       }
-
-
     });
-
-
 
     socket.addEventListener('error', (event) => {
       console.log('error', event);
-
     });
 
     socket.addEventListener('close', function (event) {
       console.log('socket close');
     });
-
-    // setInterval(() => {
-    //   this.socket.emit('getDiagram');
-    // }, 1000)
-
-    // this.socket.fromEvent('getDiagram').pipe(map((data) => data), tap((data) => console.log(data))).subscribe((data: any) => {
-    //   console.log(data);
-    //   this.echartMerge={
-    //     series: [{
-    //       data: data
-    //     }]
-    //   };
-    // })
   }
 
   getDatapointCount() {
     return [...this.vehicles.values()].reduce((a, b) => a + b, 0);
   }
 
-  echartMerge: EChartsOption = {};
+  echartMerge: EChartsOption = {
+    series: [{ data: [] }],
+  };
 
   echartOptions: EChartsOption = {
     series: [
@@ -116,48 +141,45 @@ export class DashboardComponent implements OnInit {
         itemStyle: {
           borderRadius: 8,
         },
-        data: [
-          { value: 4, name: 'VW' },
-          { value: 3, name: 'BMW' },
-          { value: 3, name: 'SEAT' },
-          { value: 5, name: 'AUDI' },
-          { value: 2, name: 'FORD' },
-          { value: 3, name: 'OPEL' },
-          { value: 1, name: 'PORSCHE' },
-        ],
+        tooltip: {
+          trigger: 'item',
+          formatter: '{a} <br/>{b}: {c} ({d}%)',
+        },
+        data: [],
       },
     ],
   };
 
+
   echartOptions2: EChartsOption = {
+    legend: {},
+    tooltip: {
+      trigger: 'axis',
+
+    },
     xAxis: {
-      type: 'category',
-      data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+      type: 'time',
+      boundaryGap: false
     },
     yAxis: {
       type: 'value',
+      boundaryGap: [0, '100%']
     },
     grid: {
       right: '10px',
-      left: '50px',
+      left: '70px',
       bottom: '25px',
-      top: '15px',
+      top: '35px',
     },
     series: [
-      {
-        data: [820, 932, 901, 934, 1290, 1330, 1320],
-        type: 'line',
-        smooth: true,
-      },
     ],
   };
 
-  notifications = [
-    'Neuer Kilometerstand: 12301km',
-    'Neuer Reifendruck: 2.3bar',
-    'Neuer Standort: Mannheim',
-    'Neuer Tankfüllstand: 30L',
-  ];
+  echartOptions2Merge: EChartsOption = {
+    series: []
+  }
+
+  notifications: string[] = [];
 
   private readonly markerLayer = new FeatureGroup();
   mapOptions: MapOptions = {

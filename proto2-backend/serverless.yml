@@ -12,7 +12,7 @@ custom:
       - dev
     start:
       port: 8002
-      inMemory: true
+      inMemory: false
       migrate: true
   serverless-offline-dynamodb-streams:
     endpoint: http://0.0.0.0:8002
@@ -20,7 +20,7 @@ custom:
     accessKeyId: root
     secretAccessKey: root
     skipCacheInvalidation: false
-    readInterval: 500
+    readInterval: 50
 
 plugins:
   - serverless-webpack
