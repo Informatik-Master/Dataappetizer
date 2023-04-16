@@ -12,7 +12,6 @@ custom:
       - dev
     start:
       port: 8002
-      inMemory: false
       migrate: true
   serverless-offline-dynamodb-streams:
     endpoint: http://0.0.0.0:8002
@@ -24,9 +23,9 @@ custom:
 
 plugins:
   - serverless-webpack
+  - serverless-dynamodb-local
   - serverless-offline-dynamodb-streams
   - serverless-offline
-  - serverless-dynamodb-local
 
 provider:
   name: aws
@@ -100,12 +99,25 @@ functions:
             Fn::GetAtt:
               - DataPointTable
               - StreamArn
+  initialConnect:
+    handler: src/initialConnect/handler.initialConnect
+    events:
+      - stream:
+          type: dynamodb
+          batchSize: 1
+          startingPosition: LATEST
+          arn:
+            Fn::GetAtt:
+              - Connections
+              - StreamArn
 
 resources:
   Resources:
     Connections:
       Type: "AWS::DynamoDB::Table"
       Properties:
+        StreamSpecification:
+          StreamViewType: NEW_IMAGE
         AttributeDefinitions:
           - AttributeName: connectionId
             AttributeType: S

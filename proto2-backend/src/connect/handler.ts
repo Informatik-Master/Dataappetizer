@@ -1,6 +1,11 @@
+import {
+  ApiGatewayManagementApiClient,
+  PostToConnectionCommand,
+} from '@aws-sdk/client-apigatewaymanagementapi';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import {
   DeleteCommand,
+  QueryCommand,
   DynamoDBDocumentClient,
   PutCommand,
 } from '@aws-sdk/lib-dynamodb';
@@ -15,13 +20,13 @@ export const connect = async ({
   requestContext: { connectedAt, connectionId },
   headers,
 }: any) => {
-  console.log('Connecting', connectionId, headers)
+  console.log('Connecting', connectionId, headers);
   if (!connectionId) {
     // TODO: When ist this the case?
     throw new Error('missing connectionId');
   }
 
-  console.log('pre')
+  console.log('pre');
   await dynamoDbClient.send(
     new PutCommand({
       TableName: process.env['CONNECTIONS_TABLE'],
@@ -31,7 +36,7 @@ export const connect = async ({
       },
     }),
   );
-  console.log('post')
+
   return {
     statusCode: 200,
     body: JSON.stringify('Listener Connected'),

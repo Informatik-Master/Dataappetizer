@@ -82,7 +82,6 @@ export const handler = async () => {
         },
       );
       const data = await subRes.json();
-      console.log(data.inVehicleData)
       const promises: Promise<any>[] = [];
       for (const inVehicleData of data.inVehicleData) {
         for (const [datapointName, datapointValue] of Object.entries(
