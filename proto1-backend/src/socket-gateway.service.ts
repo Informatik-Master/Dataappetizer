@@ -63,7 +63,7 @@ export class SocketGateway {
     let carController = new CarController(this.carService);
     const data = await firstValueFrom(carController.getCarsInformation());
     let carData = [];
-    for(let i = 0; i < data.length; i++){
+    for (let i = 0; i < data.length; i++) {
       const singleCarData = await firstValueFrom(carController.getSingleCarDetailInformation(data[i].vin, ["averagedistance"]));
       let averageDistance = singleCarData.inVehicleData[0].response.averagedistance.dataPoint.value.toFixed(0);
       carData.push({
@@ -71,7 +71,6 @@ export class SocketGateway {
         name: "Fahrzeug: " + data[i].vin
       })
     }
-
     return {
       event: 'getDiagram',
       data: carData
@@ -83,14 +82,14 @@ export class SocketGateway {
     let carController = new CarController(this.carService);
     const data = await firstValueFrom(carController.getCarsInformation());
     let carData = [];
-    for(let i = 0; i < data.length; i++){
-      const singleCarData = await firstValueFrom(carController.getSingleCarDetailInformation(data[i].vin, ["averagedistance","batteryvoltage","enginestatus"]));
+    for (let i = 0; i < data.length; i++) {
+      const singleCarData = await firstValueFrom(carController.getSingleCarDetailInformation(data[i].vin, ["averagedistance", "batteryvoltage", "enginestatus"]));
       let averageDistance = singleCarData.inVehicleData[0].response.averagedistance.dataPoint.value.toFixed(2);
       let averageDistanceUnit = singleCarData.inVehicleData[0].response.averagedistance.dataPoint.unit;
       let enginestatusTemp = singleCarData.inVehicleData[0].response.enginestatus.dataPoint.value;
       let batteryvoltage = singleCarData.inVehicleData[0].response.batteryvoltage.dataPoint.value.toFixed(2);
       let batteryvoltageUnit = singleCarData.inVehicleData[0].response.batteryvoltage.dataPoint.unit;
-      let enginestatus = enginestatusTemp == "ON" ? "Motor ist eingeschaltet.":"Motor ist ausgeschaltet.";
+      let enginestatus = enginestatusTemp == "ON" ? "Motor ist eingeschaltet." : "Motor ist ausgeschaltet.";
 
       carData.push({
         vin: data[i].vin,
@@ -99,7 +98,6 @@ export class SocketGateway {
         status: enginestatus
       });
     }
-
     return {
       event: 'carList',
       data: carData
