@@ -11,7 +11,7 @@ export class CarController {
     }
 
     @Post()
-    getSingleCarDetailInformation(){
-        return this.singleVehicleService.getSingleCarDetailInformation();
+    getSingleCarDetailInformation(vin:String, dataItems: String[]){
+        return this.singleVehicleService.getSingleCarDetailInformation(vin, dataItems);
     }
 }

@@ -18,20 +18,10 @@ export class CarComponent implements OnInit {
 
   displayedColumns = ["vin", "oem", "drive", "kilometer", "fuel", "status", "notifi", "detail"];
 
-  car = [{
-    vin: "ZDDFC82D9847388C",
-    oem: "BMW",
-    drive: "Verbrenner",
-    kilometer: 12023,
-    fuel: 60,
-    status: "Stillstand",
-    notifi: ["Fahrzeug brennt."]
-  }]
-
-
   ngOnInit(): void {
-    this.dataSource = this.car;
-    this.socket.emit("carList");
+    // setInterval(() => {
+      this.socket.emit('carList');
+    // }, 1000)
     this.socket.fromEvent('carList').pipe(map((data) => data), tap((data) => console.log(data))).subscribe((data: any) => {
       console.log(data);
       this.dataSource= data;
@@ -41,6 +31,4 @@ export class CarComponent implements OnInit {
   onRowClicked(row: any) {
     console.log('Row clicked: ', row);
   }
-
-
 }
