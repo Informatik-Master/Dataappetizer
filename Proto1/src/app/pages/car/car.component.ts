@@ -12,7 +12,8 @@ import { map, tap } from 'rxjs/operators';
 })
 export class CarComponent implements OnInit {
 
-  constructor(private socket: Socket) { }
+  constructor(private socket: Socket, private readonly router: Router
+    ) { }
 
   dataSource: any;
 
@@ -30,5 +31,9 @@ export class CarComponent implements OnInit {
 
   onRowClicked(row: any) {
     console.log('Row clicked: ', row);
+  }
+
+  navigateToCarDetails(vin: string) {
+    this.router.navigate(['pages/car/' + vin]);
   }
 }

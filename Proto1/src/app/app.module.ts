@@ -9,10 +9,12 @@ import { AppComponent } from './app.component';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { NbAuthModule } from '@nebular/auth';
 import { SocketIoModule } from 'ngx-socket-io';
+import { CarDetailsComponent } from './pages/car-details/car-details.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    CarDetailsComponent
   ],
   imports: [
     BrowserModule,
