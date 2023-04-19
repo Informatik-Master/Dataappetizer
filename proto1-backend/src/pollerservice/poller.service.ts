@@ -10,16 +10,15 @@ import { Repository } from 'typeorm';
 export class PollerService {
     constructor(
         @InjectRepository(Data)
-        private fuelLevelRepository: Repository<Data>,
+        private dataRepository: Repository<Data>,
         private readonly carService: CarService
     ) {}
 
-    @Cron(CronExpression.EVERY_5_MINUTES)
+    @Cron(CronExpression.EVERY_10_SECONDS)
     async pollFromCarusoAPI(){
         const data = await firstValueFrom(this.carService.getCarsInformation());
-        
         for (let i = 0; i < data.length; i++) {
-            const singleCarData = await firstValueFrom(this.carService.getSingleCarDetailInformation(data[i].vin, ["batteryvoltage", "mileage", "geolocation", "averageDistance", "engineStatus"]));
+            const singleCarData = await firstValueFrom(this.carService.getSingleCarDetailInformation(data[i].vin, ["batteryvoltage", "mileage", "geolocation", "averagedistance", "enginestatus"]));
             let response = singleCarData.inVehicleData[0].response;
 
             //batteryvoltage
@@ -28,14 +27,14 @@ export class PollerService {
             let batteryvoltage_timeStamp = response.batteryvoltage.dataPoint.timestamp;
 
             let data_DB = {
-                vin: data[i].vin,
+                vin: data[i].vin ,
                 datapoint: "batteryvoltage",
                 timestamp: batteryvoltage_timeStamp,
-                value: "" + batteryVoltage_value + " " + batteryvoltage_unit,
+                value: batteryVoltage_value + " " + batteryvoltage_unit,
                 secondValue: ""
             };
 
-            this.fuelLevelRepository.save(data_DB);
+            this.dataRepository.save(data_DB);
 
             //mileage
             let mileage_value = response.mileage.dataPoint.value;
@@ -50,11 +49,11 @@ export class PollerService {
                 secondValue: ""
             };
 
-            this.fuelLevelRepository.save(data_DB);
+            this.dataRepository.save(data_DB);
 
             //geolocation
-            let geolocation_latitude = response.averageDistance.dataPoint.latitude;
-            let geolocation_longitude = response.averageDistance.dataPoint.longitude;
+            let geolocation_latitude = response.geolocation.dataPoint.latitude;
+            let geolocation_longitude = response.geolocation.dataPoint.longitude;
             let geolocation_timeStamp = response.geolocation.dataPoint.timestamp;
 
             data_DB = {
@@ -65,26 +64,26 @@ export class PollerService {
                 secondValue: "" + geolocation_longitude
             };
 
-            this.fuelLevelRepository.save(data_DB);
+            this.dataRepository.save(data_DB);
 
             //averageDistance
-            let averageDistance_value = response.averageDistance.dataPoint.value.toFixed(2);
-            let averageDistance_unit = response.averageDistance.dataPoint.unit;
-            let averageDistance_timeStamp = response.averageDistance.dataPoint.timestamp;
+            let averageDistance_value = response.averagedistance.dataPoint.value.toFixed(2);
+            let averageDistance_unit = response.averagedistance.dataPoint.unit;
+            let averageDistance_timeStamp = response.averagedistance.dataPoint.timestamp;
 
             data_DB = {
                 vin: data[i].vin,
                 datapoint: "averageDistance",
                 timestamp: averageDistance_timeStamp,
-                value: "" + averageDistance_value + " " +averageDistance_unit,
+                value: "" + averageDistance_value + " " + averageDistance_unit,
                 secondValue: ""
             };
 
-            this.fuelLevelRepository.save(data_DB);
+            this.dataRepository.save(data_DB);
 
             //engineStatus
-            let engineStatus_value = response.engineStatus.dataPoint.value;
-            let engineStatus_timeStamp = response.engineStatus.dataPoint.timestamp;
+            let engineStatus_value = response.enginestatus.dataPoint.value;
+            let engineStatus_timeStamp = response.enginestatus.dataPoint.timestamp;
 
             data_DB = {
                 vin: data[i].vin,
@@ -94,7 +93,8 @@ export class PollerService {
                 secondValue: ""
             };
 
-            this.fuelLevelRepository.save(data_DB);
+            this.dataRepository.save(data_DB);
         }
+        console.log("DATA SAVED IN DB!");
     }
 }

@@ -8,7 +8,7 @@ async function bootstrap() {
   app.enableCors();
   app.useWebSocketAdapter(new IoAdapter(app));
   await app.listen(3000);
-  // let pollerService = new PollerService();
-  // pollerService.pollFromCarusoAPI();
+  const pollerService = app.get(PollerService);
+  pollerService.pollFromCarusoAPI();
 }
 bootstrap();

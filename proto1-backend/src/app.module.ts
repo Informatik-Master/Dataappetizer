@@ -13,10 +13,12 @@ import { DatabaseService } from './database/database.service';
 import { DatabaseModule } from './database/database.module';
 import { PollerService } from './pollerservice/poller.service';
 import { ScheduleModule } from '@nestjs/schedule';
+import { Data } from './model/data';
 
 @Module({
   imports: [CarModule, 
     ConfigModule.forRoot({isGlobal: true}),
+    TypeOrmModule.forFeature([Data]),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.POSTGRES_HOST,
