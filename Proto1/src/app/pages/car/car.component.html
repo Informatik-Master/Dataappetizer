@@ -9,13 +9,13 @@
         <ng-container matColumnDef="oem">
             <mat-header-cell *matHeaderCellDef>Hersteller</mat-header-cell>
             <mat-cell class="oem-cell"
-                      *matCellDef="let car">{{car.oem}}</mat-cell>
+                      *matCellDef="let car">Virtuell</mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="drive">
             <mat-header-cell *matHeaderCellDef>Antriebstyp</mat-header-cell>
             <mat-cell class="drive-cell"
-                      *matCellDef="let car">{{car.drive}}</mat-cell>
+                      *matCellDef="let car">Elektro</mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="kilometer">
@@ -41,13 +41,17 @@
         <ng-container matColumnDef="notifi">
             <mat-header-cell *matHeaderCellDef>Wichtige Meldung</mat-header-cell>
             <mat-cell class="notifi-cell"
-                      *matCellDef="let car">{{car.notifi}}</mat-cell>
+                      *matCellDef="let car">{{car.notifi}}-</mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="detail">
             <mat-header-cell *matHeaderCellDef>Zum Fahrzeug</mat-header-cell>
             <mat-cell class="detail-cell"
-                      *matCellDef="let car">{{car.detail}}</mat-cell>
+                      *matCellDef="let car">
+                        <nb-action (click)="navigateToCarDetails(car.vin)">
+                            <nb-icon icon="arrow-circle-right-outline"></nb-icon>
+                        </nb-action>
+            </mat-cell>
         </ng-container>
     
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
