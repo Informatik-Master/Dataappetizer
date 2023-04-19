@@ -8,7 +8,7 @@ export class Data{
     @PrimaryColumn()
     datapoint: String;
 
-    @PrimaryColumn()
+    @Column()
     timestamp: String;
 
     @Column()

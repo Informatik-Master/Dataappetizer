@@ -43,7 +43,6 @@ export class CarService {
             }
         );
         let data = response.pipe(map(response => response.data));
-        response.pipe(map(response => console.log("STATTUUUUS:" + response.status)))
         return data;
     }
 }

@@ -9,6 +9,7 @@ async function bootstrap() {
   app.useWebSocketAdapter(new IoAdapter(app));
   await app.listen(3000);
   const pollerService = app.get(PollerService);
+  pollerService.saveCars();
   pollerService.pollFromCarusoAPI();
 }
 bootstrap();

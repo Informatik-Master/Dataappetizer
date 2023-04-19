@@ -11,7 +11,7 @@ export class DatabaseService {
         @InjectRepository(Data)
         private dataRepository: Repository<Data>,
         private readonly carService: CarService
-    ) { }
+    ) {}
 
     async insertNewFuelLevelData() {
         const data = await firstValueFrom(this.carService.getCarsInformation());

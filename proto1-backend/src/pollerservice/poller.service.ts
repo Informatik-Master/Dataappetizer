@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, from, map } from 'rxjs';
 import { CarService } from 'src/car/car.service';
 import { Data } from 'src/model/data';
+import { Vehicles } from 'src/model/vehicles';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -11,14 +12,28 @@ export class PollerService {
     constructor(
         @InjectRepository(Data)
         private dataRepository: Repository<Data>,
+        @InjectRepository(Vehicles)
+        private vehiclesRepository: Repository<Vehicles>,
         private readonly carService: CarService
-    ) {}
+    ) { }
 
-    @Cron(CronExpression.EVERY_10_SECONDS)
-    async pollFromCarusoAPI(){
+    async saveCars() {
         const data = await firstValueFrom(this.carService.getCarsInformation());
         for (let i = 0; i < data.length; i++) {
-            const singleCarData = await firstValueFrom(this.carService.getSingleCarDetailInformation(data[i].vin, ["batteryvoltage", "mileage", "geolocation", "averagedistance", "enginestatus"]));
+            let vehicles_DB = {
+                vin: data[i].vin
+            }
+            this.vehiclesRepository.save(vehicles_DB);
+        }
+        console.log("VEHICLES SAVED IN DB");
+    }
+
+    @Cron(CronExpression.EVERY_10_SECONDS)
+    async pollFromCarusoAPI() {
+        let vehicles = await this.vehiclesRepository.find();
+
+        for (let i = 0; i < vehicles.length; i++) {
+            const singleCarData = await firstValueFrom(this.carService.getSingleCarDetailInformation(vehicles[i].vin, ["batteryvoltage", "mileage", "geolocation", "averagedistance", "enginestatus"]));
             let response = singleCarData.inVehicleData[0].response;
 
             //batteryvoltage
@@ -27,7 +42,7 @@ export class PollerService {
             let batteryvoltage_timeStamp = response.batteryvoltage.dataPoint.timestamp;
 
             let data_DB = {
-                vin: data[i].vin ,
+                vin: vehicles[i].vin,
                 datapoint: "batteryvoltage",
                 timestamp: batteryvoltage_timeStamp,
                 value: batteryVoltage_value + " " + batteryvoltage_unit,
@@ -42,7 +57,7 @@ export class PollerService {
             let mileage_timeStamp = response.mileage.dataPoint.timestamp;
 
             data_DB = {
-                vin: data[i].vin,
+                vin: vehicles[i].vin,
                 datapoint: "mileage",
                 timestamp: mileage_timeStamp,
                 value: "" + mileage_value + " " + mileage_unit,
@@ -57,7 +72,7 @@ export class PollerService {
             let geolocation_timeStamp = response.geolocation.dataPoint.timestamp;
 
             data_DB = {
-                vin: data[i].vin,
+                vin: vehicles[i].vin,
                 datapoint: "geolocation",
                 timestamp: geolocation_timeStamp,
                 value: "" + geolocation_latitude,
@@ -72,7 +87,7 @@ export class PollerService {
             let averageDistance_timeStamp = response.averagedistance.dataPoint.timestamp;
 
             data_DB = {
-                vin: data[i].vin,
+                vin: vehicles[i].vin,
                 datapoint: "averageDistance",
                 timestamp: averageDistance_timeStamp,
                 value: "" + averageDistance_value + " " + averageDistance_unit,
@@ -86,7 +101,7 @@ export class PollerService {
             let engineStatus_timeStamp = response.enginestatus.dataPoint.timestamp;
 
             data_DB = {
-                vin: data[i].vin,
+                vin: vehicles[i].vin,
                 datapoint: "engineStatus",
                 timestamp: engineStatus_timeStamp,
                 value: engineStatus_value,
