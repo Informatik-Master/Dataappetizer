@@ -10,41 +10,6 @@ import { CarService } from './car/car.service';
 import { firstValueFrom } from 'rxjs';
 import { CarController } from './car/car.controller';
 
-const BASE_DIAGRAMM = {
-  legend: {
-    top: 'bottom',
-  },
-  toolbox: {
-    show: true,
-    feature: {
-      mark: { show: true },
-      dataView: { show: true, readOnly: false },
-      restore: { show: true },
-      saveAsImage: { show: true },
-    },
-  },
-  series: [
-    {
-      name: 'Nightingale Chart',
-      type: 'pie',
-      center: ['50%', '50%'],
-      roseType: 'area',
-      itemStyle: {
-        borderRadius: 8,
-      },
-      data: [
-        { value: 4, name: 'VW' },
-        { value: 3, name: 'BMW' },
-        { value: 3, name: 'SEAT' },
-        { value: 5, name: 'AUDI' },
-        { value: 2, name: 'FORD' },
-        { value: 3, name: 'OPEL' },
-        { value: 1, name: 'PORSCHE' },
-      ],
-    },
-  ],
-};
-
 @WebSocketGateway({ cors: true })
 export class SocketGateway {
 
@@ -63,7 +28,7 @@ export class SocketGateway {
     let carController = new CarController(this.carService);
     const data = await firstValueFrom(carController.getCarsInformation());
     let carData = [];
-    for(let i = 0; i < data.length; i++){
+    for (let i = 0; i < data.length; i++) {
       const singleCarData = await firstValueFrom(carController.getSingleCarDetailInformation(data[i].vin, ["averagedistance"]));
       let averageDistance = singleCarData.inVehicleData[0].response.averagedistance.dataPoint.value.toFixed(0);
       carData.push({
@@ -71,7 +36,6 @@ export class SocketGateway {
         name: "Fahrzeug: " + data[i].vin
       })
     }
-
     return {
       event: 'getDiagram',
       data: carData
@@ -83,14 +47,14 @@ export class SocketGateway {
     let carController = new CarController(this.carService);
     const data = await firstValueFrom(carController.getCarsInformation());
     let carData = [];
-    for(let i = 0; i < data.length; i++){
-      const singleCarData = await firstValueFrom(carController.getSingleCarDetailInformation(data[i].vin, ["averagedistance","batteryvoltage","enginestatus"]));
+    for (let i = 0; i < data.length; i++) {
+      const singleCarData = await firstValueFrom(carController.getSingleCarDetailInformation(data[i].vin, ["averagedistance", "batteryvoltage", "enginestatus"]));
       let averageDistance = singleCarData.inVehicleData[0].response.averagedistance.dataPoint.value.toFixed(2);
       let averageDistanceUnit = singleCarData.inVehicleData[0].response.averagedistance.dataPoint.unit;
       let enginestatusTemp = singleCarData.inVehicleData[0].response.enginestatus.dataPoint.value;
       let batteryvoltage = singleCarData.inVehicleData[0].response.batteryvoltage.dataPoint.value.toFixed(2);
       let batteryvoltageUnit = singleCarData.inVehicleData[0].response.batteryvoltage.dataPoint.unit;
-      let enginestatus = enginestatusTemp == "ON" ? "Motor ist eingeschaltet.":"Motor ist ausgeschaltet.";
+      let enginestatus = enginestatusTemp == "ON" ? "Motor ist eingeschaltet." : "Motor ist ausgeschaltet.";
 
       carData.push({
         vin: data[i].vin,
@@ -99,7 +63,6 @@ export class SocketGateway {
         status: enginestatus
       });
     }
-
     return {
       event: 'carList',
       data: carData

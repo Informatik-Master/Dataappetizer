@@ -8,10 +8,19 @@ import { CarModule } from './car/car.module';
 import { HttpModule, HttpService } from '@nestjs/axios';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { DatabaseController } from './database/database.controller';
+import { DatabaseService } from './database/database.service';
+import { DatabaseModule } from './database/database.module';
+import { PollerService } from './pollerservice/poller.service';
+import { ScheduleModule } from '@nestjs/schedule';
+import { Data } from './model/data';
+import { Vehicles } from './model/vehicles';
 
 @Module({
   imports: [CarModule, 
     ConfigModule.forRoot({isGlobal: true}),
+    TypeOrmModule.forFeature([Data]),
+    TypeOrmModule.forFeature([Vehicles]),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.POSTGRES_HOST,
@@ -21,9 +30,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       database: process.env.POSTGRES_DATABASE,
       autoLoadEntities: true,
       synchronize: true,
-    })
+    }),
+    DatabaseModule,
+    ScheduleModule.forRoot()
   ],
   controllers: [AppController],
-  providers: [AppService, SocketGateway],
+  providers: [AppService, SocketGateway, PollerService],
 })
 export class AppModule {}
