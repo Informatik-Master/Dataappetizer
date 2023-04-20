@@ -24,7 +24,7 @@ export class DatabaseService {
             let batteryvoltage_unit = response.batteryvoltage.dataPoint.unit;
             let batteryvoltage_timeStamp = response.batteryvoltage.dataPoint.timestamp;
 
-            let data_DB = {
+            let dataDB = {
                 vin: data[i].vin ,
                 datapoint: "batteryvoltage",
                 timestamp: batteryvoltage_timeStamp,
@@ -32,14 +32,14 @@ export class DatabaseService {
                 secondValue: ""
             };
 
-            this.dataRepository.save(data_DB);
+            this.dataRepository.save(dataDB);
 
             //mileage
             let mileage_value = response.mileage.dataPoint.value;
             let mileage_unit = response.mileage.dataPoint.unit;
             let mileage_timeStamp = response.mileage.dataPoint.timestamp;
 
-            data_DB = {
+            dataDB = {
                 vin: data[i].vin,
                 datapoint: "mileage",
                 timestamp: mileage_timeStamp,
@@ -47,14 +47,14 @@ export class DatabaseService {
                 secondValue: ""
             };
 
-            this.dataRepository.save(data_DB);
+            this.dataRepository.save(dataDB);
 
             //geolocation
             let geolocation_latitude = response.geolocation.dataPoint.latitude;
             let geolocation_longitude = response.geolocation.dataPoint.longitude;
             let geolocation_timeStamp = response.geolocation.dataPoint.timestamp;
 
-            data_DB = {
+            dataDB = {
                 vin: data[i].vin,
                 datapoint: "geolocation",
                 timestamp: geolocation_timeStamp,
@@ -62,14 +62,14 @@ export class DatabaseService {
                 secondValue: "" + geolocation_longitude
             };
 
-            this.dataRepository.save(data_DB);
+            this.dataRepository.save(dataDB);
 
             //averageDistance
             let averageDistance_value = response.averagedistance.dataPoint.value.toFixed(2);
             let averageDistance_unit = response.averagedistance.dataPoint.unit;
             let averageDistance_timeStamp = response.averagedistance.dataPoint.timestamp;
 
-            data_DB = {
+            dataDB = {
                 vin: data[i].vin,
                 datapoint: "averageDistance",
                 timestamp: averageDistance_timeStamp,
@@ -77,13 +77,13 @@ export class DatabaseService {
                 secondValue: ""
             };
 
-            this.dataRepository.save(data_DB);
+            this.dataRepository.save(dataDB);
 
             //engineStatus
             let engineStatus_value = response.enginestatus.dataPoint.value;
             let engineStatus_timeStamp = response.enginestatus.dataPoint.timestamp;
 
-            data_DB = {
+            dataDB = {
                 vin: data[i].vin,
                 datapoint: "engineStatus",
                 timestamp: engineStatus_timeStamp,
@@ -91,7 +91,7 @@ export class DatabaseService {
                 secondValue: ""
             };
 
-            this.dataRepository.save(data_DB);
+            this.dataRepository.save(dataDB);
         }
     }
 
