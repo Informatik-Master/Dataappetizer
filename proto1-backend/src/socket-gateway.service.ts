@@ -1,7 +1,6 @@
 import {
   WebSocketGateway,
   SubscribeMessage,
-  MessageBody,
   WebSocketServer,
 } from '@nestjs/websockets';
 
@@ -9,11 +8,20 @@ import { Server } from 'ws';
 import { CarService } from './car/car.service';
 import { firstValueFrom } from 'rxjs';
 import { CarController } from './car/car.controller';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Data } from './model/data';
+import { Vehicles } from './model/vehicles';
+import { Repository } from 'typeorm';
 
 @WebSocketGateway({ cors: true })
 export class SocketGateway {
 
-  constructor(private readonly carService: CarService) { }
+  constructor(private readonly carService: CarService, 
+    @InjectRepository(Data)
+    private dataRepository: Repository<Data>,
+    @InjectRepository(Vehicles)
+    private vehiclesRepository: Repository<Vehicles>,
+    ) { }
 
   @WebSocketServer()
   server!: Server;
@@ -25,6 +33,14 @@ export class SocketGateway {
 
   @SubscribeMessage('getDiagram')
   async handleDashboardEvent(): Promise<any> {
+
+    let vehicles = await this.vehiclesRepository.find();
+    let vehicleData = await this.dataRepository.find({
+      where:{
+        vin: "V1RTUALV1N0000001",
+      },
+    });
+
     let carController = new CarController(this.carService);
     const data = await firstValueFrom(carController.getCarsInformation());
     let carData = [];

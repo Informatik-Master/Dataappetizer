@@ -28,7 +28,7 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
     setInterval(() => {
       this.socket.emit('getDiagram');
-    }, 60000)
+    }, 1000)
 
     this.socket.fromEvent('getDiagram').pipe(map((data) => data), tap((data) => console.log(data))).subscribe((data: any) => {
       this.amountVehicle = data.length;
