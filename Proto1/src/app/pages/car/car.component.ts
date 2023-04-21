@@ -26,9 +26,18 @@ export class CarComponent implements OnInit {
      }, 1000)
     this.socket.fromEvent('carList').pipe(map((data) => data), tap((data) => console.log(data))).subscribe((data: any) => {
       console.log(data);
+      hideloader();
       this.dataSource= data;
     })
+
+
+    function hideloader() {
+      let spinner = document.getElementById('loading');
+      spinner!.style.display = 'none';
   }
+  }
+
+  
 
   onRowClicked(row: any) {
     console.log('Row clicked: ', row);
