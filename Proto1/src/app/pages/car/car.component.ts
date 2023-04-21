@@ -17,7 +17,7 @@ export class CarComponent implements OnInit {
 
   dataSource: any;
 
-  displayedColumns = ["vin", "oem", "drive", "kilometer", "fuel", "status", "notifi", "detail"];
+  displayedColumns = ["vin", "oem", "drive", "mileage", "batteryvoltage", "engineStatus", "controlmessages", "detail"];
 
   ngOnInit(): void {
     // setInterval(() => {

@@ -18,30 +18,30 @@
                       *matCellDef="let car">Elektro</mat-cell>
         </ng-container>
 
-        <ng-container matColumnDef="kilometer">
+        <ng-container matColumnDef="mileage">
             <mat-header-cell *matHeaderCellDef>Kilometerstand</mat-header-cell>
-            <mat-cell class="kilometer-cell"
-                      *matCellDef="let car">{{car.kilometer}}</mat-cell>
+            <mat-cell class="mileage-cell"
+                      *matCellDef="let car">{{car.mileage}}</mat-cell>
         </ng-container>
 
-        <ng-container matColumnDef="fuel">
+        <ng-container matColumnDef="batteryvoltage">
             <mat-header-cell *matHeaderCellDef>Batterieladestand</mat-header-cell>
-            <mat-cell class="fuel-cell"
+            <mat-cell class="batteryvoltage-cell"
                       *matCellDef="let car">
                       <mat-progress-bar mode="determinate" value="40" *matCellDef="let car"></mat-progress-bar>
-                      {{car.fuel}}</mat-cell>
+                      {{car.batteryvoltage}}</mat-cell>
         </ng-container>
     
-        <ng-container matColumnDef="status">
+        <ng-container matColumnDef="engineStatus">
             <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
-            <mat-cell class="status-cell"
-                      *matCellDef="let car">{{car.status}}</mat-cell>
+            <mat-cell class="engineStatus-cell"
+                      *matCellDef="let car">{{car.engineStatus}}</mat-cell>
         </ng-container>
 
-        <ng-container matColumnDef="notifi">
+        <ng-container matColumnDef="controlmessages">
             <mat-header-cell *matHeaderCellDef>Wichtige Meldung</mat-header-cell>
-            <mat-cell class="notifi-cell"
-                      *matCellDef="let car">{{car.notifi}}-</mat-cell>
+            <mat-cell class="controlmessages-cell"
+                      *matCellDef="let car">{{car.controlmessages}}</mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="detail">

@@ -28,22 +28,31 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
     setInterval(() => {
       this.socket.emit('getDiagram');
-    }, 1000)
+    }, 10000)
 
     this.socket.fromEvent('getDiagram').pipe(map((data) => data), tap((data) => console.log(data))).subscribe((data: any) => {
-      this.amountVehicle = data.length;
-      for(let i = 0; i < data.length; i++){
-        this.notifications.push(""+ data[i].name + " | Average Distance: " + data[i].value + "km");
-      }
+      this.amountVehicle = data[0].vehicles.length;
+      this.amountDataPoints = data[0].livetickerData[0].length;
       this.echartMerge={
         series: [{
-          data: data
+          data: data[0].averageDistanceData
         }]
       };
+      for(let i = 0; i < data[0].livetickerData.length; i++){
+        for(let j = 0; j < data[0].livetickerData[i].length; j++){
+          let dataSet = data[0].livetickerData[i][j];
+          if(dataSet.secondValue != ""){
+            this.notifications.push("VIN: " + dataSet.vin + " | Datapoint: " + dataSet.datapoint + " | Value: " + dataSet.value + " " + dataSet.unit + " | Second Value: " + dataSet.secondValue + " " + dataSet.unit + " | Timestamp: " + dataSet.timestamp);
+          } else{
+            this.notifications.push("VIN: " + dataSet.vin + " | Datapoint: " + dataSet.datapoint + " | Value: " + dataSet.value + " " + dataSet.unit + " | Timestamp: " + dataSet.timestamp);
+          }
+        }
+      }
     })
   }
 
   amountVehicle = 0;
+  amountDataPoints = 0;
 
   notifications: String[] = [
     // 'Neuer Kilometerstand: 12301km',

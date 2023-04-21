@@ -1,3 +1,4 @@
+import { type } from 'os';
 import {Column, Entity, PrimaryColumn, PrimaryGeneratedColumn} from 'typeorm';
 
 @Entity()
@@ -11,9 +12,12 @@ export class Data{
     @Column()
     timestamp: String;
 
-    @Column()
-    value: String;
+    @Column({type: 'json'})
+    value: any;
 
     @Column({nullable: false})
     secondValue: String
+
+    @Column()
+    unit: String
 }
