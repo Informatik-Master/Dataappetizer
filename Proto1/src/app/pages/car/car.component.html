@@ -45,22 +45,6 @@
                         </nb-action>
             </mat-cell>
         </ng-container>
-    
-            <ng-container matColumnDef="notifi">
-                <mat-header-cell *matHeaderCellDef>Wichtige Meldung</mat-header-cell>
-                <mat-cell class="notifi-cell"
-                          *matCellDef="let car">{{car.notifi}}-</mat-cell>
-            </ng-container>
-    
-            <ng-container matColumnDef="detail">
-                <mat-header-cell *matHeaderCellDef>Zum Fahrzeug</mat-header-cell>
-                <mat-cell class="detail-cell"
-                          *matCellDef="let car">
-                            <nb-action (click)="navigateToCarDetails(car.vin)">
-                                <nb-icon icon="arrow-circle-right-outline"></nb-icon>
-                            </nb-action>
-                </mat-cell>
-            </ng-container>
         
             <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
         
