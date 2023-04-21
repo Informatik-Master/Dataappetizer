@@ -20,9 +20,10 @@ export class CarComponent implements OnInit {
   displayedColumns = ["vin", "kilometer", "fuel", "status", "notifi", "detail"];
 
   ngOnInit(): void {
-    // setInterval(() => {
+
+     setInterval(() => {
       this.socket.emit('carList');
-    // }, 1000)
+     }, 1000)
     this.socket.fromEvent('carList').pipe(map((data) => data), tap((data) => console.log(data))).subscribe((data: any) => {
       console.log(data);
       this.dataSource= data;
