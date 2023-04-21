@@ -49,8 +49,8 @@ export class DashboardComponent implements OnInit {
         };
       } else if (parsed.event === 'geolocation') {
         const { vin, value } = parsed.data;
-        const lat = value.latitude;
-        const lng = value.longitude;
+        const lat = value.value.latitude;
+        const lng = value.value.longitude;
         const latLng = new LatLng(lat, lng);
         this.markers.set(
           vin,
@@ -66,52 +66,65 @@ export class DashboardComponent implements OnInit {
           animate: true,
           duration: 1,
         }); //TODO: only on init
-      } else if (parsed.event === 'message') {
-        const newMessage = `[${parsed.data.vin}] hat einen neuen Datenpunkt ${
-          parsed.data.datapointName
-        } mit dem Wert ${JSON.stringify(parsed.data.value || {})}`;
-        this.notifications = [newMessage, ...this.notifications];
+        this.notifications = [`${vin} hat einen neuen Standort: ${lat} ${lng}`, ...this.notifications];
+      // } else if (parsed.event === 'message') {
+      //   const newMessage = `[${parsed.data.value.vin}] hat einen neuen Datenpunkt ${
+      //     parsed.data.value.datapointName
+      //   } mit dem Wert ${JSON.stringify(parsed.data.value.value || {})}`;
+      //   this.notifications = [newMessage, ...this.notifications];
 
-        //TODO: This is still in the works
-        this.vehicles.set(
-          parsed.data.vin,
-          (this.vehicles.get(parsed.data.vin) || 0) + 1
-        );
+      //   //TODO: This is still in the works
+      //   this.vehicles.set(
+      //     parsed.data.value.vin,
+      //     (this.vehicles.get(parsed.data.value.vin) || 0) + 1
+      //   );
       } else if (parsed.event === 'averagedistance') {
         const currentVal = (
           (this.echartMerge.series as SeriesOption[])[0].data as any[]
-        )?.find((d) => d.name === parsed.data.vin);
+        )?.find((d) => d.name === parsed.data.value.vin);
         if (currentVal) {
-          currentVal.data = parsed.data.value.value;
+          currentVal.data = parsed.data.value.value.value;
         } else {
           ((this.echartMerge.series as SeriesOption[])[0].data as any[])?.push({
-            name: parsed.data.vin,
-            value: parsed.data.value.value,
+            name: parsed.data.value.vin,
+            value: parsed.data.value.value.value,
           });
         }
         this.echartMerge = {
           ...this.echartMerge,
         };
+        this.notifications = [`${parsed.data.value.vin} hat einen neuen Kilometer-Durchschnitt: ${parsed.data.value.value.value}`, ...this.notifications];
       } else if (parsed.event === 'mileage') {
         const s = this.echartOptions2Merge.series as SeriesOption[];
-        let dataset = s.find((s) => s.name === parsed.data.vin)
-        if (!dataset){
-          dataset ={
+        let abc: any = s.find((s) => s.name === parsed.data.vin)
+        if (!abc){
+          abc ={
             name: parsed.data.vin,
             type: 'line',
             smooth: true,
             symbol: 'none',
             areaStyle: {},
-            data: [],
+            data: new Array<any[]>,
           }
-          s.push(dataset)
+          s.push(abc)
         }
-        (dataset.data as any).push([Date.parse(parsed.data.value.timestamp), parsed.data.value.value])
+        console.log('data',abc.data);
+        abc.data!.push([parsed.data.value.timestamp, parsed.data.value.value.value])
+        abc.data = (abc.data as any[]).sort((a:any,b:any) => a[0] - b[0])
+        console.log('post',(abc.data as any))
         this.echartOptions2Merge = {
           ...this.echartOptions2Merge,
         };
-        console.log(this.echartOptions2Merge)
-      }
+        this.notifications = [`${parsed.data.vin} hat einen neuen Kilometerstand: ${parsed.data.value.value.value} ${parsed.data.value.value.unit}`, ...this.notifications];
+
+    } else if (parsed.event === 'message') {
+
+      //TODO: This is still in the works
+      this.vehicles.set(
+        parsed.data.vin,
+        (this.vehicles.get(parsed.data.vin) || 0) + 1
+      );
+    }
     });
 
     socket.addEventListener('error', (event) => {

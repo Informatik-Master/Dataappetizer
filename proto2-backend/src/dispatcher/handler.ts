@@ -51,7 +51,7 @@ export const dispatcher = async ({ Records }: any) => {
         event: 'geolocation',
         data: {
           vin: unmarshalledPayload['vin'],
-          value: unmarshalledPayload['value'],
+          value: unmarshalledPayload,
         },
       });
     }
@@ -60,7 +60,7 @@ export const dispatcher = async ({ Records }: any) => {
         event: 'averagedistance',
         data: {
           vin: unmarshalledPayload['vin'],
-          value: unmarshalledPayload['value'],
+          value: unmarshalledPayload,
         },
       });
     }
@@ -69,7 +69,7 @@ export const dispatcher = async ({ Records }: any) => {
         event: 'mileage',
         data: {
           vin: unmarshalledPayload['vin'],
-          value: unmarshalledPayload['value'],
+          value: unmarshalledPayload,
         },
       });
     }
@@ -78,7 +78,7 @@ export const dispatcher = async ({ Records }: any) => {
       data: {
         vin: unmarshalledPayload['vin'],
         datapointName: unmarshalledPayload['datapointName'],
-        value: unmarshalledPayload['value'],
+        value: unmarshalledPayload,
       },
     });
   }

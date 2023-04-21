@@ -61,7 +61,7 @@ export const initialConnect = async ({ Records }: any) => {
           event: datapointName,
           data: {
             vin,
-            value,
+            value: item,
           },
         };
 
@@ -77,7 +77,7 @@ export const initialConnect = async ({ Records }: any) => {
           data: {
             vin,
             datapointName,
-            value,
+            value: item,
           },
         };
 
