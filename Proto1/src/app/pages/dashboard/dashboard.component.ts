@@ -37,7 +37,7 @@ export class DashboardComponent implements OnInit {
 
     socket.addEventListener('message', (event) => {
       const parsed = JSON.parse(event.data);
-      console.log('parsed', parsed);
+      // console.log('parsed', parsed);
 
       if (parsed.event === 'getDiagram') {
         this.echartMerge = {
@@ -108,10 +108,8 @@ export class DashboardComponent implements OnInit {
           }
           s.push(abc)
         }
-        console.log('data',abc.data);
         abc.data!.push([parsed.data.value.timestamp, parsed.data.value.value.value])
         abc.data = (abc.data as any[]).sort((a:any,b:any) => a[0] - b[0])
-        console.log('post',(abc.data as any))
         this.echartOptions2Merge = {
           ...this.echartOptions2Merge,
         };
