@@ -16,7 +16,7 @@ import { Equal, Repository } from 'typeorm';
 @WebSocketGateway({ cors: true })
 export class SocketGateway {
 
-  constructor(private readonly carService: ApiService,
+  constructor(private readonly apiService: ApiService,
     @InjectRepository(Data)
     private dataRepository: Repository<Data>,
     @InjectRepository(Vehicles)
