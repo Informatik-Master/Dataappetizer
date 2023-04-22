@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { EChartsOption, SeriesOption } from 'echarts';
 
 import {
@@ -19,9 +19,10 @@ import ReconnectingWebSocket from 'reconnecting-websocket';
   selector: 'ngx-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardComponent implements OnInit {
-  constructor() {}
+  constructor(private readonly cdRef: ChangeDetectorRef){}
 
   vehicles = new Map<string, number>();
 
@@ -35,10 +36,7 @@ export class DashboardComponent implements OnInit {
       console.log(event);
     });
 
-    socket.addEventListener('message', (event) => {
-      const parsed = JSON.parse(event.data);
-      // console.log('parsed', parsed);
-
+    const update = (parsed: any) => {
       if (parsed.event === 'getDiagram') {
         this.echartMerge = {
           series: [
@@ -66,18 +64,21 @@ export class DashboardComponent implements OnInit {
           animate: true,
           duration: 1,
         }); //TODO: only on init
-        this.notifications = [`${vin} hat einen neuen Standort: ${lat} ${lng}`, ...this.notifications];
-      // } else if (parsed.event === 'message') {
-      //   const newMessage = `[${parsed.data.value.vin}] hat einen neuen Datenpunkt ${
-      //     parsed.data.value.datapointName
-      //   } mit dem Wert ${JSON.stringify(parsed.data.value.value || {})}`;
-      //   this.notifications = [newMessage, ...this.notifications];
+        this.notifications = [
+          `${vin} hat einen neuen Standort: ${lat} ${lng}`,
+          ...this.notifications,
+        ];
+        // } else if (parsed.event === 'message') {
+        //   const newMessage = `[${parsed.data.value.vin}] hat einen neuen Datenpunkt ${
+        //     parsed.data.value.datapointName
+        //   } mit dem Wert ${JSON.stringify(parsed.data.value.value || {})}`;
+        //   this.notifications = [newMessage, ...this.notifications];
 
-      //   //TODO: This is still in the works
-      //   this.vehicles.set(
-      //     parsed.data.value.vin,
-      //     (this.vehicles.get(parsed.data.value.vin) || 0) + 1
-      //   );
+        //   //TODO: This is still in the works
+        //   this.vehicles.set(
+        //     parsed.data.value.vin,
+        //     (this.vehicles.get(parsed.data.value.vin) || 0) + 1
+        //   );
       } else if (parsed.event === 'averagedistance') {
         const currentVal = (
           (this.echartMerge.series as SeriesOption[])[0].data as any[]
@@ -93,36 +94,54 @@ export class DashboardComponent implements OnInit {
         this.echartMerge = {
           ...this.echartMerge,
         };
-        this.notifications = [`${parsed.data.value.vin} hat einen neuen Kilometer-Durchschnitt: ${parsed.data.value.value.value}`, ...this.notifications];
+        this.notifications = [
+          `${parsed.data.value.vin} hat einen neuen Kilometer-Durchschnitt: ${parsed.data.value.value.value}`,
+          ...this.notifications,
+        ];
       } else if (parsed.event === 'mileage') {
         const s = this.echartOptions2Merge.series as SeriesOption[];
-        let abc: any = s.find((s) => s.name === parsed.data.vin)
-        if (!abc){
-          abc ={
+        let abc: any = s.find((s) => s.name === parsed.data.vin);
+        if (!abc) {
+          abc = {
             name: parsed.data.vin,
             type: 'line',
             smooth: true,
             symbol: 'none',
             areaStyle: {},
-            data: new Array<any[]>,
-          }
-          s.push(abc)
+            data: new Array<any[]>(),
+          };
+          s.push(abc);
         }
-        abc.data!.push([parsed.data.value.timestamp, parsed.data.value.value.value])
-        abc.data = (abc.data as any[]).sort((a:any,b:any) => a[0] - b[0])
+        abc.data!.push([
+          parsed.data.value.timestamp,
+          parsed.data.value.value.value,
+        ]);
+        abc.data = (abc.data as any[]).sort((a: any, b: any) => a[0] - b[0]);
         this.echartOptions2Merge = {
           ...this.echartOptions2Merge,
         };
-        this.notifications = [`${parsed.data.vin} hat einen neuen Kilometerstand: ${parsed.data.value.value.value} ${parsed.data.value.value.unit}`, ...this.notifications];
+        this.notifications = [
+          `${parsed.data.vin} hat einen neuen Kilometerstand: ${parsed.data.value.value.value} ${parsed.data.value.value.unit}`,
+          ...this.notifications,
+        ];
+      } else if (parsed.event === 'message') {
+        //TODO: This is still in the works
+        this.vehicles.set(
+          parsed.data.vin,
+          (this.vehicles.get(parsed.data.vin) || 0) + 1
+        );
+      }
+    };
 
-    } else if (parsed.event === 'message') {
-
-      //TODO: This is still in the works
-      this.vehicles.set(
-        parsed.data.vin,
-        (this.vehicles.get(parsed.data.vin) || 0) + 1
-      );
-    }
+    socket.addEventListener('message', (event) => {
+      const parsed = JSON.parse(event.data);
+      if (Array.isArray(parsed)) {
+        parsed.forEach((p) => update(p));
+      } else {
+        update(parsed);
+      }
+      this.cdRef.detectChanges();
+      // console.log('parsed', parsed);
     });
 
     socket.addEventListener('error', (event) => {
@@ -161,20 +180,18 @@ export class DashboardComponent implements OnInit {
     ],
   };
 
-
   echartOptions2: EChartsOption = {
     legend: {},
     tooltip: {
       trigger: 'axis',
-
     },
     xAxis: {
       type: 'time',
-      boundaryGap: false
+      boundaryGap: false,
     },
     yAxis: {
       type: 'value',
-      boundaryGap: [0, '100%']
+      boundaryGap: [0, '100%'],
     },
     grid: {
       right: '10px',
@@ -182,13 +199,12 @@ export class DashboardComponent implements OnInit {
       bottom: '25px',
       top: '35px',
     },
-    series: [
-    ],
+    series: [],
   };
 
   echartOptions2Merge: EChartsOption = {
-    series: []
-  }
+    series: [],
+  };
 
   notifications: string[] = [];
 

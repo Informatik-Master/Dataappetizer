@@ -2,7 +2,11 @@ import {
   ApiGatewayManagementApiClient,
   PostToConnectionCommand,
 } from '@aws-sdk/client-apigatewaymanagementapi';
-import { DynamoDBDocumentClient, QueryCommand, ScanCommand } from '@aws-sdk/lib-dynamodb';
+import {
+  DynamoDBDocumentClient,
+  QueryCommand,
+  ScanCommand,
+} from '@aws-sdk/lib-dynamodb';
 import { unmarshall } from '@aws-sdk/util-dynamodb';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 
@@ -42,7 +46,7 @@ export const initialConnect = async ({ Records }: any) => {
     console.log('payload', payload);
     const { connectionId } = unmarshall(payload);
 
-    for (const vin of VEHICLES) {
+    const v = VEHICLES.map(async (vin) => {
       const { Items } = await dynamoDbClient.send(
         new QueryCommand({
           TableName: process.env['DATAPOINT_TABLE'],
@@ -54,40 +58,35 @@ export const initialConnect = async ({ Records }: any) => {
         }),
       );
 
-      for (const item of Items!) {
+      return Items!.flatMap((item) => {
         const { vin, datapointName, value } = item;
-
-        let bufferData: any = {
-          event: datapointName,
-          data: {
-            vin,
-            value: item,
+        return [
+          {
+            event: datapointName,
+            data: {
+              vin,
+              value: item,
+            },
           },
-        };
-
-        await apigatewaymanagementapi.send(
-          new PostToConnectionCommand({
-            ConnectionId: connectionId,
-            Data: Buffer.from(JSON.stringify(bufferData)),
-          }),
-        );
-
-        bufferData = {
-          event: 'message',
-          data: {
-            vin,
-            datapointName,
-            value: item,
+          
+          {
+            event: 'message',
+            data: {
+              vin,
+              datapointName,
+              value: item,
+            },
           },
-        };
-
-        await apigatewaymanagementapi.send(
-          new PostToConnectionCommand({
-            ConnectionId: connectionId,
-            Data: Buffer.from(JSON.stringify(bufferData)),
-          }),
-        );
-      }
-    }
+        ];
+      });
+    });
+    const res = (await Promise.all(v)).flat(1);
+    console.log('res',res)
+    await apigatewaymanagementapi.send(
+      new PostToConnectionCommand({
+        ConnectionId: connectionId,
+        Data: Buffer.from(JSON.stringify(res)),
+      }),
+    );
   }
 };
