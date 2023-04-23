@@ -51,7 +51,7 @@ export class SocketGateway {
       livetickerData.push(vehicleData);
     }
 
-    let averageDistanceData = []
+    let averageDistanceData = [];
     for (let i = 0; i < vehicles.length; i++) {
       let vehicleData = await this.dataRepository.find({
         where: {
@@ -70,10 +70,29 @@ export class SocketGateway {
       });
     }
 
+    let geolocationData = [];
+    for (let i = 0; i < vehicles.length; i++) {
+      let vehicleData = await this.dataRepository.find({
+        where: {
+          vin: Equal(vehicles[i].vin),
+          datapoint: Equal("geolocation")
+        },
+      });
+
+      geolocationData.push({
+        vin: vehicles[i].vin,
+        geolocation: {
+          latitude: Number(vehicleData[0].value),
+          longitude: Number(vehicleData[0].secondValue)
+        }
+      })
+    }
+
     dataPackage.push({
       vehicles: vehicles,
       livetickerData: livetickerData,
-      averageDistanceData: averageDistanceData
+      averageDistanceData: averageDistanceData,
+      geolocationData: geolocationData
     });
 
     return {

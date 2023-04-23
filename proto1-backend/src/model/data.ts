@@ -15,7 +15,7 @@ export class Data{
     @Column({type: 'json'})
     value: any;
 
-    @Column({nullable: false})
+    @Column({type: 'json'})
     secondValue: String
 
     @Column()
