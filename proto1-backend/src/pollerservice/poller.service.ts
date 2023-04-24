@@ -6,6 +6,7 @@ import { ApiService } from 'src/api/api.service';
 import { Data } from 'src/model/data';
 import { Vehicles } from 'src/model/vehicles';
 import { Repository } from 'typeorm';
+import {SocketGateway} from '../socket-gateway.service'
 
 @Injectable()
 export class PollerService {
@@ -14,7 +15,8 @@ export class PollerService {
         private dataRepository: Repository<Data>,
         @InjectRepository(Vehicles)
         private vehiclesRepository: Repository<Vehicles>,
-        private readonly apiService: ApiService
+        private readonly apiService: ApiService,
+        private readonly socketGateway: SocketGateway        
     ) { }
 
     async saveCars() {

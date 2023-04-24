@@ -13,12 +13,12 @@ import { PollerService } from './pollerservice/poller.service';
 import { ScheduleModule } from '@nestjs/schedule';
 import { Data } from './model/data';
 import { Vehicles } from './model/vehicles';
+import { ExtractorService } from './extractor/extractor.service';
 
 @Module({
   imports: [ApiModule, 
     ConfigModule.forRoot({isGlobal: true}),
-    TypeOrmModule.forFeature([Data]),
-    TypeOrmModule.forFeature([Vehicles]),
+    TypeOrmModule.forFeature([Vehicles, Data]),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.POSTGRES_HOST,
@@ -28,10 +28,11 @@ import { Vehicles } from './model/vehicles';
       database: process.env.POSTGRES_DATABASE,
       autoLoadEntities: true,
       synchronize: true,
+      
     }),
     ScheduleModule.forRoot()
   ],
   controllers: [AppController],
-  providers: [AppService, SocketGateway, PollerService],
+  providers: [AppService, SocketGateway, PollerService, ExtractorService],
 })
 export class AppModule {}
