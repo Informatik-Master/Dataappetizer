@@ -5,9 +5,9 @@ import {
 } from '@nestjs/websockets';
 
 import { Server } from 'ws';
-import { CarService } from './car/car.service';
+import { ApiService } from './api/api.service';
 import { firstValueFrom } from 'rxjs';
-import { CarController } from './car/car.controller';
+import { ApiController } from './api/api.controller';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Data } from './model/data';
 import { Vehicles } from './model/vehicles';
@@ -16,12 +16,12 @@ import { Equal, Repository } from 'typeorm';
 @WebSocketGateway({ cors: true })
 export class SocketGateway {
 
-  constructor(private readonly carService: CarService, 
+  constructor(private readonly apiService: ApiService,
     @InjectRepository(Data)
     private dataRepository: Repository<Data>,
     @InjectRepository(Vehicles)
     private vehiclesRepository: Repository<Vehicles>,
-    ) { }
+  ) { }
 
   @WebSocketServer()
   server!: Server;
@@ -31,57 +31,137 @@ export class SocketGateway {
     console.log('socket.OPEN', socket.OPEN);
   }
 
+  extractLatestData(data: any) {
+    // console.log("extractLatestData");
+    return data;
+  }
+
   @SubscribeMessage('getDiagram')
   async handleDashboardEvent(): Promise<any> {
-
+    let dataPackage = [];
     let vehicles = await this.vehiclesRepository.find();
-    let vehicleData = await this.dataRepository.find({
-      where:{
-        vin: Equal(vehicles[0].vin),
-      },
-    });
+    let livetickerData = []
 
-    let carController = new CarController(this.carService);
-    const data = await firstValueFrom(carController.getCarsInformation());
-    let carData = [];
-    for (let i = 0; i < data.length; i++) {
-      const singleCarData = await firstValueFrom(carController.getSingleCarDetailInformation(data[i].vin, ["averagedistance"]));
-      let averageDistance = singleCarData.inVehicleData[0].response.averagedistance.dataPoint.value.toFixed(0);
-      carData.push({
-        value: averageDistance,
-        name: "Fahrzeug: " + data[i].vin
+    for (let i = 0; i < vehicles.length; i++) {
+      let vehicleData = await this.dataRepository.find({
+        where: {
+          vin: Equal(vehicles[i].vin),
+        },
+      });
+      livetickerData.push(vehicleData);
+    }
+
+    let averageDistanceData = [];
+    for (let i = 0; i < vehicles.length; i++) {
+      let vehicleData = await this.dataRepository.find({
+        where: {
+          vin: Equal(vehicles[i].vin),
+          datapoint: Equal("averageDistance")
+        },
+      });
+
+      if (vehicleData.length != 1) {
+        vehicleData = this.extractLatestData(vehicleData);
+      }
+
+      averageDistanceData.push({
+        name: "Fahrzeug: " + vehicleData[0].vin,
+        value: Number(vehicleData[0].value)
+      });
+    }
+
+    let geolocationData = [];
+    for (let i = 0; i < vehicles.length; i++) {
+      let vehicleData = await this.dataRepository.find({
+        where: {
+          vin: Equal(vehicles[i].vin),
+          datapoint: Equal("geolocation")
+        },
+      });
+
+      geolocationData.push({
+        vin: vehicles[i].vin,
+        geolocation: {
+          latitude: Number(vehicleData[0].value),
+          longitude: Number(vehicleData[0].secondValue)
+        }
       })
     }
+
+    dataPackage.push({
+      vehicles: vehicles,
+      livetickerData: livetickerData,
+      averageDistanceData: averageDistanceData,
+      geolocationData: geolocationData
+    });
+
     return {
       event: 'getDiagram',
-      data: carData
+      data: dataPackage
     };
   }
 
   @SubscribeMessage('carList')
   async handleCarListEvent(): Promise<any> {
-    let carController = new CarController(this.carService);
-    const data = await firstValueFrom(carController.getCarsInformation());
-    let carData = [];
-    for (let i = 0; i < data.length; i++) {
-      const singleCarData = await firstValueFrom(carController.getSingleCarDetailInformation(data[i].vin, ["averagedistance", "batteryvoltage", "enginestatus"]));
-      let averageDistance = singleCarData.inVehicleData[0].response.averagedistance.dataPoint.value.toFixed(2);
-      let averageDistanceUnit = singleCarData.inVehicleData[0].response.averagedistance.dataPoint.unit;
-      let enginestatusTemp = singleCarData.inVehicleData[0].response.enginestatus.dataPoint.value;
-      let batteryvoltage = singleCarData.inVehicleData[0].response.batteryvoltage.dataPoint.value.toFixed(2);
-      let batteryvoltageUnit = singleCarData.inVehicleData[0].response.batteryvoltage.dataPoint.unit;
-      let enginestatus = enginestatusTemp == "ON" ? "Motor ist eingeschaltet." : "Motor ist ausgeschaltet.";
+    let vehicles = await this.vehiclesRepository.find();
+    let dataPackage = [];
+    for (let i = 0; i < vehicles.length; i++) {
+      let mileageData = await this.dataRepository.find({
+        where: {
+          vin: Equal(vehicles[i].vin),
+          datapoint: Equal("mileage"),
+        },
+      });
 
-      carData.push({
-        vin: data[i].vin,
-        kilometer: averageDistance + " " + averageDistanceUnit,
-        fuel: batteryvoltage + " " + batteryvoltageUnit,
-        status: enginestatus
+      let batteryvoltageData = await this.dataRepository.find({
+        where: {
+          vin: Equal(vehicles[i].vin),
+          datapoint: Equal("batteryvoltage"),
+        },
+      });
+
+      let engineStatusData = await this.dataRepository.find({
+        where: {
+          vin: Equal(vehicles[i].vin),
+          datapoint: Equal("engineStatus"),
+        },
+      });
+      let engineStatus = engineStatusData[0].value == "ON" ? "Motor ist eingeschaltet." : "Motor ist ausgeschaltet.";
+
+      let checkcontrolmessagesData = await this.dataRepository.find({
+        where: {
+          vin: Equal(vehicles[i].vin),
+          datapoint: Equal("checkcontrolmessages"),
+        },
+      });
+
+      let checkcontrolmessages = "-";
+      let messages = checkcontrolmessagesData[0].value;
+      if(messages.length != 0){
+        let message = "";
+        for(let j = 0; j < messages.length; j++){
+          let messageJSON = messages[j];
+          if(j == messages.length-1){
+            message = message + messageJSON.message;
+          }else{
+            message = message + messageJSON.message + ", ";
+          }
+        }
+        checkcontrolmessages = message;
+      }
+
+      dataPackage.push({
+        vin: vehicles[i].vin,
+        mileage: mileageData[0].value + " " + mileageData[0].unit,
+        batteryvoltage: batteryvoltageData[0].value + " " + batteryvoltageData[0].unit,
+        engineStatus: engineStatus,
+        controlmessages: checkcontrolmessages
       });
     }
+
     return {
       event: 'carList',
-      data: carData
+      data: dataPackage
     }
   }
 }

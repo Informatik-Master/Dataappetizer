@@ -3,26 +3,15 @@
     <span class="sr-only" id="loading"></span>
   </div>
   <div class="row container">
-    <div class="col-8">
-      <div class="row">
-        <div class="col">
-          <nb-card style="max-height: 25dvh">
-            <nb-card-header> Deine Flotte </nb-card-header>
-            <nb-card-body>
-              <h2> {{amountVehicle}} Fahrzeuge</h2>
-              Gelieferte Datenpunkte: {{amountVehicle}}
-            </nb-card-body>
-          </nb-card>
-        </div>
-        <div class="col" style="max-height: 25dvh">
-          <nb-card>
-            <!-- <nb-card-header> Hersteller </nb-card-header> -->
-            <nb-card-header> Durchschn. zurückgelegte Strecke (Zeitraum: eine Woche) </nb-card-header>
-            <nb-card-body>
-              <div echarts [options]="echartOptions" [merge]="echartMerge" style="height:100%"></div>
-            </nb-card-body>
-          </nb-card>
-        </div>
+    <div class="row">
+      <div class="col">
+        <nb-card style="max-height: 25dvh">
+          <nb-card-header> Deine Flotte </nb-card-header>
+          <nb-card-body>
+            <h2> {{amountVehicle}} Fahrzeuge</h2>
+            Gelieferte Datenpunkte: {{amountDataPoints}}
+          </nb-card-body>
+        </nb-card>
       </div>
       <div class="row">
         <div class="col" style="height: 25dvh">
