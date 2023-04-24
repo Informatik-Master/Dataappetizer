@@ -31,6 +31,9 @@ export class DashboardComponent implements OnInit {
     }, 1000)
 
     this.socket.fromEvent('getDiagram').pipe(map((data) => data), tap((data) => console.log(data))).subscribe((data: any) => {
+      hideloader();
+      showContent();
+
       this.amountVehicle = data.length;
       for(let i = 0; i < data.length; i++){
         this.notifications.push(""+ data[i].name + " | Average Distance: " + data[i].value + "km");
@@ -41,6 +44,18 @@ export class DashboardComponent implements OnInit {
         }]
       };
     })
+
+    function hideloader() {
+      let spinner = document.getElementById('loading');
+      spinner!.style.display = 'none';
+    }
+
+    function showContent(){
+      document.querySelectorAll('.container').forEach(function (element) {
+        element.setAttribute("class", "row");
+      });
+    }
+
   }
 
   amountVehicle = 0;
@@ -66,13 +81,7 @@ export class DashboardComponent implements OnInit {
           borderRadius: 8
         },
         data: [
-          { value: 4, name: 'VW' },
-          { value: 3, name: 'BMW' },
-          { value: 3, name: 'SEAT' },
-          { value: 5, name: 'AUDI' },
-          { value: 2, name: 'FORD' },
-          { value: 3, name: 'OPEL' },
-          { value: 1, name: 'PORSCHE' }
+          
         ]
       }
     ]
