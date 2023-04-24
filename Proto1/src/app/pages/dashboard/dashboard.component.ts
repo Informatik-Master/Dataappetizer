@@ -16,6 +16,7 @@ import {
   tileLayer,
 } from 'leaflet';
 import * as L from 'leaflet';
+import { time } from 'console';
 
 @Component({
   selector: 'ngx-dashboard',
@@ -25,6 +26,10 @@ import * as L from 'leaflet';
 export class DashboardComponent implements OnInit {
 
   constructor(private socket: Socket) { }
+
+  timestamp = "gerade eben";
+  timeCounter = 0;
+  
 
   ngOnInit(): void {
 
@@ -50,12 +55,16 @@ export class DashboardComponent implements OnInit {
     //   }
     // })
 
+    this.socket.emit('overview');
+    this.startTimeCounter();
     setInterval(() => {
       this.socket.emit('overview');
-    }, 1000)
+    }, 30000)
     this.socket.fromEvent('overview').pipe(map((data) => data), tap((data) => console.log(data))).subscribe((data: any) => {
       this.hideloader();
       this.showContent();
+      this.timestamp = "gerade eben";
+      this.timeCounter = 0;
 
       this.amountVehicle = data[0].vehicles.length;
       this.amountDataPoints = data[0].livetickerData[0].length;
@@ -76,6 +85,12 @@ export class DashboardComponent implements OnInit {
         }
       }
     })
+  }
+  startTimeCounter() {
+    setInterval(() => {
+      this.timeCounter += 10;
+      this.timestamp = "vor " + this.timeCounter + " sek."
+    }, 10000);
   }
 
   hideloader() {
