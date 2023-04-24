@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { map } from 'rxjs';
 
 @Injectable()
-export class CarService {
+export class ApiService {
     constructor(private readonly httpService: HttpService) { }
 
     getCarsInformation() {

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import {webSocket, WebSocketSubject} from 'rxjs/webSocket';
+import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { Socket } from 'ngx-socket-io';
 import { map, tap } from 'rxjs/operators';
 import { EChartsOption } from 'echarts';
@@ -15,6 +15,7 @@ import {
   marker,
   tileLayer,
 } from 'leaflet';
+import * as L from 'leaflet';
 
 @Component({
   selector: 'ngx-dashboard',
@@ -23,7 +24,7 @@ import {
 })
 export class DashboardComponent implements OnInit {
 
-  constructor(private socket: Socket) {}
+  constructor(private socket: Socket) { }
 
   ngOnInit(): void {
     setInterval(() => {
@@ -38,11 +39,24 @@ export class DashboardComponent implements OnInit {
       for(let i = 0; i < data.length; i++){
         this.notifications.push(""+ data[i].name + " | Average Distance: " + data[i].value + "km");
       }
-      this.echartMerge={
+      this.amountVehicle = data[0].vehicles.length;
+      this.amountDataPoints = data[0].livetickerData[0].length;
+      this.geolocationData = data[0].geolocationData;
+      this.echartMerge = {
         series: [{
-          data: data
+          data: data[0].averageDistanceData
         }]
       };
+      for (let i = 0; i < data[0].livetickerData.length; i++) {
+        for (let j = 0; j < data[0].livetickerData[i].length; j++) {
+          let dataSet = data[0].livetickerData[i][j];
+          if (dataSet.secondValue != "") {
+            this.notifications.push("VIN: " + dataSet.vin + " | Datapoint: " + dataSet.datapoint + " | Value: " + dataSet.value + " " + dataSet.unit + " | Second Value: " + dataSet.secondValue + " " + dataSet.unit + " | Timestamp: " + dataSet.timestamp);
+          } else {
+            this.notifications.push("VIN: " + dataSet.vin + " | Datapoint: " + dataSet.datapoint + " | Value: " + dataSet.value + " " + dataSet.unit + " | Timestamp: " + dataSet.timestamp);
+          }
+        }
+      }
     })
 
     function hideloader() {
@@ -59,6 +73,8 @@ export class DashboardComponent implements OnInit {
   }
 
   amountVehicle = 0;
+  amountDataPoints = 0;
+  geolocationData = [];
 
   notifications: String[] = [
     // 'Neuer Kilometerstand: 12301km',
@@ -103,7 +119,6 @@ export class DashboardComponent implements OnInit {
     },
     series: [
       {
-
         data: [820, 932, 901, 934, 1290, 1330, 1320],
         type: 'line',
         smooth: true
@@ -135,8 +150,38 @@ export class DashboardComponent implements OnInit {
         position: 'topright',
       })
       .addTo(this.map);
-      setTimeout(() => {
-        map.invalidateSize();
-      }, 10);
+    setTimeout(() => {
+      map.invalidateSize();
+    }, 10);
+    setInterval(() => {
+      this.showGeolocation(map);
+    }, 10000);
+  }
+
+markers:any = [];
+
+//TODO: fitBounds nur einmalig
+//TODO: Map schon beim Initialladen laden
+//TODO: Map sollte beim Aktualisieren der Daten geladen werden und nicht separat im eigenen Thread
+  showGeolocation(map: Map) {
+    console.log("MAP WAS UPDATED");
+    for(let i = 0; i < this.markers.length; i++){
+      map.removeLayer(this.markers[i]);
     }
+    this.markers = []; //reset
+    let bounds: any = [];
+    for (let i = 0; i < this.geolocationData.length; i++) {
+      let latitude = this.geolocationData[i]['geolocation']['latitude'];
+      let longitude = this.geolocationData[i]['geolocation']['longitude'];
+      let vin = this.geolocationData[i]['vin'];
+      let marker = L.marker([latitude, longitude]);
+      marker.addTo(map).bindPopup(vin);
+      this.markers.push(marker);
+      bounds.push([latitude, longitude]);
+    }
+    if(bounds.length != 0){
+      map.fitBounds(bounds);
+    }
+    console.log(this.markers);
+  }
 }
