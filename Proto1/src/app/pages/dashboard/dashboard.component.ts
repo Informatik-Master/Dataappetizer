@@ -54,6 +54,9 @@ export class DashboardComponent implements OnInit {
       this.socket.emit('overview');
     }, 1000)
     this.socket.fromEvent('overview').pipe(map((data) => data), tap((data) => console.log(data))).subscribe((data: any) => {
+      this.hideloader();
+      this.showContent();
+
       this.amountVehicle = data[0].vehicles.length;
       this.amountDataPoints = data[0].livetickerData[0].length;
       this.geolocationData = data[0].geolocationData;
@@ -73,6 +76,17 @@ export class DashboardComponent implements OnInit {
         }
       }
     })
+  }
+
+  hideloader() {
+    let spinner = document.getElementById('loading');
+    spinner!.style.display = 'none';
+  }
+
+  showContent(){
+    document.querySelectorAll('.container').forEach(function (element) {
+      element.setAttribute("class", "row");
+    });
   }
 
   amountVehicle = 0;

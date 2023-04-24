@@ -1,61 +1,68 @@
 <div class="row">
-  <div class="col-8">
-    <div class="row">
-      <div class="col">
-        <nb-card style="max-height: 25dvh">
-          <nb-card-header> Deine Flotte </nb-card-header>
-          <nb-card-body>
-            <h2> {{amountVehicle}} Fahrzeuge</h2>
-            Gelieferte Datenpunkte: {{amountDataPoints}}
-          </nb-card-body>
-        </nb-card>
+  <div class="spinner-border" role="status">
+    <span class="sr-only" id="loading"></span>
+  </div>
+  <div class="row container">
+    <div class="col-8">
+      <div class="row">
+        <div class="col">
+          <nb-card style="max-height: 25dvh">
+            <nb-card-header> Deine Flotte </nb-card-header>
+            <nb-card-body>
+              <h2> {{amountVehicle}} Fahrzeuge</h2>
+              Gelieferte Datenpunkte: {{amountDataPoints}}
+            </nb-card-body>
+          </nb-card>
+        </div>
+        <div class="col" style="max-height: 25dvh">
+          <nb-card>
+            <!-- <nb-card-header> Hersteller </nb-card-header> -->
+            <nb-card-header> Durchschn. zurückgelegte Strecke (Zeitraum: eine Woche) </nb-card-header>
+            <nb-card-body>
+              <div echarts [options]="echartOptions" [merge]="echartMerge" style="height:100%"></div>
+            </nb-card-body>
+          </nb-card>
+        </div>
       </div>
-      <div class="col" style="max-height: 25dvh">
-        <nb-card>
-          <!-- <nb-card-header> Hersteller </nb-card-header> -->
-          <nb-card-header> Durchschn. zurückgelegte Strecke (Zeitraum: eine Woche) </nb-card-header>
-          <nb-card-body>
-            <div echarts [options]="echartOptions" [merge]="echartMerge" style="height:100%"></div>
-          </nb-card-body>
-        </nb-card>
+      <div class="row">
+        <div class="col" style="height: 25dvh">
+          <nb-card>
+            <nb-card-header> Ladezustand </nb-card-header>
+            <nb-card-body class="p-0">
+              <div echarts [options]="echartOptions2"  style="height:100%"></div>
+            </nb-card-body>
+          </nb-card>
+        </div>
       </div>
     </div>
-    <div class="row">
-      <div class="col" style="height: 25dvh">
-        <nb-card>
-          <nb-card-header> Ladezustand </nb-card-header>
-          <nb-card-body class="p-0">
-            <div echarts [options]="echartOptions2"  style="height:100%"></div>
-          </nb-card-body>
-        </nb-card>
-      </div>
+    <div class="col">
+      <nb-card>
+        <nb-card-header> Fahrzeugstandorte </nb-card-header>
+        <nb-card-body class="p-0">
+          <div
+            leaflet
+            [leafletOptions]="mapOptions"
+            (leafletMapReady)="onMapReady($event)"
+          ></div>
+        </nb-card-body>
+      </nb-card>
     </div>
-  </div>
-  <div class="col">
-    <nb-card>
-      <nb-card-header> Fahrzeugstandorte </nb-card-header>
-      <nb-card-body class="p-0">
-        <div
-          leaflet
-          [leafletOptions]="mapOptions"
-          (leafletMapReady)="onMapReady($event)"
-        ></div>
-      </nb-card-body>
-    </nb-card>
-  </div>
+    </div>
+    <div class="row container">
+    <div class="col">
+      <nb-card style="    height: unset; max-height: 20dvh;">
+        <nb-card-header> Informationsticker </nb-card-header>
+        <nb-card-body class="p-0">
+          <nb-list>
+            <nb-list-item *ngFor="let notification of notifications">
+              {{ notification }}
+            </nb-list-item>
+          </nb-list>
+  
+        </nb-card-body>
+      </nb-card>
+    </div>
+    </div>
+  
 </div>
-<div class="row">
-  <div class="col">
-    <nb-card style="    height: unset; max-height: 20dvh;">
-      <nb-card-header> Informationsticker </nb-card-header>
-      <nb-card-body class="p-0">
-        <nb-list>
-          <nb-list-item *ngFor="let notification of notifications">
-            {{ notification }}
-          </nb-list-item>
-        </nb-list>
-
-      </nb-card-body>
-    </nb-card>
-  </div>
-</div>
+ 
