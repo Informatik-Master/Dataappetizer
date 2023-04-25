@@ -12,18 +12,18 @@ import { Data } from './model/data';
 import { Vehicles } from './model/vehicles';
 import { Equal, Repository } from 'typeorm';
 import { ExtractorService } from './extractor/extractor.service';
-import {Socket, Server} from 'socket.io' 
+import { Socket, Server } from 'socket.io';
 
 @WebSocketGateway({ cors: true })
 export class SocketGateway {
-
-  constructor(private readonly apiService: ApiService,
+  constructor(
+    private readonly apiService: ApiService,
     @InjectRepository(Data)
     private dataRepository: Repository<Data>,
     @InjectRepository(Vehicles)
     private vehiclesRepository: Repository<Vehicles>,
-    private extractorService : ExtractorService,
-  ) { }
+    private extractorService: ExtractorService,
+  ) {}
 
   @WebSocketServer()
   server!: Server;
@@ -36,9 +36,9 @@ export class SocketGateway {
   }
 
   async pushToAllConnections(data: any) {
-    this.allConnect.forEach(c => {
-      c.emit('overviewData', data)
-    })
+    this.allConnect.forEach((c) => {
+      c.emit('overviewData', data);
+    });
   }
 
   @SubscribeMessage('overview')
@@ -48,6 +48,6 @@ export class SocketGateway {
 
   @SubscribeMessage('carList')
   async handleCarListEvent(): Promise<any> {
-   return this.extractorService.handleCarListEvent();
+    return this.extractorService.handleCarListEvent();
   }
 }

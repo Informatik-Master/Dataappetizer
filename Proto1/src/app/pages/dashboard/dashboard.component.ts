@@ -29,7 +29,7 @@ export class DashboardComponent implements OnInit {
 
   timestamp = "gerade eben";
   timeCounter = 0;
-  
+
 
   ngOnInit(): void {
 
@@ -57,9 +57,9 @@ export class DashboardComponent implements OnInit {
 
     this.socket.emit('overview');
     this.startTimeCounter();
-    setInterval(() => {
+    this.intervalls.push(setInterval(() => {
       this.socket.emit('overview');
-    }, 30000)
+    }, 30000))
     this.socket.fromEvent('overview').pipe(map((data) => data), tap((data) => console.log(data))).subscribe((data: any) => {
       this.hideloader();
       this.showContent();
@@ -67,7 +67,7 @@ export class DashboardComponent implements OnInit {
       this.timeCounter = 0;
 
       this.amountVehicle = data[0].vehicles.length;
-      this.amountDataPoints = data[0].livetickerData[0].length;
+      this.amountDataPoints += data[0].livetickerData[0].length;
       this.geolocationData = data[0].geolocationData;
       this.echartMerge = {
         series: [{
@@ -119,9 +119,12 @@ export class DashboardComponent implements OnInit {
   }
 
   echartOptions: EChartsOption = {
+    tooltip: {
+      trigger: 'item',
+      appendToBody: true,
+    },
     series: [
       {
-        name: 'Nightingale Chart',
         type: 'pie',
         center: ['50%', '50%'],
         roseType: 'area',
@@ -150,7 +153,7 @@ export class DashboardComponent implements OnInit {
     },
     series: [
       {
-        data: [820, 932, 901, 934, 1290, 1330, 1320],
+        data: [82, 93, 90, 93, 100, 50, 80],
         type: 'line',
         smooth: true
       }
@@ -173,6 +176,7 @@ export class DashboardComponent implements OnInit {
 
   map: Map | null = null;
 
+  intervalls: NodeJS.Timer[] = []
   onMapReady(map: Map) {
     this.map = map;
     this.map.setZoom(13);
@@ -184,9 +188,9 @@ export class DashboardComponent implements OnInit {
     setTimeout(() => {
       map.invalidateSize();
     }, 10);
-    setInterval(() => {
+    this.intervalls.push(setInterval(() => {
       this.showGeolocation(map);
-    }, 1000);
+    }, 1000));
   }
 
 markers:any = [];
@@ -211,7 +215,13 @@ markers:any = [];
       bounds.push([latitude, longitude]);
     }
     if(bounds.length != 0){
-      map.fitBounds(bounds);
+      map.fitBounds(bounds, {padding:[1,1]});
+    }
+  }
+
+  ngOnDestroy(): void {
+    for (let i = 0; i < this.intervalls.length; i++) {
+      clearInterval(this.intervalls[i]);
     }
   }
 }

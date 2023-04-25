@@ -1,0 +1,4 @@
+proto2-backend/.dynamodb/
+proto2-backend/dist/
+proto2-backend/node_modules/
+proto2-backend/.serverless/
