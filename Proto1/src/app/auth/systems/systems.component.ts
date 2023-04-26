@@ -15,15 +15,15 @@ export class SystemsComponent {
     {
       title: 'System 1',
     },
-    {
-      title: 'System 2',
-    },
-    {
-      title: 'System 3',
-    },
-    {
-      title: 'System 4',
-    },
+    // {
+    //   title: 'System 2',
+    // },
+    // {
+    //   title: 'System 3',
+    // },
+    // {
+    //   title: 'System 4',
+    // },
   ];
 
   createCustomerSystem() {

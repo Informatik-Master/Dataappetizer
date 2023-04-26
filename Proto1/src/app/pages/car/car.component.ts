@@ -19,20 +19,14 @@ export class CarComponent implements OnInit {
 
   displayedColumns = ["vin", "mileage", "batteryvoltage", "engineStatus", "controlmessages", "detail"];
 
+  spinnerActive = true;
+
   ngOnInit(): void {
-    setInterval(() => {
-      this.socket.emit('carList');
-    }, 1000)
     this.socket.fromEvent('carList').pipe(map((data) => data), tap((data) => console.log(data))).subscribe((data: any) => {
-      hideloader();
+      this.spinnerActive = false;
       this.dataSource = data;
     })
-
-
-    function hideloader() {
-      let spinner = document.getElementById('loading');
-      spinner!.style.display = 'none';
-    }
+    this.socket.emit('carList');
   }
 
 

@@ -59,7 +59,7 @@ export class DashboardComponent implements OnInit {
     this.startTimeCounter();
     this.intervalls.push(setInterval(() => {
       this.socket.emit('overview');
-    }, 30000))
+    }, 10000))
     this.socket.fromEvent('overview').pipe(map((data) => data), tap((data) => console.log(data))).subscribe((data: any) => {
       this.hideloader();
       this.showContent();

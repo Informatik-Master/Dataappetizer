@@ -1,6 +1,6 @@
 <h3>Fahrzeuge</h3>
 <div>
-    <div class="spinner-border" role="status" >
+    <div class="spinner-border" role="status" *ngIf="spinnerActive">
         <span class="sr-only" id="loading"></span>
       </div>
     <div>
@@ -23,7 +23,7 @@
                       <mat-progress-bar mode="determinate" value="40" *matCellDef="let car"></mat-progress-bar>
                       {{car.batteryvoltage}}</mat-cell>
         </ng-container>
-    
+
         <ng-container matColumnDef="engineStatus">
             <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
             <mat-cell class="engineStatus-cell"
@@ -45,12 +45,12 @@
                         </nb-action>
             </mat-cell>
         </ng-container>
-        
+
             <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-        
+
             <mat-row *matRowDef="let row; columns: displayedColumns"
             (click)="onRowClicked(row)"></mat-row>
-        
+
         </mat-table>
     </div>
 </div>
