@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { SystemService } from 'src/app/@core/system.service';
 
 @Component({
   selector: 'ngx-systems',
@@ -9,28 +10,15 @@ import { Router } from '@angular/router';
 export class SystemsComponent {
   selectedIndex = 1;
 
-  constructor(private readonly router: Router) {}
+  constructor(private readonly router: Router, private readonly systemService: SystemService) {}
 
-  systems = [
-    {
-      title: 'System 1',
-    },
-    {
-      title: 'System 2',
-    },
-    {
-      title: 'System 3',
-    },
-    {
-      title: 'System 4',
-    },
-  ];
+  systems = this.systemService.getSystems();
 
   createCustomerSystem() {
     this.router.navigate(['auth/config']);
   }
 
-  selectSystem() {
-    this.router.navigate(['pages']);
+  selectSystem(systemId: string) {
+    this.router.navigate(['pages', systemId]);
   }
 }

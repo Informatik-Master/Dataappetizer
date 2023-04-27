@@ -7,6 +7,7 @@ custom:
   connectionsTable: "connections-${sls:stage}"
   connectionsTableVinIndex: "connections-${sls:stage}-vinIndex"
   vehiclesTable: "vehicles-${sls:stage}"
+  systemsTable: "systems-${sls:stage}"
   dynamodb:
     stages:
       - dev
@@ -63,6 +64,7 @@ provider:
                   - "index"
                   - ${self:custom.connectionsTableVinIndex}
             - Fn::GetAtt: [VehiclesTable, Arn]
+            - Fn::GetAtt: [Systems, Arn]
 
   environment:
     DATAPOINT_TABLE: ${self:custom.datapointTable}
@@ -70,20 +72,40 @@ provider:
     CONNECTIONS_TABLE: ${self:custom.connectionsTable}
     CONNECTIONS_TABLE_VIN_INDEX: ${self:custom.connectionsTableVinIndex}
     VEHICLES_TABLE: ${self:custom.vehiclesTable}
+    SYSTEMS_TABLE: ${self:custom.systemsTable}
+    SYSTEMS_VEHICLES_TABLE: ${self:custom.systemsTable}-vehicles
 
 functions:
-  api:
+
+  systems:
+    handler: src/systems/handler.handler
+    events:
+      - httpApi: 
+          path: /api/systems
+          method: ANY
+
+  debug:
     handler: index.handler
     events:
-      - httpApi: "*"
+      - httpApi: 
+          path: /api/debug/{proxy+}
+          method: ANY
+
+  webhook:
+    handler: src/webhook/handler.handler
+    events:
+      - httpApi: 
+          path: /webhook
+          method: ANY
+
   # pullVehicles:
   #   handler: src/pullVehicles/handler.handler
   #   events:
   #     - schedule: rate(1 minute)
-  pullVehicleData:
-    handler: src/pullVehicleData/handler.handler
-    events:
-      - schedule: rate(1 minute)
+  # pullVehicleData:
+  #   handler: src/pullVehicleData/handler.handler
+  #   events:
+  #     - schedule: rate(1 minute)
   connect:
     handler: src/connect/handler.connect
     events:
@@ -181,3 +203,30 @@ resources:
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:custom.vehiclesTable}
+
+    Systems:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.systemsTable}
+    SystemVehicles:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: systemId
+            AttributeType: S
+          - AttributeName: vin
+            AttributeType: S
+        KeySchema:
+          - AttributeName: systemId
+            KeyType: HASH
+          - AttributeName: vin
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.systemsTable}-vehicles

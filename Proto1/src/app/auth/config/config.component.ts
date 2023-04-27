@@ -3,6 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { EChartsOption } from 'echarts';
+import { firstValueFrom } from 'rxjs';
+import { SystemService } from 'src/app/@core/system.service';
 
 type DiagramConfig = {
   //TODO: id from backend
@@ -166,7 +168,7 @@ export class ConfigComponent {
     },
   ];
 
-  constructor(private readonly router: Router) {
+  constructor(private readonly router: Router, private readonly systemService: SystemService) {
   }
 
   previous() {
@@ -177,7 +179,8 @@ export class ConfigComponent {
     this.selectedIndex++;
   }
 
-  finish() {
-    this.router.navigate(['pages']);
+  async finish() {
+    const newSystem = await firstValueFrom(this.systemService.createSystem(this.systemName));
+    this.router.navigate(['pages', newSystem.id]);
   }
 }

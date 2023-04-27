@@ -725,7 +725,7 @@
     "@aws-sdk/types" "3.306.0"
     tslib "^2.5.0"
 
-"@aws-sdk/types@3.306.0", "@aws-sdk/types@^3.222.0", "@aws-sdk/types@^3.306.0":
+"@aws-sdk/types@3.306.0", "@aws-sdk/types@^3.222.0":
   version "3.306.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/types/-/types-3.306.0.tgz#076aa94a1d711311c14bab10b251752506a21487"
   integrity sha512-RnyknWWpQcRmNH7AsNr89sdhOoltCU/4YEwBMw34Eh+/36l7HfA5PdEKbsOkO7MO4+2g5qmmm/AHcnHRvymApg==
@@ -1387,6 +1387,11 @@
   resolved "https://registry.yarnpkg.com/@tsconfig/node16/-/node16-1.0.3.tgz#472eaab5f15c1ffdd7f8628bd4c4f753995ec79e"
   integrity sha512-yOlFc+7UtL/89t2ZhjPvvB/DeAr3r+Dq58IgzsFkOAvVC6NMJXmCGjbptdXdR9qsX7pKcTL+s87FtYREi2dEEQ==
 
+"@types/aws-lambda@^8.10.114":
+  version "8.10.114"
+  resolved "https://registry.yarnpkg.com/@types/aws-lambda/-/aws-lambda-8.10.114.tgz#4048273ebcd517dd118ecaa34b1368d275b6c7ad"
+  integrity sha512-M8WpEGfC9iQ6V2Ccq6nGIXoQgeVc6z0Ngk8yCOL5V/TYIxshvb0MWQYLFFTZDesL0zmsoBc4OBjG9DB/4rei6w==
+
 "@types/body-parser@*":
   version "1.19.2"
   resolved "https://registry.yarnpkg.com/@types/body-parser/-/body-parser-1.19.2.tgz#aea2059e28b7658639081347ac4fab3de166e6f0"
@@ -1530,6 +1535,11 @@
   dependencies:
     "@types/mime" "*"
     "@types/node" "*"
+
+"@types/uuid@^9.0.1":
+  version "9.0.1"
+  resolved "https://registry.yarnpkg.com/@types/uuid/-/uuid-9.0.1.tgz#98586dc36aee8dacc98cc396dbca8d0429647aa6"
+  integrity sha512-rFT3ak0/2trgvp4yYZo5iKFEPsET7vKydKF+VRCxlQ9bpheehyAJH89dAkaLEq/j/RZXJIqcgsmPJKUP1Z28HA==
 
 "@webassemblyjs/ast@1.11.1":
   version "1.11.1"

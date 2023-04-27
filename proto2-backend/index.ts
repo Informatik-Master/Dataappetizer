@@ -17,7 +17,7 @@ const dynamoDbClient = DynamoDBDocumentClient.from(client);
 
 app.use(express.json());
 
-app.get('/datapoints', async function (req, res) {
+app.get('/api/debug/datapoints', async function (req, res) {
   const { Items } = await dynamoDbClient.send(
     new ScanCommand({
       TableName: process.env['DATAPOINT_TABLE'],
@@ -26,7 +26,7 @@ app.get('/datapoints', async function (req, res) {
   res.json(Items);
 });
 
-app.get('/datapoints-vin', async function (req, res) {
+app.get('/api/debug/datapoints-vin', async function (req, res) {
   let vin = req.query['vin']?.toString()!;
   const { Items } = await dynamoDbClient.send(
     new QueryCommand({
@@ -42,7 +42,7 @@ app.get('/datapoints-vin', async function (req, res) {
   res.json(Items);
 });
 
-app.get('/datapoints-vin-latest', async function (req, res) {
+app.get('/api/debug/datapoints-vin-latest', async function (req, res) {
   const dataPoints = ['geolocation', 'mileage'];
   let vin = req.query['vin']?.toString()!;
 
@@ -65,7 +65,7 @@ app.get('/datapoints-vin-latest', async function (req, res) {
   res.json((await Promise.all(queries)).flatMap((v) => v.Items));
 });
 
-app.get('/vehicles', async function (req, res) {
+app.get('/api/debug/vehicles', async function (req, res) {
   const { Items } = await dynamoDbClient.send(
     new ScanCommand({
       TableName: process.env['VEHICLES_TABLE'],
@@ -74,7 +74,7 @@ app.get('/vehicles', async function (req, res) {
   res.json(Items);
 });
 
-app.get('/connections', async function (req, res) {
+app.get('/api/debug/connections', async function (req, res) {
   const { Items } = await dynamoDbClient.send(
     new ScanCommand({
       TableName: process.env['CONNECTIONS_TABLE'],

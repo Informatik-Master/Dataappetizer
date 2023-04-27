@@ -8,6 +8,7 @@ import {
   QueryCommand,
   DynamoDBDocumentClient,
   PutCommand,
+  BatchWriteCommand,
 } from '@aws-sdk/lib-dynamodb';
 
 const client = new DynamoDBClient({
@@ -16,15 +17,37 @@ const client = new DynamoDBClient({
 });
 const dynamoDbClient = DynamoDBDocumentClient.from(client);
 
+const CONNECTIONS_TABLE = process.env['CONNECTIONS_TABLE'];
+if (!CONNECTIONS_TABLE) {
+  throw new Error('missing CONNECTIONS_TABLE');
+}
+
 export const connect = async ({
   requestContext: { connectedAt, connectionId },
-  headers,
+  headers, //TODO: X-System-ID => and then store the SystemId or the relevant vins
 }: any) => {
   console.log('Connecting', connectionId, headers);
   if (!connectionId) {
     // TODO: When ist this the case?
     throw new Error('missing connectionId');
   }
+
+  console.log('systemId', headers['x-system-id']);//TODO: Besser token
+
+  // new BatchWriteCommand({
+  //   RequestItems: {
+  //     [CONNECTIONS_TABLE]: [
+  //       {
+  //         PutRequest: {
+  //           Item: {
+  //             connectionId,
+  //             connectedAt,
+  //           },
+  //         },
+  //       },
+  //     ],
+  //   },
+  // });
 
   console.log('pre');
   await dynamoDbClient.send(
