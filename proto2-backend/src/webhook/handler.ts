@@ -1,18 +1,18 @@
-import { APIGatewayProxyEvent, Context } from "aws-lambda"
+import express from 'express';
+import serverless from 'serverless-http';
 
-export const handler = async (event: APIGatewayProxyEvent, context: Context) => { //TODO: express
-
-    const authorization = event.headers['authorization'] // 3dumHC+4F9N]1[(.YJ8O
-    const subscriptionId = event.headers['x-subscription-id']
-    const forwardedFor = event.headers['x-forwarded-for'] // 3.121.20.52, 52.28.216.175, 52.29.162.166
+const app = express();
+app.use(express.json());
 
 
-    const body = JSON.parse(event.body!)
-    console.log(event)
-    return {
-        statusCode: 200,
-        body: JSON.stringify({
+app.post('/webhook', async (req, res) => {
+    const authorization = req.headers['authorization'] // 3dumHC+4F9N]1[(.YJ8O
+    const subscriptionId = req.headers['x-subscription-id']
+    const forwardedFor = req.headers['x-forwarded-for'] //
+
+  res.status(200).json({
             status: 'OK'
-        })
-    }
-}
+        });
+});
+export const handler = serverless(app);
+

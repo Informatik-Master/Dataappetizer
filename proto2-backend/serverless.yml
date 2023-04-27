@@ -37,6 +37,7 @@ plugins:
 
 provider:
   name: aws
+  timeout: 30
   runtime: nodejs18.x
   region: us-east-1
   iam:
@@ -96,7 +97,7 @@ functions:
     events:
       - httpApi: 
           path: /webhook
-          method: ANY
+          method: POST
 
   # pullVehicles:
   #   handler: src/pullVehicles/handler.handler
