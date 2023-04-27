@@ -15,18 +15,16 @@ custom:
       port: 8002
       migrate: true
       seed: true
-    seed:
-      datapoints:
-        sources:
-          - table: ${self:custom.datapointTable}
-            sources: [./seed.json]
+    # seed:
+    #   datapoints:
+    #     sources:
+    #       - table: ${self:custom.datapointTable}
+    #         sources: [./seed.json]
   serverless-offline-dynamodb-streams:
     endpoint: http://0.0.0.0:8002
     region: us-east-1
     accessKeyId: root
     secretAccessKey: root
-    skipCacheInvalidation: false
-    readInterval: 50
 
 
 plugins:
@@ -122,8 +120,9 @@ functions:
     handler: src/dispatcher/handler.dispatcher
     events:
       - stream:
+          parallelizationFactor: 10
           type: dynamodb
-          batchSize: 1
+          batchSize: 100
           startingPosition: LATEST
           arn:
             Fn::GetAtt:
@@ -156,7 +155,9 @@ resources:
         KeySchema:
           - AttributeName: connectionId
             KeyType: HASH
-        BillingMode: PAY_PER_REQUEST
+        ProvisionedThroughput:
+          ReadCapacityUnits: 10
+          WriteCapacityUnits: 10
         TableName: ${self:custom.connectionsTable}
         # GlobalSecondaryIndexes:
         #   - IndexName: ${self:custom.connectionsTableVinIndex}

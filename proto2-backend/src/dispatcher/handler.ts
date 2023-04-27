@@ -23,6 +23,7 @@ export const dispatcher = async ({ Records }: any) => {
     }),
   );
 
+  const promised = [];
   for (const record of Records) {
     const { dynamodb } = record;
 
@@ -37,6 +38,7 @@ export const dispatcher = async ({ Records }: any) => {
     }) =>
       Items!.map((item) =>
         apigatewaymanagementapi.send(
+          // what happens if the connection is closed?
           new PostToConnectionCommand({
             ConnectionId: item['connectionId'],
             Data: Buffer.from(JSON.stringify(bufferData)),
@@ -44,42 +46,50 @@ export const dispatcher = async ({ Records }: any) => {
         ),
       );
 
-      
     //TODO: push all this on connect
     if (unmarshalledPayload['datapointName'] === 'geolocation') {
-      await sendToAll({
-        event: 'geolocation',
-        data: {
-          vin: unmarshalledPayload['vin'],
-          value: unmarshalledPayload,
-        },
-      });
+      promised.push(
+        sendToAll({
+          event: 'geolocation',
+          data: {
+            vin: unmarshalledPayload['vin'],
+            value: unmarshalledPayload,
+          },
+        }),
+      );
     }
     if (unmarshalledPayload['datapointName'] === 'averagedistance') {
-      await sendToAll({
-        event: 'averagedistance',
-        data: {
-          vin: unmarshalledPayload['vin'],
-          value: unmarshalledPayload,
-        },
-      });
+      promised.push(
+        sendToAll({
+          event: 'averagedistance',
+          data: {
+            vin: unmarshalledPayload['vin'],
+            value: unmarshalledPayload,
+          },
+        }),
+      );
     }
     if (unmarshalledPayload['datapointName'] === 'mileage') {
-      await sendToAll({
-        event: 'mileage',
-        data: {
-          vin: unmarshalledPayload['vin'],
-          value: unmarshalledPayload,
-        },
-      });
+      promised.push(
+        sendToAll({
+          event: 'mileage',
+          data: {
+            vin: unmarshalledPayload['vin'],
+            value: unmarshalledPayload,
+          },
+        }),
+      );
     }
-    await sendToAll({
-      event: 'message',
-      data: {
-        vin: unmarshalledPayload['vin'],
-        datapointName: unmarshalledPayload['datapointName'],
-        value: unmarshalledPayload,
-      },
-    });
+    // promised.push(
+    //   sendToAll({
+    //     event: 'message',
+    //     data: {
+    //       vin: unmarshalledPayload['vin'],
+    //       datapointName: unmarshalledPayload['datapointName'],
+    //       value: unmarshalledPayload,
+    //     },
+    //   }),
+    // );
   }
+  await Promise.all(promised);
 };

@@ -37,6 +37,7 @@ export class DashboardComponent implements OnInit {
     });
 
     const update = (parsed: any) => {
+      console.log('parsed', parsed)
       if (parsed.event === 'getDiagram') {
         this.echartMerge = {
           series: [
