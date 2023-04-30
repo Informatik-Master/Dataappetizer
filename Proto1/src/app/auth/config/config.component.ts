@@ -1,10 +1,15 @@
-import { AnimationTriggerMetadata, animate, style, transition, trigger } from '@angular/animations';
-import { HttpClient } from '@angular/common/http';
+import {
+  AnimationTriggerMetadata,
+  animate,
+  style,
+  transition,
+  trigger,
+} from '@angular/animations';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { EChartsOption } from 'echarts';
 import { firstValueFrom } from 'rxjs';
-import { SystemService } from 'src/app/@core/system.service';
+import { SystemService } from '../../@core/system.service';
 
 type DiagramConfig = {
   //TODO: id from backend
@@ -13,15 +18,25 @@ type DiagramConfig = {
   chart?: EChartsOption; //TODO: Or component?
 };
 
-export function FadeInOut(timingIn: number, timingOut: number, height: boolean = false): AnimationTriggerMetadata  {
+export function FadeInOut(
+  timingIn: number,
+  timingOut: number,
+  height: boolean = false
+): AnimationTriggerMetadata {
   return trigger('fadeInOut', [
     transition(':enter', [
-      style(height ? { opacity: 0 , height: 0, } : { opacity: 0, }),
-      animate(timingIn, style(height ? { opacity: 1, height: 'fit-content' } : { opacity: 1, })),
+      style(height ? { opacity: 0, height: 0 } : { opacity: 0 }),
+      animate(
+        timingIn,
+        style(height ? { opacity: 1, height: 'fit-content' } : { opacity: 1 })
+      ),
     ]),
     transition(':leave', [
-      animate( timingOut, style(height ? { opacity: 0, height: 0, } : { opacity: 0, })),
-    ])
+      animate(
+        timingOut,
+        style(height ? { opacity: 0, height: 0 } : { opacity: 0 })
+      ),
+    ]),
   ]);
 }
 
@@ -29,7 +44,7 @@ export function FadeInOut(timingIn: number, timingOut: number, height: boolean =
   selector: 'ngx-config',
   templateUrl: './config.component.html',
   styleUrls: ['./config.component.scss'],
-  animations: [FadeInOut(200, 300, true)]
+  animations: [FadeInOut(200, 300, true)],
 })
 export class ConfigComponent {
   selectedIndex = 0;
@@ -44,18 +59,17 @@ export class ConfigComponent {
     {
       name: 'Anzahl der Fahrzeuge',
       selected: false,
-
     },
     {
       name: 'Herstellerverteilung',
       selected: false,
       chart: {
         tooltip: {
-          trigger: 'item'
+          trigger: 'item',
         },
         legend: {
           top: '5%',
-          left: 'center'
+          left: 'center',
         },
         series: [
           {
@@ -65,28 +79,28 @@ export class ConfigComponent {
             avoidLabelOverlap: false,
             label: {
               show: false,
-              position: 'center'
+              position: 'center',
             },
             emphasis: {
               label: {
                 show: true,
                 fontSize: 40,
-                fontWeight: 'bold'
-              }
+                fontWeight: 'bold',
+              },
             },
             labelLine: {
-              show: false
+              show: false,
             },
             data: [
               { value: 1048, name: 'Search Engine' },
               { value: 735, name: 'Direct' },
               { value: 580, name: 'Email' },
               { value: 484, name: 'Union Ads' },
-              { value: 300, name: 'Video Ads' }
-            ]
-          }
-        ]
-      }
+              { value: 300, name: 'Video Ads' },
+            ],
+          },
+        ],
+      },
     },
     {
       name: 'Informationsticker',
@@ -103,30 +117,30 @@ export class ConfigComponent {
           axisPointer: {
             type: 'cross',
             label: {
-              backgroundColor: '#6a7985'
-            }
-          }
+              backgroundColor: '#6a7985',
+            },
+          },
         },
         legend: {
-          data: ['Auto 1', 'Auto 2', 'Auto 3']
+          data: ['Auto 1', 'Auto 2', 'Auto 3'],
         },
         grid: {
           left: '3%',
           right: '4%',
           bottom: '3%',
-          containLabel: true
+          containLabel: true,
         },
         xAxis: [
           {
             type: 'category',
             boundaryGap: false,
-            data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-          }
+            data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+          },
         ],
         yAxis: [
           {
-            type: 'value'
-          }
+            type: 'value',
+          },
         ],
         series: [
           {
@@ -135,9 +149,9 @@ export class ConfigComponent {
             stack: 'Total',
             areaStyle: {},
             emphasis: {
-              focus: 'series'
+              focus: 'series',
             },
-            data: [120, 132, 101, 134, 90, 230, 210]
+            data: [120, 132, 101, 134, 90, 230, 210],
           },
           {
             name: 'Auto 2',
@@ -145,9 +159,9 @@ export class ConfigComponent {
             stack: 'Total',
             areaStyle: {},
             emphasis: {
-              focus: 'series'
+              focus: 'series',
             },
-            data: [220, 182, 191, 234, 290, 330, 310]
+            data: [220, 182, 191, 234, 290, 330, 310],
           },
           {
             name: 'Auto 3',
@@ -155,12 +169,12 @@ export class ConfigComponent {
             stack: 'Total',
             areaStyle: {},
             emphasis: {
-              focus: 'series'
+              focus: 'series',
             },
-            data: [150, 232, 201, 154, 190, 330, 410]
+            data: [150, 232, 201, 154, 190, 330, 410],
           },
-        ]
-      }
+        ],
+      },
     },
     {
       name: 'Informationsticker',
@@ -168,8 +182,10 @@ export class ConfigComponent {
     },
   ];
 
-  constructor(private readonly router: Router, private readonly systemService: SystemService) {
-  }
+  constructor(
+    private readonly router: Router,
+    private readonly systemService: SystemService
+  ) {}
 
   previous() {
     this.selectedIndex--;
@@ -180,7 +196,9 @@ export class ConfigComponent {
   }
 
   async finish() {
-    const newSystem = await firstValueFrom(this.systemService.createSystem(this.systemName));
+    const newSystem = await firstValueFrom(
+      this.systemService.createSystem(this.systemName)
+    );
     this.router.navigate(['pages', newSystem.id]);
   }
 }
