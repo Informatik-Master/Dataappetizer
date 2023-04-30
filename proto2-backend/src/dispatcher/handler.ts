@@ -1,5 +1,6 @@
 import {
   ApiGatewayManagementApiClient,
+  GetConnectionCommand,
   PostToConnectionCommand,
 } from '@aws-sdk/client-apigatewaymanagementapi';
 import { DynamoDBDocumentClient, ScanCommand } from '@aws-sdk/lib-dynamodb';
@@ -36,15 +37,21 @@ export const dispatcher = async ({ Records }: any) => {
       event: string;
       data: Record<string, any>;
     }) =>
-      Items!.map((item) =>
-        apigatewaymanagementapi.send(
-          // what happens if the connection is closed?
-          new PostToConnectionCommand({
-            ConnectionId: item['connectionId'],
-            Data: Buffer.from(JSON.stringify(bufferData)),
-          }),
-        ),
-      );
+      Items!.map(async (item) => {
+        try {
+          const gatewayResponse = await apigatewaymanagementapi.send(
+            // what happens if the connection is closed?
+            new PostToConnectionCommand({
+              ConnectionId: item['connectionId'],
+              Data: Buffer.from(JSON.stringify(bufferData)),
+            }),
+          );
+          return gatewayResponse;
+        } catch (e) {
+          console.log(e);
+        }
+        return null;
+      });
 
     //TODO: push all this on connect
     if (unmarshalledPayload['datapointName'] === 'geolocation') {
