@@ -10,6 +10,7 @@ custom:
   systemsTable: "systems-${sls:stage}"
   systemsTableVehiclesTable: "systems-${sls:stage}-vehicles"
   systemsTableVehiclesTableVinIndex: "systems-${sls:stage}-vehicles-vinIndex"
+  usersTable: "users-${sls:stage}"
 
 
   dynamodb:
@@ -74,6 +75,7 @@ provider:
                   - "index"
                   - ${self:custom.systemsTableVehiclesTableVinIndex}
             - Fn::GetAtt: [SystemsVehiclesTable, Arn]
+            - Fn::GetAtt: [UsersTable, Arn]
 
   environment:
     DATAPOINT_TABLE: ${self:custom.datapointTable}
@@ -84,6 +86,8 @@ provider:
     SYSTEMS_TABLE: ${self:custom.systemsTable}
     SYSTEMS_VEHICLES_TABLE: ${self:custom.systemsTableVehiclesTable}
     SYSTEMS_VEHICLES_TABLE_VIN_INDEX: ${self:custom.systemsTableVehiclesTableVinIndex}
+    USERS_TABLE: ${self:custom.usersTable}
+    JWT_SECRET: PLEASE_CHANGE_ME_IN_THE_FUTURE_TO_OAUTH_FLOW
 
 functions:
 
@@ -112,10 +116,10 @@ functions:
   #   handler: src/pullVehicles/handler.handler
   #   events:
   #     - schedule: rate(1 minute)
-  # pullVehicleData:
-  #   handler: src/pullVehicleData/handler.handler
-  #   events:
-  #     - schedule: rate(1 minute)
+  pullVehicleData:
+    handler: src/pullVehicleData/handler.handler
+    events:
+      - schedule: rate(1 minute)
   connect:
     handler: src/connect/handler.connect
     events:
@@ -150,6 +154,12 @@ functions:
             Fn::GetAtt:
               - Connections
               - StreamArn
+  login:
+    handler: src/login/handler.login
+    events:
+      - httpApi: 
+          path: /api/login
+          method: POST
 
 resources:
   Resources:
@@ -248,5 +258,16 @@ resources:
             Projection:
               ProjectionType: ALL
             IndexName: ${self:custom.systemsTableVehiclesTableVinIndex}
+    usersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: username
+            AttributeType: S
+        KeySchema:
+          - AttributeName: username
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.usersTable}
 
               

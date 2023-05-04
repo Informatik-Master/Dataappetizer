@@ -1,6 +1,7 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import {
   DynamoDBDocumentClient,
+  GetCommand,
   PutCommand,
   ScanCommand,
 } from '@aws-sdk/lib-dynamodb';
@@ -9,7 +10,13 @@ import express from 'express';
 import serverless from 'serverless-http';
 import { v4 as uuidv4 } from 'uuid';
 
+import { hash } from 'bcrypt';
+
 const SYSTEMS_TABLE_NAME = process.env['SYSTEMS_TABLE'] || '';
+
+const USERS_TABLE_NAME = process.env['USERS_TABLE'] || '';
+const JWT_SECRET = process.env['JWT_SECRET'] || '';
+
 const client = new DynamoDBClient({
   region: 'us-east-1',
   endpoint: 'http://localhost:8002',
@@ -29,7 +36,7 @@ app.use(express.json());
 
 app.post('/api/systems', async (req, res) => {
   //TODO: validation
-  const { name } = req.body;
+  const { name, users } = req.body;
   const system = {
     id: uuidv4(),
     name,
@@ -40,6 +47,36 @@ app.post('/api/systems', async (req, res) => {
       Item: system,
     }),
   );
+
+  if (users?.length) {
+    for (const user of users) {
+      const { Item: userItem } = await dynamoDbClient.send(
+        new GetCommand({
+          TableName: USERS_TABLE_NAME,
+          Key: {
+            username: user,
+          },
+        }),
+      );
+
+      if (!userItem) {
+        res.status(401).json({ message: 'User not found' });
+        return;
+      }
+
+      if (!userItem['systems']) userItem['systems'] = [];
+
+      userItem['systems'].push(system.id);
+
+      await dynamoDbClient.send(
+        new PutCommand({
+          TableName: USERS_TABLE_NAME,
+          Item: userItem,
+        }),
+      );
+    }
+  }
+
   res.status(201).json(system);
 });
 app.get('/api/systems', async (req, res) => {
