@@ -196,9 +196,7 @@ export class ConfigComponent {
   }
 
   async finish() {
-    const newSystem = await firstValueFrom(
-      this.systemService.createSystem(this.systemName)
-    );
+    const newSystem = await this.systemService.createSystem(this.systemName)
     this.router.navigate(['pages', newSystem.id]);
   }
 }
