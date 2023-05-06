@@ -14,19 +14,8 @@ import { CommonModule } from '@angular/common';
   `,
 })
 export class GeoLocationComponent {
-  // private dataPointSubscription: Subscription | undefined;
+  public constructor(protected readonly dataPointService: DataPointService) {
 
-  public constructor(protected readonly dataPointService: DataPointService) {}
+  }
 
-  // ngOnInit(): void {
-  //   this.dataPointSubscription = this.dataPointService.dataPoint$.subscribe(
-  //     (dataPoint) => {
-  //       console.log('dataPoint', dataPoint);
-  //     }
-  //   );
-  // }
-
-  // ngOnDestroy(): void {
-  //   this.dataPointSubscription?.unsubscribe();
-  // }
 }

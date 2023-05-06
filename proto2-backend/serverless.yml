@@ -155,7 +155,7 @@ functions:
               - Connections
               - StreamArn
   login:
-    handler: src/login/handler.login
+    handler: src/login/handler.handler
     events:
       - httpApi: 
           path: /api/login

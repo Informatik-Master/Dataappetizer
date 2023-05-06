@@ -5,6 +5,7 @@ import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient, GetCommand, PutCommand, ScanCommand } from '@aws-sdk/lib-dynamodb';
 
 import {compare, hash} from 'bcrypt'
+import { Role, User } from '../common/types';
 
 const JWT_SECRET = process.env['JWT_SECRET'] || '';
 
@@ -74,7 +75,9 @@ app.post('/api/register', async (req, res) => {
             Item: {
                 username: username,
                 password: hashedPassword,
-            },
+                systems: [] as string[], // TODO: Correct type
+                role: Role.User,
+            } as User,
         }),
     );
 
