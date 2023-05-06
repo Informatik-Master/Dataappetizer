@@ -25,6 +25,10 @@ custom:
         sources:
           - table: ${self:custom.datapointTable}
             sources: [./seed.json]
+      users:
+        sources:
+          - table: ${self:custom.usersTable}
+            sources: [./users.json]
   serverless-offline-dynamodb-streams:
     endpoint: http://0.0.0.0:8002
     region: us-east-1
@@ -262,10 +266,10 @@ resources:
       Type: AWS::DynamoDB::Table
       Properties:
         AttributeDefinitions:
-          - AttributeName: username
+          - AttributeName: email
             AttributeType: S
         KeySchema:
-          - AttributeName: username
+          - AttributeName: email
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:custom.usersTable}

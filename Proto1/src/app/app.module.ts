@@ -7,7 +7,7 @@ import { ThemeModule } from './@theme/theme.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NgxEchartsModule } from 'ngx-echarts';
-import { NbAuthModule, NbPasswordAuthStrategy } from '@nebular/auth';
+import { NbAuthJWTToken, NbAuthModule, NbPasswordAuthStrategy } from '@nebular/auth';
 import { SocketIoModule } from 'ngx-socket-io';
 import { CookieModule } from 'ngx-cookie';
 
@@ -23,13 +23,12 @@ import { CookieModule } from 'ngx-cookie';
     NbAuthModule.forRoot({
       strategies: [
         NbPasswordAuthStrategy.setup({
-          name: 'username',
+          name: 'email',
           baseEndpoint: '/api/',
-          login: {
-            redirect: {
-              success: '/auth/systems',
-              failure: null,
-            },
+
+          token: {
+            class: NbAuthJWTToken,
+            key: 'token',
           },
         }),
       ],

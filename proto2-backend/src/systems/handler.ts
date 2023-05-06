@@ -10,7 +10,7 @@ import express from 'express';
 import serverless from 'serverless-http';
 import { v4 as uuidv4 } from 'uuid';
 
-import { hash } from 'bcrypt';
+import { hash } from 'bcryptjs';
 
 const SYSTEMS_TABLE_NAME = process.env['SYSTEMS_TABLE'] || '';
 
@@ -54,7 +54,7 @@ app.post('/api/systems', async (req, res) => {
         new GetCommand({
           TableName: USERS_TABLE_NAME,
           Key: {
-            username: user,
+            email: user,
           },
         }),
       );

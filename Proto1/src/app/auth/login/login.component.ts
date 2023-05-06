@@ -25,11 +25,10 @@ export class LoginComponent {
 
   async login() {
     console.log('woop');
-    this.nbAuth.authenticate('username', this.user).subscribe((authResult) => {
+    this.nbAuth.authenticate('email', this.user).subscribe((authResult) => {
       console.log(authResult);
       if (authResult.isSuccess()) {
-        // this.router.navigateByUrl('/auth/systems');
-        console.log('success');
+        this.router.navigateByUrl('/auth/systems');
       }
     });
   }
