@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { SystemService } from 'src/app/@core/system.service';
+import { SystemService } from '../../@core/system.service';
 
 @Component({
   selector: 'ngx-systems',
@@ -10,7 +10,10 @@ import { SystemService } from 'src/app/@core/system.service';
 export class SystemsComponent {
   selectedIndex = 1;
 
-  constructor(private readonly router: Router, private readonly systemService: SystemService) {}
+  constructor(
+    private readonly router: Router,
+    private readonly systemService: SystemService
+  ) {}
 
   systems = this.systemService.getSystems();
 

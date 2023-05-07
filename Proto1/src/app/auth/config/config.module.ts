@@ -16,6 +16,7 @@ import { ConfigRoutingModule } from './config-routing.module';
 import { ConfigComponent } from './config.component';
 import { FormsModule } from '@angular/forms';
 import { NgxEchartsModule } from 'ngx-echarts';
+import { VisualizationModule } from '../../visualizations/visualization.module';
 
 @NgModule({
   declarations: [ConfigComponent],
@@ -34,6 +35,7 @@ import { NgxEchartsModule } from 'ngx-echarts';
     NbListModule,
     NbCheckboxModule,
     NgxEchartsModule.forChild(),
+    VisualizationModule
   ],
 })
 export class ConfigModule {}

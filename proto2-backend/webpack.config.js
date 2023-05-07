@@ -18,6 +18,10 @@ module.exports = {
         include: /node_modules/,
         type: 'javascript/auto',
       },
+      {
+        test: /\.html$/i,
+        loader: "html-loader",
+      },
     ],
   },
   resolve: {

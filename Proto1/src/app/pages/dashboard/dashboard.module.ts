@@ -11,6 +11,7 @@ import { DashboardRoutingModule } from './dashboard-routing.module';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { SocketIoModule } from 'ngx-socket-io';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
+import { VisualizationModule } from '../../visualizations/visualization.module';
 
 @NgModule({
   declarations: [DashboardComponent],
@@ -23,7 +24,8 @@ import { LeafletModule } from '@asymmetrik/ngx-leaflet';
     NgxEchartsModule.forChild(),
     SocketIoModule,
     NbListModule,
-    LeafletModule
+    LeafletModule,
+    VisualizationModule
   ],
 })
 export class DashboardModule {}

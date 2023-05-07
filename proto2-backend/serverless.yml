@@ -8,6 +8,11 @@ custom:
   connectionsTableVinIndex: "connections-${sls:stage}-vinIndex"
   vehiclesTable: "vehicles-${sls:stage}"
   systemsTable: "systems-${sls:stage}"
+  systemsTableVehiclesTable: "systems-${sls:stage}-vehicles"
+  systemsTableVehiclesTableVinIndex: "systems-${sls:stage}-vehicles-vinIndex"
+  usersTable: "users-${sls:stage}"
+
+
   dynamodb:
     stages:
       - dev
@@ -20,6 +25,10 @@ custom:
         sources:
           - table: ${self:custom.datapointTable}
             sources: [./seed.json]
+      users:
+        sources:
+          - table: ${self:custom.usersTable}
+            sources: [./users.json]
   serverless-offline-dynamodb-streams:
     endpoint: http://0.0.0.0:8002
     region: us-east-1
@@ -64,6 +73,13 @@ provider:
                   - ${self:custom.connectionsTableVinIndex}
             - Fn::GetAtt: [VehiclesTable, Arn]
             - Fn::GetAtt: [Systems, Arn]
+            - Fn::Join:
+                - "/"
+                - - Fn::GetAtt: [Systems, Arn]
+                  - "index"
+                  - ${self:custom.systemsTableVehiclesTableVinIndex}
+            - Fn::GetAtt: [SystemsVehiclesTable, Arn]
+            - Fn::GetAtt: [UsersTable, Arn]
 
   environment:
     DATAPOINT_TABLE: ${self:custom.datapointTable}
@@ -72,7 +88,10 @@ provider:
     CONNECTIONS_TABLE_VIN_INDEX: ${self:custom.connectionsTableVinIndex}
     VEHICLES_TABLE: ${self:custom.vehiclesTable}
     SYSTEMS_TABLE: ${self:custom.systemsTable}
-    SYSTEMS_VEHICLES_TABLE: ${self:custom.systemsTable}-vehicles
+    SYSTEMS_VEHICLES_TABLE: ${self:custom.systemsTableVehiclesTable}
+    SYSTEMS_VEHICLES_TABLE_VIN_INDEX: ${self:custom.systemsTableVehiclesTableVinIndex}
+    USERS_TABLE: ${self:custom.usersTable}
+    JWT_SECRET: PLEASE_CHANGE_ME_IN_THE_FUTURE_TO_OAUTH_FLOW
 
 functions:
 
@@ -101,10 +120,10 @@ functions:
   #   handler: src/pullVehicles/handler.handler
   #   events:
   #     - schedule: rate(1 minute)
-  # pullVehicleData:
-  #   handler: src/pullVehicleData/handler.handler
-  #   events:
-  #     - schedule: rate(1 minute)
+  pullVehicleData:
+    handler: src/pullVehicleData/handler.handler
+    events:
+      - schedule: rate(1 minute)
   connect:
     handler: src/connect/handler.connect
     events:
@@ -122,7 +141,7 @@ functions:
       - stream:
           parallelizationFactor: 10
           type: dynamodb
-          batchSize: 100
+          batchSize: 1
           startingPosition: LATEST
           arn:
             Fn::GetAtt:
@@ -139,6 +158,12 @@ functions:
             Fn::GetAtt:
               - Connections
               - StreamArn
+  login:
+    handler: src/login/handler.handler
+    events:
+      - httpApi: 
+          path: /api/login
+          method: POST
 
 resources:
   Resources:
@@ -150,22 +175,20 @@ resources:
         AttributeDefinitions:
           - AttributeName: connectionId
             AttributeType: S
-          # - AttributeName: vin
-          #   AttributeType: S
+          - AttributeName: systemId
+            AttributeType: S
         KeySchema:
           - AttributeName: connectionId
             KeyType: HASH
-        ProvisionedThroughput:
-          ReadCapacityUnits: 10
-          WriteCapacityUnits: 10
+        BillingMode: PAY_PER_REQUEST
         TableName: ${self:custom.connectionsTable}
-        # GlobalSecondaryIndexes:
-        #   - IndexName: ${self:custom.connectionsTableVinIndex}
-        #     Projection:
-        #       ProjectionType: ALL
-        #     KeySchema:
-        #       - AttributeName: vin
-        #         KeyType: HASH
+        GlobalSecondaryIndexes:
+          - IndexName: ${self:custom.connectionsTableVinIndex}
+            Projection:
+              ProjectionType: ALL
+            KeySchema:
+              - AttributeName: systemId
+                KeyType: HASH
     DataPointTable:
       Type: AWS::DynamoDB::Table
       Properties:
@@ -231,4 +254,24 @@ resources:
           - AttributeName: vin
             KeyType: RANGE
         BillingMode: PAY_PER_REQUEST
-        TableName: ${self:custom.systemsTable}-vehicles
+        TableName: ${self:custom.systemsTableVehiclesTable}
+        GlobalSecondaryIndexes:
+          - KeySchema:
+              - AttributeName: vin
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+            IndexName: ${self:custom.systemsTableVehiclesTableVinIndex}
+    usersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: email
+            AttributeType: S
+        KeySchema:
+          - AttributeName: email
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.usersTable}
+
+              

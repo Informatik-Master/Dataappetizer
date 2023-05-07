@@ -7,13 +7,12 @@ import { ThemeModule } from './@theme/theme.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NgxEchartsModule } from 'ngx-echarts';
-import { NbAuthModule } from '@nebular/auth';
+import { NbAuthJWTToken, NbAuthModule, NbPasswordAuthStrategy } from '@nebular/auth';
 import { SocketIoModule } from 'ngx-socket-io';
+import { CookieModule } from 'ngx-cookie';
 
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
     HammerModule,
@@ -21,12 +20,27 @@ import { SocketIoModule } from 'ngx-socket-io';
     BrowserAnimationsModule,
     HttpClientModule,
     ThemeModule.forRoot(),
-    NbAuthModule.forRoot(),
+    NbAuthModule.forRoot({
+      strategies: [
+        NbPasswordAuthStrategy.setup({
+          name: 'email',
+          baseEndpoint: '/api/',
+
+          token: {
+            class: NbAuthJWTToken,
+            key: 'token',
+          },
+        }),
+      ],
+    }),
     SocketIoModule.forRoot({ url: 'http://localhost:3000', options: {} }),
     NgxEchartsModule.forRoot({
       echarts: () => import('echarts'),
     }),
+    CookieModule.withOptions({
+      //TODO:
+    }),
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

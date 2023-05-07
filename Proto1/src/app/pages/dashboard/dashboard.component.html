@@ -41,16 +41,7 @@
     </div>
   </div>
   <div class="col">
-    <nb-card>
-      <nb-card-header> Fahrzeugstandorte </nb-card-header>
-      <nb-card-body class="p-0">
-        <div
-          leaflet
-          [leafletOptions]="mapOptions"
-          (leafletMapReady)="onMapReady($event)"
-        ></div>
-      </nb-card-body>
-    </nb-card>
+    <ngx-geo-location></ngx-geo-location>
   </div>
 </div>
 <div class="row">
@@ -67,3 +58,4 @@
     </nb-card>
   </div>
 </div>
+

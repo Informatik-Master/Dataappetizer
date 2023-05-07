@@ -82,11 +82,15 @@ export const initialConnect = async ({ Records }: any) => {
     });
     const res = (await Promise.all(v)).flat(1);
     console.log('res',res)
-    await apigatewaymanagementapi.send(
-      new PostToConnectionCommand({
-        ConnectionId: connectionId,
-        Data: Buffer.from(JSON.stringify(res)),
-      }),
-    );
+    try {
+      await apigatewaymanagementapi.send(
+        new PostToConnectionCommand({
+          ConnectionId: connectionId,
+          Data: Buffer.from(JSON.stringify(res)),
+        }),
+      );
+
+
+    } catch {}
   }
 };
