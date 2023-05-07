@@ -11,7 +11,7 @@ import { DashboardRoutingModule } from './dashboard-routing.module';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { SocketIoModule } from 'ngx-socket-io';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
-import { GeoLocationComponent } from '../../visualizations/geo-location.component';
+import { VisualizationModule } from '../../visualizations/visualization.module';
 
 @NgModule({
   declarations: [DashboardComponent],
@@ -25,7 +25,7 @@ import { GeoLocationComponent } from '../../visualizations/geo-location.componen
     SocketIoModule,
     NbListModule,
     LeafletModule,
-    GeoLocationComponent
+    VisualizationModule
   ],
 })
 export class DashboardModule {}

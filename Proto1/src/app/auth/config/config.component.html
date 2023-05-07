@@ -13,26 +13,15 @@
           placeholder="Systemname"
           [(ngModel)]="systemName"
         />
-
-        <h2>Wählen Sie eine Organisation aus dem CARUSO dataplace</h2>
-
-        <nb-select placeholder="Select Showcase" [(selected)]="organization">
-          <nb-option value="">Option empty</nb-option>
-          <nb-option value="0">Option 0</nb-option>
-          <nb-option value="1">Option 1</nb-option>
-          <nb-option value="2">Option 2</nb-option>
-          <nb-option value="3">Option 3</nb-option>
-          <nb-option value="4">Option 4</nb-option>
-        </nb-select>
       </nb-card-body>
-      <nb-card-footer style="display: flex; justify-content: end; gap: 15px;">
+      <nb-card-footer style="display: flex; justify-content: end; gap: 15px">
         <button nbButton status="primary" (click)="next()">Weiter</button>
       </nb-card-footer>
     </nb-card>
   </nb-step>
   <nb-step label="Datenvisualisierung">
     <nb-card>
-      <nb-card-body>
+      <nb-card-body style="padding: 0">
         <nb-layout>
           <nb-layout-column>
             <nb-tabset>
@@ -41,7 +30,7 @@
                   <nb-list-item
                     *ngFor="let dashboardConfig of dashboardConfigs"
                     style="gap: 5px"
-                    (mouseover)="hoveredChart = dashboardConfig"
+                    (mouseenter)="loadVisualization(dashboardConfig)"
                   >
                     <nb-checkbox
                       [(checked)]="dashboardConfig.selected"
@@ -51,31 +40,16 @@
                 </nb-list>
               </nb-tab>
               <nb-tab tabTitle="Fahrzeugübersicht">
-                <nb-list>
-                  <nb-list-item
-                    *ngFor="let carConfig of carConfigs"
-                    style="gap: 5px"
-                    (mouseover)="hoveredChart = carConfig"
-                  >
-                    <nb-checkbox [(checked)]="carConfig.selected"></nb-checkbox>
-                    {{ carConfig.name }}
-                  </nb-list-item>
-                </nb-list>
+                <nb-list> </nb-list>
               </nb-tab>
             </nb-tabset>
           </nb-layout-column>
           <nb-layout-column>
-            
-            <ng-container *ngIf="hoveredChart?.chart" >
-             
-              <div  [@fadeInOut]  echarts [options]="hoveredChart!.chart!" class="echart"></div>  
-            </ng-container>
-            
-          
+            <ng-template visualizationHost></ng-template>
           </nb-layout-column>
         </nb-layout>
       </nb-card-body>
-      <nb-card-footer style="display: flex; justify-content: end; gap: 15px;">
+      <nb-card-footer style="display: flex; justify-content: end; gap: 15px">
         <button nbButton status="secondary" (click)="previous()">Zurück</button>
         <button nbButton status="primary" (click)="finish()">Weiter</button>
       </nb-card-footer>

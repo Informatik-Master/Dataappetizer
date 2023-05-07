@@ -3,6 +3,13 @@ import { Injectable } from '@angular/core';
 import { NbAuthService } from '@nebular/auth';
 import { Observable, firstValueFrom } from 'rxjs';
 
+interface System {
+  id?: string;
+  name: string;
+  users: string[];
+  dashboardConfig: string[]; //TODO: später kein id-string mehr?
+  detailConfig: string[];
+}
 @Injectable({
   providedIn: 'root',
 })
@@ -13,22 +20,14 @@ export class SystemService {
   ) {}
 
   public getSystems() {
-    return this.httpClient.get<{ id: string; name: string }[]>('/api/systems'); //TODO: prefix with environment variable
+    return this.httpClient.get<System[]>('/api/systems');
   }
 
-  public async createSystem(
-    systemName: string
-  ): Promise<{ id: string; name: string }> {
+  public async createSystem(system: System): Promise<System> {
     const currentUser = await firstValueFrom(this.authService.getToken());
 
-    return firstValueFrom(
-      this.httpClient.post<{ id: string; name: string }>('/api/systems', {
-        name: systemName,
-        users: [
-          // TODO: use ids instead of emails
-          currentUser.getPayload().email,
-        ],
-      })
-    );
+    if (!system.users.includes(currentUser.getPayload().email))
+      system.users.push(currentUser.getPayload().email);
+    return firstValueFrom(this.httpClient.post<System>('/api/systems', system));
   }
 }

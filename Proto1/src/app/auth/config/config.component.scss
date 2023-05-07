@@ -25,3 +25,7 @@ nb-card {
   }
 
 }
+
+::ng-deep nb-layout div {
+  height: 100%;
+}

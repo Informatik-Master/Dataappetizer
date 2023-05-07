@@ -5,7 +5,7 @@
     Kundensysteme
   </nb-card-header>
   <nb-list>
-    <nb-list-item *ngFor="let system of (systems | async)" class="system-entry" (click)="selectSystem(system.id)">
+    <nb-list-item *ngFor="let system of (systems | async)" class="system-entry" (click)="selectSystem(system.id!)">
       <span style="flex:1">{{ system.name }}</span>
       <nb-icon icon="arrow-forward-outline"></nb-icon>
     </nb-list-item>

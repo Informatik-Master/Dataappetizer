@@ -36,11 +36,16 @@ app.use(express.json());
 
 app.post('/api/systems', async (req, res) => {
   //TODO: validation
-  const { name, users } = req.body;
+  const { name, users, dashboardConfig, detailConfig } = req.body;
   const system = {
     id: uuidv4(),
     name,
+    users,
+    dashboardConfig,
+    detailConfig,
   };
+
+  // Transaction?
   await dynamoDbClient.send(
     new PutCommand({
       TableName: SYSTEMS_TABLE_NAME,
