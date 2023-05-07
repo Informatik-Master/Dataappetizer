@@ -1,10 +1,15 @@
 import { NgModule } from '@angular/core';
 import { VisualizationHost } from './visualization-host.directive';
 import { GeoLocationComponent } from './geo-location.component';
+import { InformationTickerComponent } from './information-ticker.component';
 
 @NgModule({
-  imports: [GeoLocationComponent],
+  imports: [GeoLocationComponent, InformationTickerComponent],
   declarations: [VisualizationHost],
-  exports: [VisualizationHost, GeoLocationComponent],
+  exports: [
+    VisualizationHost,
+    GeoLocationComponent,
+    InformationTickerComponent,
+  ],
 })
 export class VisualizationModule {}

@@ -16,6 +16,7 @@ import {
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { NbCardModule } from '@nebular/theme';
 import { filter, Subscription } from 'rxjs';
+import { VisualizationComponent } from './visualization-component.interface';
 
 @Component({
   standalone: true,
@@ -55,7 +56,7 @@ import { filter, Subscription } from 'rxjs';
     `,
   ],
 })
-export class GeoLocationComponent {
+export class GeoLocationComponent implements VisualizationComponent {
   vehicles = new Map<string, number>();
 
   markers = new Map<string, Marker>();
@@ -76,6 +77,7 @@ export class GeoLocationComponent {
 
   private map: LefletMap | null = null;
   private subscription: Subscription | null = null;
+  private isDestroyed = false;
 
   public constructor(protected readonly dataPointService: DataPointService) {}
 
@@ -105,6 +107,7 @@ export class GeoLocationComponent {
   }
 
   public ngOnDestroy(): void {
+    this.isDestroyed = true;
     this.subscription?.unsubscribe();
   }
 
@@ -117,7 +120,7 @@ export class GeoLocationComponent {
       })
       .addTo(this.map);
     setTimeout(() => {
-      map.invalidateSize();
+      !this.isDestroyed && map.invalidateSize();
     }, 1);
   }
 }

@@ -42,4 +42,21 @@ nb-auth-block {
   display: none;
 }
 
+nb-stepper .step-content {
+  padding: 0;
+}
 
+nb-layout.transparent .layout {
+  background-color: inherit;
+  min-height: unset;
+}
+
+nb-layout.fullheight div {
+  height: 100%;
+}
+
+nb-layout .columns {
+  nb-layout-column+nb-layout-column {
+    border-left: solid 1px var(--border-basic-color-4);
+  }
+}

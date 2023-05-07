@@ -10,8 +10,10 @@ import { Router } from '@angular/router';
 import { EChartsOption } from 'echarts';
 import { firstValueFrom } from 'rxjs';
 import { SystemService } from '../../@core/system.service';
-import { GeoLocationComponent } from 'src/app/visualizations/geo-location.component';
-import { VisualizationHost } from 'src/app/visualizations/visualization-host.directive';
+import { GeoLocationComponent } from '../../visualizations/geo-location.component';
+import { VisualizationHost } from '../../visualizations/visualization-host.directive';
+import { InformationTickerComponent } from '../../visualizations/information-ticker.component';
+import { VisualizationComponent } from '../../visualizations/visualization-component.interface';
 
 type DiagramConfig = {
   name: string;
@@ -60,6 +62,11 @@ export class ConfigComponent {
       selected: false,
       component: GeoLocationComponent,
     },
+    {
+      name: 'Informationsticker',
+      selected: false,
+      component: InformationTickerComponent,
+    },
   ];
   hoveredChart: DiagramConfig | null = null;
 
@@ -82,16 +89,18 @@ export class ConfigComponent {
       dashboardConfig: [],
       detailConfig: [],
       users: [],
-    });
+    }); // TODO: Is a new token needed?
     this.router.navigate(['pages', newSystem.id]);
   }
 
   loadVisualization(config: DiagramConfig) {
-    console.log('loadVisualization', config)
+    console.log('loadVisualization', config);
     const viewContainerRef = this.previewHost.viewContainerRef;
     viewContainerRef.clear();
 
-    const componentRef = viewContainerRef.createComponent<VisualizationHost>(config.component);
+    const componentRef = viewContainerRef.createComponent<VisualizationHost>(
+      config.component
+    );
     // componentRef.instance.data = adItem.data;
   }
 }

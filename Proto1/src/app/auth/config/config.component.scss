@@ -4,28 +4,15 @@
   }
 }
 
-::ng-deep nb-stepper .step-content {
-  padding: 0;
-}
 
 
-::ng-deep nb-layout .layout {
-  background-color: unset;
-  min-height: unset;
-}
+
+
 
 nb-card {
   height: 45rem !important;
 }
 
-::ng-deep nb-layout .columns {
-  nb-layout-column+nb-layout-column {
-    border-left: solid 1px var(--border-basic-color-4);
-    
-  }
 
-}
 
-::ng-deep nb-layout div {
-  height: 100%;
-}
+

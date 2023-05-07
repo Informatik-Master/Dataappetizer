@@ -45,17 +45,8 @@
   </div>
 </div>
 <div class="row">
-  <div class="col">
-    <nb-card style="height: unset; max-height: 20dvh">
-      <nb-card-header> Informationsticker </nb-card-header>
-      <nb-card-body class="p-0">
-        <nb-list>
-          <nb-list-item *ngFor="let notification of notifications">
-            {{ notification }}
-          </nb-list-item>
-        </nb-list>
-      </nb-card-body>
-    </nb-card>
+  <div class="col" style="max-height: 20dvh">
+    <ngx-information-ticker></ngx-information-ticker>
   </div>
 </div>
 

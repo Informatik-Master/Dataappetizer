@@ -35,6 +35,7 @@ app.post('/api/login', async (req, res) => {
       Key: {
         email: email,
       },
+      ConsistentRead: true,
     }),
   );
 
@@ -63,6 +64,7 @@ app.post('/api/register', async (req, res) => {
       Key: {
         email: email,
       },
+      ConsistentRead: true,
     }),
   );
 
