@@ -9,6 +9,7 @@ import {
   NbInputModule,
   NbLayoutModule,
   NbListModule,
+  NbPopoverModule,
   NbSelectModule,
   NbStepperModule,
   NbTabsetModule,
@@ -37,7 +38,8 @@ import { VisualizationModule } from '../../visualizations/visualization.module';
     NbCheckboxModule,
     NgxEchartsModule.forChild(),
     VisualizationModule,
-    NbFormFieldModule
+    NbFormFieldModule,
+    NbPopoverModule
   ],
 })
 export class ConfigModule {}

@@ -51,8 +51,11 @@ nb-layout.transparent .layout {
   min-height: unset;
 }
 
-nb-layout.fullheight div {
-  height: 100%;
+nb-layout.fullheight > div {
+  &, .layout, .layout-container {
+    height: 100%;
+  }
+
 }
 
 nb-layout .columns {

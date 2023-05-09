@@ -17,6 +17,8 @@ import ReconnectingWebSocket from 'reconnecting-websocket';
 
 import { CompactType, DisplayGrid, GridsterConfig, GridsterItem, GridsterItemComponent, GridType } from 'angular-gridster2';
 import { VisualizationComponent } from 'src/app/visualizations/visualization-component.interface';
+import { ActivatedRoute } from '@angular/router';
+import { map, Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'ngx-dashboard',
@@ -25,39 +27,44 @@ import { VisualizationComponent } from 'src/app/visualizations/visualization-com
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardComponent implements OnInit {
-  constructor(private readonly cdRef: ChangeDetectorRef){}
+  constructor(private readonly cdRef: ChangeDetectorRef, private readonly activatedRoute: ActivatedRoute){}
 
   vehicles = new Map<string, number>();
 
   markers = new Map<string, Marker>();
+
+  private destroy$: Subject<void> = new Subject<void>();
 
 
   options!: GridsterConfig;
   dashboard!: Array<GridsterItem>;
 
   @ViewChildren(VisualizationComponent)
-  nestedVisualizations!: QueryList<VisualizationComponent>;
-
-  @ViewChildren(GridsterItemComponent)
-  gridItems!: QueryList<GridsterItemComponent>;
-
-  ngAfterContentInit(): void {
-    // this.cdRef.detectChanges();
-  }
+  nestedVisualizations: QueryList<VisualizationComponent> | null = null;
 
   onResize(item: GridsterItem): void {
-
-    console.log(this.nestedVisualizations)
-    console.log(this.gridItems)
-    console.log('onResize', item);
-    // this.nestedVisualizations.get
-    this.nestedVisualizations.forEach((visualization) => { // TODO:
+    this.nestedVisualizations?.forEach((visualization) => { // TODO:
       visualization.onResize();
     });
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
 
   ngOnInit(): void {
+    this.activatedRoute.paramMap
+      .pipe(
+        map(() => window.history.state),
+        takeUntil(this.destroy$),
+      )
+      .subscribe(e => {
+        console.log(e)
+      });
+
+
     this.options = {
       gridType: GridType.Fit,
       compactType: CompactType.CompactUpAndLeft,
@@ -78,15 +85,7 @@ export class DashboardComponent implements OnInit {
       { cols: 1, rows: 1, y: 0, x: 4 },
       { cols: 3, rows: 2, y: 1, x: 4 },
       { cols: 1, rows: 1, y: 4, x: 5 },
-      { cols: 1, rows: 1, y: 2, x: 1 },
-      { cols: 2, rows: 2, y: 5, x: 5 },
-      { cols: 2, rows: 2, y: 3, x: 2 },
-      { cols: 2, rows: 1, y: 2, x: 2 },
-      { cols: 1, rows: 1, y: 3, x: 4 },
-      { cols: 1, rows: 1, y: 0, x: 6 },
-      { cols: 1, rows: 1, y: 0, x: 8 },
-      { cols: 1, rows: 1, y: 0, x: 9 },
-      { cols: 1, rows: 1, y: 0, x: 10 }
+      { cols: 1, rows: 1, y: 2, x: 1 }
     ];
 
 

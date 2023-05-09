@@ -13,7 +13,6 @@ import { SystemService } from '../../@core/system.service';
 import { GeoLocationComponent } from '../../visualizations/geo-location.component';
 import { VisualizationHost } from '../../visualizations/visualization-host.directive';
 import { InformationTickerComponent } from '../../visualizations/information-ticker.component';
-import { VisualizationComponent } from '../../visualizations/visualization-component.interface';
 import { NbToastrService } from '@nebular/theme';
 
 type DiagramConfig = {
@@ -73,8 +72,7 @@ export class ConfigComponent {
 
   constructor(
     private readonly router: Router,
-    private readonly systemService: SystemService,
-    private readonly toastrService: NbToastrService
+    private readonly systemService: SystemService
   ) {}
 
   previous() {
@@ -88,11 +86,17 @@ export class ConfigComponent {
   async finish() {
     const newSystem = await this.systemService.createSystem({
       name: this.systemName,
-      dashboardConfig: [],
+      dashboardConfig: this.dashboardConfigs
+        .filter((config) => config.selected)
+        .map((config) => config.name),
       detailConfig: [],
       users: [],
     }); // TODO: Is a new token needed?
-    this.router.navigate(['pages', newSystem.id]);
+    this.router.navigate(['pages', newSystem.id], {
+      state: {
+        woop: newSystem.id,
+      },
+    });
   }
 
   loadVisualization(config: DiagramConfig) {
@@ -109,6 +113,5 @@ export class ConfigComponent {
   async copyToClipboard(value: string) {
     await navigator.clipboard.writeText(value);
     console.log('copied', value);
-    this.toastrService.success('Kopiert!', 'Erfolgreich'); // Popover?
   }
 }

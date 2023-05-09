@@ -22,6 +22,10 @@ export class SystemsComponent {
   }
 
   selectSystem(systemId: string) {
-    this.router.navigate(['pages', systemId]);
+    this.router.navigate(['pages', systemId], {
+      state: {
+        woop: systemId
+      }
+    });
   }
 }

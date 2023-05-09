@@ -7,14 +7,39 @@
     <nb-card>
       <nb-card-header>
         <h2>Wählen Sie einen Namen für das Kundensystem</h2>
-      </nb-card-header>
+        <span class="caption-2"
+          >Der Name diehnt zur einfacheren Identifikation des erstellten
+          Systems</span
+        > </nb-card-header
+      ><!--TODO: Validation-->
       <nb-card-body>
-        <input
-          nbInput
-          fullWidth
-          placeholder="Systemname"
-          [(ngModel)]="systemName"
-        />
+        <nb-layout class="transparent fullheight">
+          <nb-layout-column
+            style="display: flex; justify-content: center; align-items: center"
+          >
+            <div
+              style="
+                gap: 30px;
+                display: flex;
+                flex-direction: column;
+                width: 50%;
+              "
+            >
+              <div>
+                <label for="systemname">Systemname</label>
+                <nb-form-field>
+                  <input
+                    id="systemname"
+                    nbInput
+                    fullWidth
+                    placeholder="Systemname"
+                    [(ngModel)]="systemName"
+                  />
+                </nb-form-field>
+              </div>
+            </div>
+          </nb-layout-column>
+        </nb-layout>
       </nb-card-body>
       <nb-card-footer style="display: flex; justify-content: end; gap: 15px">
         <button nbButton status="primary" (click)="next()">Weiter</button>
@@ -23,7 +48,30 @@
   </nb-step>
   <nb-step label="Zugänge">
     <nb-card>
-      <nb-card-body> </nb-card-body>
+      <nb-card-header>
+        <h2>Erstellen Sie die Zugänge für das Kundensystem</h2>
+        <span class="caption-2"
+          >Zugänge bestimmen, wer mit dem System interagieren darf</span
+        >
+      </nb-card-header>
+      <nb-card-body>
+        <nb-layout class="transparent fullheight">
+          <nb-layout-column
+            style="display: flex; justify-content: center; align-items: center"
+          >
+            <div
+              style="
+                gap: 30px;
+                display: flex;
+                flex-direction: column;
+                width: 50%;
+              "
+            >
+              TODO:
+            </div>
+          </nb-layout-column>
+        </nb-layout>
+      </nb-card-body>
       <nb-card-footer style="display: flex; justify-content: end; gap: 15px">
         <button nbButton status="secondary" (click)="previous()">Zurück</button>
         <button nbButton status="primary" (click)="next()">Weiter</button>
@@ -32,6 +80,13 @@
   </nb-step>
   <nb-step label="Datenvisualisierung">
     <nb-card>
+      <nb-card-header>
+        <h2>Wählen Sie die Datenvisualisierungen für das Kundensystem</h2>
+        <span class="caption-2"
+          >Datenvisualisierungen bestimmen, welche die Fahrzeugdaten im System
+          angezeigt werden</span
+        >
+      </nb-card-header>
       <nb-card-body style="padding: 0">
         <nb-layout class="transparent fullheight">
           <nb-layout-column>
@@ -68,53 +123,82 @@
   </nb-step>
   <nb-step label="Fertig">
     <nb-card>
+      <nb-card-header>
+        <h2>System ist bereit</h2>
+        <span class="caption-2"
+          >Tragen Sie die folgenden Daten in den Markeplace ein, sodass Daten
+          ihrer Subscription empfangen werden können</span
+        >
+      </nb-card-header>
       <nb-card-body>
-        <h2>Ihr System ist bereit</h2>
-        <!--TODO: Hier sollte schon gespeichert sein-->
-        <div>
-          <div>
-            <label for="webhook">Push-Url</label>
-            <nb-form-field>
-              <input
-                id="webhook"
-                nbInput
-                fullWidth
-                readonly
-                [value]="'localhost:3001/webhook'"
-              />
-              <button
-                nbSuffix
-                nbButton
-                ghost
-                (click)="copyToClipboard('localhost:3001/webhook')"
-              >
-                <nb-icon [icon]="'clipboard-outline'" pack="eva"> </nb-icon>
-              </button>
-            </nb-form-field>
-          </div>
+        <nb-layout class="transparent fullheight">
+          <nb-layout-column
+            style="display: flex; justify-content: center; align-items: center"
+          >
+            <div
+              style="
+                gap: 30px;
+                display: flex;
+                flex-direction: column;
+                width: 50%;
+              "
+            >
+              <ng-template #copiedRef>
+                <div style="padding: 15px">
+                  <span>Kopiert!</span>
+                </div>
+              </ng-template>
+              <div>
+                <label for="webhook">Push-Url</label>
+                <nb-form-field>
+                  <input
+                    id="webhook"
+                    nbInput
+                    fullWidth
+                    readonly
+                    [value]="'localhost:3001/webhook'"
+                  />
+                  <button
+                    nbSuffix
+                    nbButton
+                    ghost
+                    (click)="copyToClipboard('localhost:3000/webhook')"
+                    [nbPopover]="copiedRef"
+                    nbPopoverPlacement="right"
+                  ><!--TODO: actual values-->
+                    <nb-icon [icon]="'clipboard-outline'" pack="eva"> </nb-icon>
+                  </button>
+                </nb-form-field>
+              </div>
 
-          <div>
-            <label for="secret">Secret</label>
-            <nb-form-field>
-              <input
-                id="secret"
-                nbInput
-                fullWidth
-                readonly
-                [value]="'abc123def456'"
-              />
-              <button
-                nbSuffix
-                nbButton
-                ghost
-                (click)="copyToClipboard('abc123def456')"
-              >
-                <nb-icon [icon]="'clipboard-outline'" pack="eva"> </nb-icon>
+              <div>
+                <label for="secret">Secret</label>
+                <nb-form-field>
+                  <input
+                    id="secret"
+                    nbInput
+                    fullWidth
+                    readonly
+                    [value]="'abc123def456'"
+                  />
+                  <button
+                    nbSuffix
+                    nbButton
+                    ghost
+                    (click)="copyToClipboard('abc123def456')"
+                    [nbPopover]="copiedRef"
+                    nbPopoverPlacement="right"
+                  >
+                    <nb-icon [icon]="'clipboard-outline'" pack="eva"> </nb-icon>
+                  </button>
+                </nb-form-field>
+              </div>
+              <button nbButton status="primary" (click)="finish()" fullWidth>
+                Zum System
               </button>
-            </nb-form-field>
-          </div>
-        </div>
-        <button nbButton status="primary" (click)="finish()">Zum System</button>
+            </div>
+          </nb-layout-column>
+        </nb-layout>
       </nb-card-body>
     </nb-card>
   </nb-step>
