@@ -12,6 +12,7 @@ import { NgxEchartsModule } from 'ngx-echarts';
 import { SocketIoModule } from 'ngx-socket-io';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { VisualizationModule } from '../../visualizations/visualization.module';
+import { GridsterModule } from 'angular-gridster2';
 
 @NgModule({
   declarations: [DashboardComponent],
@@ -25,7 +26,8 @@ import { VisualizationModule } from '../../visualizations/visualization.module';
     SocketIoModule,
     NbListModule,
     LeafletModule,
-    VisualizationModule
+    VisualizationModule,
+    GridsterModule
   ],
 })
 export class DashboardModule {}

@@ -15,6 +15,8 @@ import {
 } from 'leaflet';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 
+import { CompactType, DisplayGrid, GridsterConfig, GridsterItem, GridType } from 'angular-gridster2';
+
 @Component({
   selector: 'ngx-dashboard',
   templateUrl: './dashboard.component.html',
@@ -28,7 +30,39 @@ export class DashboardComponent implements OnInit {
 
   markers = new Map<string, Marker>();
 
+
+  options!: GridsterConfig;
+  dashboard!: Array<GridsterItem>;
   ngOnInit(): void {
+    this.options = {
+      gridType: GridType.Fit,
+      compactType: CompactType.CompactUpAndLeft,
+      maxCols: 10,
+      maxRows: 10,
+      pushItems: true,
+      draggable: {
+        enabled: true
+      },
+      resizable: {
+        enabled: true
+      }
+    };
+
+    this.dashboard = [
+      { cols: 2, rows: 1, y: 0, x: 0 },
+      { cols: 2, rows: 2, y: 0, x: 2 },
+      { cols: 1, rows: 1, y: 0, x: 4 },
+      { cols: 3, rows: 2, y: 1, x: 4 },
+      { cols: 1, rows: 1, y: 4, x: 5 },
+      { cols: 1, rows: 1, y: 2, x: 1 },
+      { cols: 2, rows: 2, y: 5, x: 5 },
+      { cols: 2, rows: 2, y: 3, x: 2 },
+      { cols: 2, rows: 1, y: 2, x: 2 },
+      { cols: 1, rows: 1, y: 3, x: 4 },
+      { cols: 1, rows: 1, y: 0, x: 6 }
+    ];
+
+
     const socket = new ReconnectingWebSocket('ws://localhost:3001');
 
     socket.addEventListener('open', (event) => {

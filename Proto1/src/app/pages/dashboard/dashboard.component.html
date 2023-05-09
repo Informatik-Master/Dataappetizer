@@ -1,4 +1,4 @@
-<div class="row">
+<!-- <div class="row">
   <div class="col-8">
     <div class="row">
       <div class="col">
@@ -48,5 +48,10 @@
   <div class="col" style="max-height: 20dvh">
     <ngx-information-ticker></ngx-information-ticker>
   </div>
-</div>
+</div> -->
 
+<gridster [options]="options">
+  <gridster-item [item]="item" *ngFor="let item of dashboard"><!--TODO: on resize force map invalidate-->
+    <ngx-geo-location></ngx-geo-location>
+  </gridster-item>
+  </gridster>
