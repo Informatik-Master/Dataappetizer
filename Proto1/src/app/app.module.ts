@@ -10,6 +10,7 @@ import { NgxEchartsModule } from 'ngx-echarts';
 import { NbAuthJWTToken, NbAuthModule, NbPasswordAuthStrategy } from '@nebular/auth';
 import { SocketIoModule } from 'ngx-socket-io';
 import { CookieModule } from 'ngx-cookie';
+import { NbToastrModule } from '@nebular/theme';
 
 @NgModule({
   declarations: [AppComponent],
@@ -40,6 +41,7 @@ import { CookieModule } from 'ngx-cookie';
     CookieModule.withOptions({
       //TODO:
     }),
+    NbToastrModule.forRoot(),
   ],
   bootstrap: [AppComponent],
 })

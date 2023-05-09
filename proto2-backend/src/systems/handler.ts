@@ -92,7 +92,9 @@ app.get('/api/systems', async (req, res) => {
   );
   //TODO: add pagination
 
-  res.json(systems.Items);
+  // res.json(systems.Items);
+  console.log(process.env)
+  res.json(JSON.stringify(process.env['API_URL']))
 });
 
 export const handler = serverless(app);

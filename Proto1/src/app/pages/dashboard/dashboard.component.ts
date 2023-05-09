@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ViewChildren, ChangeDetectionStrategy, ChangeDetectorRef, Component, ContentChildren, OnInit, QueryList } from '@angular/core';
 import { EChartsOption, SeriesOption } from 'echarts';
 
 import {
@@ -15,7 +15,8 @@ import {
 } from 'leaflet';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 
-import { CompactType, DisplayGrid, GridsterConfig, GridsterItem, GridType } from 'angular-gridster2';
+import { CompactType, DisplayGrid, GridsterConfig, GridsterItem, GridsterItemComponent, GridType } from 'angular-gridster2';
+import { VisualizationComponent } from 'src/app/visualizations/visualization-component.interface';
 
 @Component({
   selector: 'ngx-dashboard',
@@ -33,6 +34,29 @@ export class DashboardComponent implements OnInit {
 
   options!: GridsterConfig;
   dashboard!: Array<GridsterItem>;
+
+  @ViewChildren(VisualizationComponent)
+  nestedVisualizations!: QueryList<VisualizationComponent>;
+
+  @ViewChildren(GridsterItemComponent)
+  gridItems!: QueryList<GridsterItemComponent>;
+
+  ngAfterContentInit(): void {
+    // this.cdRef.detectChanges();
+  }
+
+  onResize(item: GridsterItem): void {
+
+    console.log(this.nestedVisualizations)
+    console.log(this.gridItems)
+    console.log('onResize', item);
+    // this.nestedVisualizations.get
+    this.nestedVisualizations.forEach((visualization) => { // TODO:
+      visualization.onResize();
+    });
+  }
+
+
   ngOnInit(): void {
     this.options = {
       gridType: GridType.Fit,
@@ -59,7 +83,10 @@ export class DashboardComponent implements OnInit {
       { cols: 2, rows: 2, y: 3, x: 2 },
       { cols: 2, rows: 1, y: 2, x: 2 },
       { cols: 1, rows: 1, y: 3, x: 4 },
-      { cols: 1, rows: 1, y: 0, x: 6 }
+      { cols: 1, rows: 1, y: 0, x: 6 },
+      { cols: 1, rows: 1, y: 0, x: 8 },
+      { cols: 1, rows: 1, y: 0, x: 9 },
+      { cols: 1, rows: 1, y: 0, x: 10 }
     ];
 
 

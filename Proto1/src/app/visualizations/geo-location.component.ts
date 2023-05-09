@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { DataPointService } from '../@core/data-point.service';
 import { CommonModule } from '@angular/common';
 import {
@@ -22,6 +22,9 @@ import { VisualizationComponent } from './visualization-component.interface';
   standalone: true,
   selector: 'ngx-geo-location',
   imports: [CommonModule, LeafletModule, NbCardModule],
+  providers: [
+    {provide: VisualizationComponent, useExisting: GeoLocationComponent}
+  ],
   template: `
     <nb-card>
       <nb-card-header> Fahrzeugstandorte </nb-card-header>
@@ -56,10 +59,14 @@ import { VisualizationComponent } from './visualization-component.interface';
     `,
   ],
 })
-export class GeoLocationComponent implements VisualizationComponent {
+export class GeoLocationComponent extends VisualizationComponent {
   vehicles = new Map<string, number>();
 
   markers = new Map<string, Marker>();
+
+  override onResize(): void {
+    this.map?.invalidateSize();
+  }
 
   private readonly markerLayer = new FeatureGroup();
   mapOptions: MapOptions = {
@@ -79,7 +86,9 @@ export class GeoLocationComponent implements VisualizationComponent {
   private subscription: Subscription | null = null;
   private isDestroyed = false;
 
-  public constructor(protected readonly dataPointService: DataPointService) {}
+  public constructor(protected readonly dataPointService: DataPointService) {
+    super();
+  }
 
   public ngOnInit(): void {
     this.subscription = this.dataPointService.dataPoint$

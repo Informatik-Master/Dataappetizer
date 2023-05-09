@@ -10,6 +10,9 @@ import { VisualizationComponent } from './visualization-component.interface';
   standalone: true,
   selector: 'ngx-information-ticker',
   imports: [CommonModule, NbCardModule, NbListModule],
+  providers: [
+    {provide: VisualizationComponent, useExisting: InformationTickerComponent}
+  ],
   template: `
     <nb-card>
       <nb-card-header> Informationsticker </nb-card-header>
@@ -30,11 +33,13 @@ import { VisualizationComponent } from './visualization-component.interface';
     `,
   ],
 })
-export class InformationTickerComponent implements VisualizationComponent{
+export class InformationTickerComponent extends VisualizationComponent{
   private subscription: Subscription | null = null;
   notifications: string[] = [];
 
-  public constructor(protected readonly dataPointService: DataPointService) {}
+  public constructor(protected readonly dataPointService: DataPointService) {
+    super();
+  }
 
 
   public ngOnInit(): void {

@@ -12,6 +12,7 @@ import {
   NbInputModule,
   NbMenuModule,
   NbSpinnerModule,
+  NbToastrModule,
 } from '@nebular/theme';
 
 import { ThemeModule } from '../@theme/theme.module';

@@ -51,7 +51,10 @@
 </div> -->
 
 <gridster [options]="options">
-  <gridster-item [item]="item" *ngFor="let item of dashboard"><!--TODO: on resize force map invalidate-->
+  <gridster-item [item]="item" *ngFor="let item of dashboard" (itemResize)="onResize(item)">
     <ngx-geo-location></ngx-geo-location>
+  </gridster-item>
+  <gridster-item [item]="dashboard[0]">
+    <ngx-information-ticker></ngx-information-ticker>
   </gridster-item>
   </gridster>

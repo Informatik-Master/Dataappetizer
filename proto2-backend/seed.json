@@ -3973,6 +3973,40 @@
   },
   {
     "datapointName": "averagedistance",
+    "vinWithDataPointName": "V1RTUALV1N0000002#averagedistance",
+    "vin": "V1RTUALV1N0000002",
+    "value": {
+      "value": 2587.052551972076,
+      "unit": "km",
+      "timestamp": "2023-05-09T12:49:04.632Z"
+    },
+    "timestamp": 1683640386701
+  },
+  {
+    "datapointName": "batteryvoltage",
+    "vinWithDataPointName": "V1RTUALV1N0000002#batteryvoltage",
+    "vin": "V1RTUALV1N0000002",
+    "value": {
+      "value": 12.068993034699108,
+      "unit": "V",
+      "timestamp": "2023-05-09T12:49:04.632Z"
+    },
+    "timestamp": 1683640386702
+  },
+  {
+    "datapointName": "geolocation",
+    "vinWithDataPointName": "V1RTUALV1N0000002#geolocation",
+    "vin": "V1RTUALV1N0000002",
+    "value": {
+      "geoSystem": "WGS84",
+      "latitude": 49.16069,
+      "longitude": 8.15542,
+      "timestamp": "2023-05-09T12:49:04.632Z"
+    },
+    "timestamp": 1683640386703
+  },
+  {
+    "datapointName": "averagedistance",
     "vinWithDataPointName": "V1RTUALV1N0000001#averagedistance",
     "vin": "V1RTUALV1N0000001",
     "value": {
@@ -7747,6 +7781,28 @@
       "timestamp": "2023-05-09T13:12:49.194Z"
     },
     "timestamp": 1683637980207
+  },
+  {
+    "datapointName": "trunkstatus",
+    "vinWithDataPointName": "V1RTUALV1N0000001#trunkstatus",
+    "vin": "V1RTUALV1N0000001",
+    "value": {
+      "value": "CLOSED",
+      "timestamp": "2023-05-09T13:52:49.193Z"
+    },
+    "timestamp": 1683640386704
+  },
+  {
+    "datapointName": "geolocation",
+    "vinWithDataPointName": "V1RTUALV1N0000001#geolocation",
+    "vin": "V1RTUALV1N0000001",
+    "value": {
+      "geoSystem": "WGS84",
+      "latitude": 49.19295,
+      "longitude": 8.13622,
+      "timestamp": "2023-05-09T13:52:49.193Z"
+    },
+    "timestamp": 1683640386705
   },
   {
     "datapointName": "averagedistance",
@@ -12281,6 +12337,59 @@
   },
   {
     "datapointName": "averagedistance",
+    "vinWithDataPointName": "V1RTUALV1N0000004#averagedistance",
+    "vin": "V1RTUALV1N0000004",
+    "value": {
+      "value": 1274.9165784503266,
+      "unit": "km",
+      "timestamp": "2023-05-09T13:15:49.193Z"
+    },
+    "timestamp": 1683640386685
+  },
+  {
+    "datapointName": "trunkstatus",
+    "vinWithDataPointName": "V1RTUALV1N0000004#trunkstatus",
+    "vin": "V1RTUALV1N0000004",
+    "value": {
+      "value": "CLOSED",
+      "timestamp": "2023-05-09T13:15:49.193Z"
+    },
+    "timestamp": 1683640386692
+  },
+  {
+    "datapointName": "coolanttemperature",
+    "vinWithDataPointName": "V1RTUALV1N0000004#coolanttemperature",
+    "vin": "V1RTUALV1N0000004",
+    "value": {
+      "value": 89.29190527082292,
+      "unit": "C",
+      "timestamp": "2023-05-09T13:15:49.193Z"
+    },
+    "timestamp": 1683640386693
+  },
+  {
+    "datapointName": "enginestatus",
+    "vinWithDataPointName": "V1RTUALV1N0000004#enginestatus",
+    "vin": "V1RTUALV1N0000004",
+    "value": {
+      "value": "OFF",
+      "timestamp": "2023-05-09T13:15:49.193Z"
+    },
+    "timestamp": 1683640386694
+  },
+  {
+    "datapointName": "mileage",
+    "vinWithDataPointName": "V1RTUALV1N0000004#mileage",
+    "vin": "V1RTUALV1N0000004",
+    "value": {
+      "value": 14964,
+      "unit": "km",
+      "timestamp": "2023-05-09T13:15:49.193Z"
+    },
+    "timestamp": 1683640386695
+  },
+  {
+    "datapointName": "averagedistance",
     "vinWithDataPointName": "V1RTUALV1N0000003#averagedistance",
     "vin": "V1RTUALV1N0000003",
     "value": {
@@ -16319,5 +16428,48 @@
       "timestamp": "2023-05-09T13:12:18.747Z"
     },
     "timestamp": 1683637980205
+  },
+  {
+    "datapointName": "averagedistance",
+    "vinWithDataPointName": "V1RTUALV1N0000003#averagedistance",
+    "vin": "V1RTUALV1N0000003",
+    "value": {
+      "value": 1387.7176214499677,
+      "unit": "km",
+      "timestamp": "2023-05-09T13:12:18.747Z"
+    },
+    "timestamp": 1683640386696
+  },
+  {
+    "datapointName": "trunkstatus",
+    "vinWithDataPointName": "V1RTUALV1N0000003#trunkstatus",
+    "vin": "V1RTUALV1N0000003",
+    "value": {
+      "value": "CLOSED",
+      "timestamp": "2023-05-09T13:12:18.747Z"
+    },
+    "timestamp": 1683640386698
+  },
+  {
+    "datapointName": "batteryvoltage",
+    "vinWithDataPointName": "V1RTUALV1N0000003#batteryvoltage",
+    "vin": "V1RTUALV1N0000003",
+    "value": {
+      "value": 12.123437733542612,
+      "unit": "V",
+      "timestamp": "2023-05-09T13:12:18.747Z"
+    },
+    "timestamp": 1683640386700
+  },
+  {
+    "datapointName": "mileage",
+    "vinWithDataPointName": "V1RTUALV1N0000003#mileage",
+    "vin": "V1RTUALV1N0000003",
+    "value": {
+      "value": 16303,
+      "unit": "km",
+      "timestamp": "2023-05-09T13:12:18.747Z"
+    },
+    "timestamp": 1683640386701
   }
 ]

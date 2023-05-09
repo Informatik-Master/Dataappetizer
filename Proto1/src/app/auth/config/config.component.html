@@ -3,10 +3,12 @@
   [disableStepNavigation]="true"
   [selectedIndex]="selectedIndex"
 >
-  <nb-step label="Systemname" [completed]="true">
+  <nb-step label="Systemname">
     <nb-card>
-      <nb-card-body>
+      <nb-card-header>
         <h2>Wählen Sie einen Namen für das Kundensystem</h2>
+      </nb-card-header>
+      <nb-card-body>
         <input
           nbInput
           fullWidth
@@ -15,6 +17,15 @@
         />
       </nb-card-body>
       <nb-card-footer style="display: flex; justify-content: end; gap: 15px">
+        <button nbButton status="primary" (click)="next()">Weiter</button>
+      </nb-card-footer>
+    </nb-card>
+  </nb-step>
+  <nb-step label="Zugänge">
+    <nb-card>
+      <nb-card-body> </nb-card-body>
+      <nb-card-footer style="display: flex; justify-content: end; gap: 15px">
+        <button nbButton status="secondary" (click)="previous()">Zurück</button>
         <button nbButton status="primary" (click)="next()">Weiter</button>
       </nb-card-footer>
     </nb-card>
@@ -51,8 +62,60 @@
       </nb-card-body>
       <nb-card-footer style="display: flex; justify-content: end; gap: 15px">
         <button nbButton status="secondary" (click)="previous()">Zurück</button>
-        <button nbButton status="primary" (click)="finish()">Weiter</button>
+        <button nbButton status="primary" (click)="next()">Weiter</button>
       </nb-card-footer>
+    </nb-card>
+  </nb-step>
+  <nb-step label="Fertig">
+    <nb-card>
+      <nb-card-body>
+        <h2>Ihr System ist bereit</h2>
+        <!--TODO: Hier sollte schon gespeichert sein-->
+        <div>
+          <div>
+            <label for="webhook">Push-Url</label>
+            <nb-form-field>
+              <input
+                id="webhook"
+                nbInput
+                fullWidth
+                readonly
+                [value]="'localhost:3001/webhook'"
+              />
+              <button
+                nbSuffix
+                nbButton
+                ghost
+                (click)="copyToClipboard('localhost:3001/webhook')"
+              >
+                <nb-icon [icon]="'clipboard-outline'" pack="eva"> </nb-icon>
+              </button>
+            </nb-form-field>
+          </div>
+
+          <div>
+            <label for="secret">Secret</label>
+            <nb-form-field>
+              <input
+                id="secret"
+                nbInput
+                fullWidth
+                readonly
+                [value]="'abc123def456'"
+              />
+              <button
+                nbSuffix
+                nbButton
+                ghost
+                (click)="copyToClipboard('abc123def456')"
+              >
+                <nb-icon [icon]="'clipboard-outline'" pack="eva"> </nb-icon>
+              </button>
+            </nb-form-field>
+          </div>
+        </div>
+        <button nbButton status="primary" (click)="finish()">Zum System</button>
+      </nb-card-body>
     </nb-card>
   </nb-step>
 </nb-stepper>

@@ -93,6 +93,8 @@ provider:
     USERS_TABLE: ${self:custom.usersTable}
     JWT_SECRET: PLEASE_CHANGE_ME_IN_THE_FUTURE_TO_OAUTH_FLOW
 
+    API_URL: !GetAtt HttpApi.ApiEndpoint
+
 functions:
 
   systems:

@@ -4,6 +4,7 @@ import {
   NbButtonModule,
   NbCardModule,
   NbCheckboxModule,
+  NbFormFieldModule,
   NbIconModule,
   NbInputModule,
   NbLayoutModule,
@@ -35,7 +36,8 @@ import { VisualizationModule } from '../../visualizations/visualization.module';
     NbListModule,
     NbCheckboxModule,
     NgxEchartsModule.forChild(),
-    VisualizationModule
+    VisualizationModule,
+    NbFormFieldModule
   ],
 })
 export class ConfigModule {}

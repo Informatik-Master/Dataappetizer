@@ -14,6 +14,7 @@ import { GeoLocationComponent } from '../../visualizations/geo-location.componen
 import { VisualizationHost } from '../../visualizations/visualization-host.directive';
 import { InformationTickerComponent } from '../../visualizations/information-ticker.component';
 import { VisualizationComponent } from '../../visualizations/visualization-component.interface';
+import { NbToastrService } from '@nebular/theme';
 
 type DiagramConfig = {
   name: string;
@@ -72,7 +73,8 @@ export class ConfigComponent {
 
   constructor(
     private readonly router: Router,
-    private readonly systemService: SystemService
+    private readonly systemService: SystemService,
+    private readonly toastrService: NbToastrService
   ) {}
 
   previous() {
@@ -102,5 +104,11 @@ export class ConfigComponent {
       config.component
     );
     // componentRef.instance.data = adItem.data;
+  }
+
+  async copyToClipboard(value: string) {
+    await navigator.clipboard.writeText(value);
+    console.log('copied', value);
+    this.toastrService.success('Kopiert!', 'Erfolgreich'); // Popover?
   }
 }
