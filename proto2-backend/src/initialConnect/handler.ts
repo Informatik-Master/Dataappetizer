@@ -9,6 +9,7 @@ import {
 } from '@aws-sdk/lib-dynamodb';
 import { unmarshall } from '@aws-sdk/util-dynamodb';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
+import chunk from 'lodash.chunk';
 
 const client = new DynamoDBClient({
   region: 'us-east-1',
@@ -47,14 +48,19 @@ export const initialConnect = async ({ Records }: any) => {
     const { connectionId } = unmarshall(payload);
 
     const v = VEHICLES.map(async (vin) => {
+      // const { Items } = await dynamoDbClient.send(
+      //   new QueryCommand({
+      //     TableName: process.env['DATAPOINT_TABLE'],
+      //     KeyConditionExpression: 'vin = :vin',
+      //     ExpressionAttributeValues: {
+      //       ':vin': vin,
+      //     },
+      //     ScanIndexForward: false,
+      //   }),
+      // );
       const { Items } = await dynamoDbClient.send(
-        new QueryCommand({
+        new ScanCommand({
           TableName: process.env['DATAPOINT_TABLE'],
-          KeyConditionExpression: 'vin = :vin',
-          ExpressionAttributeValues: {
-            ':vin': vin,
-          },
-          ScanIndexForward: false,
         }),
       );
 
@@ -68,7 +74,7 @@ export const initialConnect = async ({ Records }: any) => {
               value: item,
             },
           },
-          
+
           {
             event: 'message',
             data: {
@@ -81,16 +87,22 @@ export const initialConnect = async ({ Records }: any) => {
       });
     });
     const res = (await Promise.all(v)).flat(1);
-    console.log('res',res)
-    try {
-      await apigatewaymanagementapi.send(
-        new PostToConnectionCommand({
-          ConnectionId: connectionId,
-          Data: Buffer.from(JSON.stringify(res)),
-        }),
-      );
+    console.log('res', res);
+    console.log('pushing to connectionId', connectionId);
 
-
-    } catch {}
+    await Promise.all(
+      chunk(res, 250).map(async (chunk) => {
+        try {
+          await apigatewaymanagementapi.send(
+            new PostToConnectionCommand({
+              ConnectionId: connectionId,
+              Data: Buffer.from(JSON.stringify(chunk)),
+            }),
+          );
+        } catch (e) {
+          console.log(e);
+        }
+      }),
+    );
   }
 };

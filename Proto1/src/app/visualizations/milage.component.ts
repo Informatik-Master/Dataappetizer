@@ -94,7 +94,6 @@ export class MilageComponent extends VisualizationComponent {
           data.value.value.value,
         ]);
         abc.data = (abc.data as any[]).sort((a: any, b: any) => a[0] - b[0]);
-        console.log(this.echartMerge)
         this.echartMerge = {
           ...this.echartMerge,
         };

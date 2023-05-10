@@ -40,7 +40,15 @@ export class DataPointService {
     console.log('connecting');
     this.socket = new ReconnectingWebSocket(environment.webSocketUrl);
     this.socket.addEventListener('message', (event) => {
-      this.dataPointSubject.next(JSON.parse(event.data));
+      const parsed = JSON.parse(event.data);
+      if (Array.isArray(parsed)) {
+        parsed.forEach((dataPointEvent) =>
+          this.dataPointSubject.next(dataPointEvent)
+        );
+        return;
+      }
+
+      this.dataPointSubject.next(parsed);
     });
   }
 
