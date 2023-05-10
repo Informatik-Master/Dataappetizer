@@ -24,7 +24,7 @@ import { map, Subject, takeUntil } from 'rxjs';
   selector: 'ngx-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardComponent implements OnInit {
   constructor(private readonly cdRef: ChangeDetectorRef, private readonly activatedRoute: ActivatedRoute){}
@@ -67,7 +67,7 @@ export class DashboardComponent implements OnInit {
 
     this.options = {
       gridType: GridType.Fit,
-      compactType: CompactType.CompactUpAndLeft,
+      compactType: CompactType.None,
       maxCols: 10,
       maxRows: 10,
       pushItems: true,

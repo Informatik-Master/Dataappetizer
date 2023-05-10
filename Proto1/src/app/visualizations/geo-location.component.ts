@@ -132,4 +132,5 @@ export class GeoLocationComponent extends VisualizationComponent {
       !this.isDestroyed && map.invalidateSize();
     }, 1);
   }
+  
 }
