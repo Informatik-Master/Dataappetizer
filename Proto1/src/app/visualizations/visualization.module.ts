@@ -3,6 +3,8 @@ import { VisualizationHost } from './visualization-host.directive';
 import { GeoLocationComponent } from './geo-location.component';
 import { InformationTickerComponent } from './information-ticker.component';
 import { AverageDistanceComponent } from './average-distance.component';
+import { DataCountComponent } from './data-count.component';
+import { MilageComponent } from './milage.component';
 
 export enum VisualizationKind {
   DASHBOARD = 'dashboard',
@@ -33,20 +35,31 @@ export const AVAILABLE_VISUALIZATIONS: {
     kind: VisualizationKind.DASHBOARD,
     component: AverageDistanceComponent,
   },
+  {
+    id: 'data-count',
+    name: 'Datenanzahl',
+    kind: VisualizationKind.DASHBOARD,
+    component: DataCountComponent,
+  },
+  {
+    id: 'milage',
+    name: 'Kilometerstand',
+    kind: VisualizationKind.DASHBOARD,
+    component: MilageComponent,
+  }
 ];
 
 const COMPONENTS = [
   GeoLocationComponent,
   InformationTickerComponent,
   AverageDistanceComponent,
+  DataCountComponent,
+  MilageComponent
 ];
 
 @NgModule({
   imports: [...COMPONENTS],
   declarations: [VisualizationHost],
-  exports: [
-    VisualizationHost,
-    ...COMPONENTS
-  ],
+  exports: [VisualizationHost, ...COMPONENTS],
 })
 export class VisualizationModule {}

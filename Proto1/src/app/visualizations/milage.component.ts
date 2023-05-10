@@ -10,15 +10,15 @@ import { NgxEchartsModule } from 'ngx-echarts';
 
 @Component({
   standalone: true,
-  selector: 'ngx-average-distance',
+  selector: 'ngx-milage',
   imports: [CommonModule, NbCardModule, NgxEchartsModule],
   providers: [
-    { provide: VisualizationComponent, useExisting: AverageDistanceComponent },
+    { provide: VisualizationComponent, useExisting: MilageComponent },
   ], // TODO: on push
   template: `
     <nb-card>
-      <nb-card-header> Durchschnittsdistanz </nb-card-header>
-      <nb-card-body>
+      <nb-card-header> Kilometerstand </nb-card-header>
+      <nb-card-body class="p-0">
         <div
           echarts
           [options]="echartOptions"
@@ -38,33 +38,34 @@ import { NgxEchartsModule } from 'ngx-echarts';
     `,
   ],
 })
-export class AverageDistanceComponent extends VisualizationComponent {
+export class MilageComponent extends VisualizationComponent {
   private subscription: Subscription | null = null;
 
   echartMerge: EChartsOption = {
-    series: [{
-       data: []
-      }],
+    series: [
+    ],
   };
 
   echartOptions: EChartsOption = {
-    legend: {
+    legend: {},
+    tooltip: {
+      trigger: 'axis',
     },
-    series: [
-      {
-        type: 'pie',
-        center: ['50%', '50%'],
-        roseType: 'area',
-        itemStyle: {
-          borderRadius: 8,
-        },
-        tooltip: {
-          trigger: 'item',
-          formatter: '{a} <br/>{b}: {c} ({d}%)',
-        },
-        data: [],
-      },
-    ],
+    xAxis: {
+      type: 'time',
+      boundaryGap: false,
+    },
+    yAxis: {
+      type: 'value',
+      boundaryGap: [0, '100%'],
+    },
+    grid: {
+      right: '10px',
+      left: '70px',
+      bottom: '25px',
+      top: '35px',
+    },
+    series: [],
   };
 
   public constructor(protected readonly dataPointService: DataPointService) {
@@ -73,19 +74,27 @@ export class AverageDistanceComponent extends VisualizationComponent {
 
   public ngOnInit(): void {
     this.subscription = this.dataPointService.dataPoint$
-      .pipe(filter(({ event }) => event === 'averagedistance'))
+      .pipe(filter(({ event }) => event === 'mileage'))
       .subscribe(({ data }) => {
-        const currentVal = (
-          (this.echartMerge.series as SeriesOption[])[0].data as any[]
-        )?.find((d) => d.name === data.value.vin);
-        if (currentVal) {
-          currentVal.data = data.value.value.value;
-        } else {
-          ((this.echartMerge.series as SeriesOption[])[0].data as any[])?.push({
-            name: data.value.vin,
-            value: data.value.value.value,
-          });
+        const s = this.echartMerge.series as SeriesOption[];
+        let abc: any = s.find((s) => s.name === data.vin);
+        if (!abc) {
+          abc = {
+            name: data.vin,
+            type: 'line',
+            smooth: true,
+            symbol: 'none',
+            areaStyle: {},
+            data: new Array<any[]>(),
+          };
+          s.push(abc);
         }
+        abc.data!.push([
+          data.value.timestamp,
+          data.value.value.value,
+        ]);
+        abc.data = (abc.data as any[]).sort((a: any, b: any) => a[0] - b[0]);
+        console.log(this.echartMerge)
         this.echartMerge = {
           ...this.echartMerge,
         };
