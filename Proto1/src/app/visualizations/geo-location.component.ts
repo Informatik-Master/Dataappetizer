@@ -1,4 +1,8 @@
-import { Component, Input } from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+} from '@angular/core';
 import { DataPointService } from '../@core/data-point.service';
 import { CommonModule } from '@angular/common';
 import {
@@ -6,7 +10,6 @@ import {
   FeatureGroup,
   LatLng,
   latLng,
-  LayerGroup,
   Map as LefletMap,
   MapOptions,
   Marker,
@@ -15,7 +18,7 @@ import {
 } from 'leaflet';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { NbCardModule } from '@nebular/theme';
-import { filter, Subscription } from 'rxjs';
+import { bufferTime, debounceTime, filter, last, Subscription } from 'rxjs';
 import { VisualizationComponent } from './visualization-component.interface';
 
 @Component({
@@ -23,8 +26,9 @@ import { VisualizationComponent } from './visualization-component.interface';
   selector: 'ngx-geo-location',
   imports: [CommonModule, LeafletModule, NbCardModule],
   providers: [
-    {provide: VisualizationComponent, useExisting: GeoLocationComponent}
+    { provide: VisualizationComponent, useExisting: GeoLocationComponent },
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <nb-card>
       <nb-card-header> Fahrzeugstandorte </nb-card-header>
@@ -86,32 +90,41 @@ export class GeoLocationComponent extends VisualizationComponent {
   private subscription: Subscription | null = null;
   private isDestroyed = false;
 
-  public constructor(protected readonly dataPointService: DataPointService) {
+  public constructor(
+    protected readonly dataPointService: DataPointService,
+    protected readonly cdr: ChangeDetectorRef
+  ) {
     super();
   }
 
   public ngOnInit(): void {
     this.subscription = this.dataPointService.dataPoint$
-      .pipe(filter(({ event }) => event === 'geolocation'))
+      .pipe(
+        filter(({ event }) => event === 'geolocation'),
+        debounceTime(500) // TODO: debounce hilft nicht, da es verschiedene Fahrzeuge mit verschiedenen Datenpunkte gibt. Demensprechend ist latest bei jedem Fahrzeug anders. Fahrzeug 1 kann am ende sine, während Fahrzeug 2 in der Mitte von dem Stream ist.
+      ) //TODO: only latest,also  https://stackoverflow.com/questions/55404098/buffertime-with-leading-option
       .subscribe(({ data }) => {
-        const { vin, value } = data;
-        const lat = value.value.latitude;
-        const lng = value.value.longitude;
-        const latLng = new LatLng(lat, lng);
-        this.markers.set(
-          vin,
-          marker(latLng, {
-            title: vin,
-          })
-        ),
-          this.markerLayer.clearLayers();
-        [...this.markers.values()].forEach((marker) => {
-          this.markerLayer.addLayer(marker);
-        });
-        this.map?.fitBounds(this.markerLayer.getBounds().pad(0.2), {
-          animate: true,
-          duration: 1,
-        });
+         //TODO: sorting? latest, also only update leaflet on changes
+          const { vin, value } = data;
+          const lat = value.value.latitude;
+          const lng = value.value.longitude;
+          const latLng = new LatLng(lat, lng);
+          this.markers.set(
+            vin,
+            marker(latLng, {
+              title: vin,
+            })
+          ),
+            this.markerLayer.clearLayers();
+          [...this.markers.values()].forEach((marker) => {
+            this.markerLayer.addLayer(marker);
+          });
+          this.map?.fitBounds(this.markerLayer.getBounds().pad(0.2), {
+            animate: true,
+            duration: 1,
+          });
+        
+        this.cdr.detectChanges();
       });
   }
 
@@ -132,5 +145,4 @@ export class GeoLocationComponent extends VisualizationComponent {
       !this.isDestroyed && map.invalidateSize();
     }, 1);
   }
-  
 }

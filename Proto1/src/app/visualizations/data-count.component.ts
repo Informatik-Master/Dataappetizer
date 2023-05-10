@@ -1,12 +1,10 @@
-import { Component } from '@angular/core';
-import { DataPointService } from '../@core/data-point.service';
 import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
+import { NbCardModule } from '@nebular/theme';
+import { bufferTime, Subscription } from 'rxjs';
 
-import { NbCardModule, NbListModule } from '@nebular/theme';
-import { filter, Subscription } from 'rxjs';
+import { DataPointService } from '../@core/data-point.service';
 import { VisualizationComponent } from './visualization-component.interface';
-import { EChartsOption, SeriesOption } from 'echarts';
-import { NgxEchartsModule } from 'ngx-echarts';
 
 @Component({
   standalone: true,
@@ -14,15 +12,14 @@ import { NgxEchartsModule } from 'ngx-echarts';
   imports: [CommonModule, NbCardModule],
   providers: [
     { provide: VisualizationComponent, useExisting: DataCountComponent },
-  ], // TODO: on push
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <nb-card>
       <nb-card-header> Datenanzahl</nb-card-header>
       <nb-card-body>
-        <h6 class="m-0"> {{vins.size}} Fahrzeuge</h6>
-        <span class="caption-2"
-          > {{numberDataPoints}} Datenpunkte</span
-        >
+        <h6 class="m-0">{{ vins.size }} Fahrzeuge</h6>
+        <span class="caption-2"> {{ numberDataPoints }} Datenpunkte</span>
       </nb-card-body>
     </nb-card>
   `,
@@ -43,16 +40,19 @@ export class DataCountComponent extends VisualizationComponent {
   vins = new Set<string>();
   numberDataPoints = 0;
 
-  public constructor(protected readonly dataPointService: DataPointService) {
+  public constructor(protected readonly dataPointService: DataPointService, private changeDetectionRef: ChangeDetectorRef) {
     super();
   }
 
   public ngOnInit(): void {
     this.subscription = this.dataPointService.dataPoint$
-      .subscribe(({ data }) => {
-        const {vin} = data;
-        this.vins.add(vin);
-        this.numberDataPoints++;
+      .pipe(bufferTime(1000))
+      .subscribe((bufferedEvents) => {
+        for (const { data } of bufferedEvents) {
+          this.vins.add(data.vin);
+          this.numberDataPoints++;
+        }
+        this.changeDetectionRef.detectChanges();
       });
   }
 

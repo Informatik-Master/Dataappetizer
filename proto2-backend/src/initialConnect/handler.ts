@@ -21,7 +21,7 @@ const apigatewaymanagementapi = new ApiGatewayManagementApiClient({
   endpoint: 'http://localhost:3001',
 });
 
-const VEHICLES = [
+const VEHICLES = [ // TODO: get from db
   'V1RTUALV1N0000001',
   'V1RTUALV1N0000002',
   'V1RTUALV1N0000003',

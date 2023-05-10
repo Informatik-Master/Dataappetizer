@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { DataPointService } from '../@core/data-point.service';
 import { CommonModule } from '@angular/common';
 
 import { NbCardModule, NbListModule } from '@nebular/theme';
-import { filter, Subscription } from 'rxjs';
+import { buffer, bufferTime, filter, Subscription } from 'rxjs';
 import { VisualizationComponent } from './visualization-component.interface';
 import { EChartsOption, SeriesOption } from 'echarts';
 import { NgxEchartsModule } from 'ngx-echarts';
@@ -14,7 +14,8 @@ import { NgxEchartsModule } from 'ngx-echarts';
   imports: [CommonModule, NbCardModule, NgxEchartsModule],
   providers: [
     { provide: VisualizationComponent, useExisting: MilageComponent },
-  ], // TODO: on push
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <nb-card>
       <nb-card-header> Kilometerstand </nb-card-header>
@@ -42,8 +43,7 @@ export class MilageComponent extends VisualizationComponent {
   private subscription: Subscription | null = null;
 
   echartMerge: EChartsOption = {
-    series: [
-    ],
+    series: [],
   };
 
   echartOptions: EChartsOption = {
@@ -68,35 +68,39 @@ export class MilageComponent extends VisualizationComponent {
     series: [],
   };
 
-  public constructor(protected readonly dataPointService: DataPointService) {
+  public constructor(protected readonly dataPointService: DataPointService, private readonly cd: ChangeDetectorRef) {
     super();
   }
 
   public ngOnInit(): void {
     this.subscription = this.dataPointService.dataPoint$
-      .pipe(filter(({ event }) => event === 'mileage'))
-      .subscribe(({ data }) => {
-        const s = this.echartMerge.series as SeriesOption[];
-        let abc: any = s.find((s) => s.name === data.vin);
-        if (!abc) {
-          abc = {
-            name: data.vin,
-            type: 'line',
-            smooth: true,
-            symbol: 'none',
-            areaStyle: {},
-            data: new Array<any[]>(),
-          };
-          s.push(abc);
+      .pipe(
+        filter(({ event }) => event === 'mileage'),
+        bufferTime(1000)
+      )
+      .subscribe((bufferedEvents) => {
+        for (const { data } of bufferedEvents) {
+          const s = this.echartMerge.series as SeriesOption[];
+          let abc: any = s.find((s) => s.name === data.vin);
+          if (!abc) {
+            abc = {
+              name: data.vin,
+              type: 'line',
+              smooth: true,
+              symbol: 'none',
+              areaStyle: {},
+              data: new Array<any[]>(),
+            };
+            s.push(abc);
+          }
+          abc.data!.push([data.value.timestamp, data.value.value.value]);
+          abc.data = (abc.data as any[]).sort((a: any, b: any) => a[0] - b[0]);
         }
-        abc.data!.push([
-          data.value.timestamp,
-          data.value.value.value,
-        ]);
-        abc.data = (abc.data as any[]).sort((a: any, b: any) => a[0] - b[0]);
+
         this.echartMerge = {
           ...this.echartMerge,
         };
+        this.cd.detectChanges();
       });
   }
 

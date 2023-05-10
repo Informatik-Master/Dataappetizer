@@ -1,9 +1,20 @@
-import { Component } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+} from '@angular/core';
 import { DataPointService } from '../@core/data-point.service';
 import { CommonModule } from '@angular/common';
 
 import { NbCardModule, NbListModule } from '@nebular/theme';
-import { filter, Subscription } from 'rxjs';
+import {
+  bufferTime,
+  distinctUntilChanged,
+  distinctUntilKeyChanged,
+  filter,
+  map,
+  Subscription,
+} from 'rxjs';
 import { VisualizationComponent } from './visualization-component.interface';
 import { EChartsOption, SeriesOption } from 'echarts';
 import { NgxEchartsModule } from 'ngx-echarts';
@@ -14,7 +25,8 @@ import { NgxEchartsModule } from 'ngx-echarts';
   imports: [CommonModule, NbCardModule, NgxEchartsModule],
   providers: [
     { provide: VisualizationComponent, useExisting: AverageDistanceComponent },
-  ], // TODO: on push
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <nb-card>
       <nb-card-header> Durchschnittsdistanz </nb-card-header>
@@ -42,14 +54,15 @@ export class AverageDistanceComponent extends VisualizationComponent {
   private subscription: Subscription | null = null;
 
   echartMerge: EChartsOption = {
-    series: [{
-       data: []
-      }],
+    series: [
+      {
+        data: [],
+      },
+    ],
   };
 
   echartOptions: EChartsOption = {
-    legend: {
-    },
+    legend: {},
     series: [
       {
         type: 'pie',
@@ -67,28 +80,41 @@ export class AverageDistanceComponent extends VisualizationComponent {
     ],
   };
 
-  public constructor(protected readonly dataPointService: DataPointService) {
+  public constructor(
+    protected readonly dataPointService: DataPointService,
+    private readonly changeDetectionRef: ChangeDetectorRef
+  ) {
     super();
   }
 
   public ngOnInit(): void {
     this.subscription = this.dataPointService.dataPoint$
-      .pipe(filter(({ event }) => event === 'averagedistance'))
-      .subscribe(({ data }) => {
-        const currentVal = (
-          (this.echartMerge.series as SeriesOption[])[0].data as any[]
-        )?.find((d) => d.name === data.value.vin);
-        if (currentVal) {
-          currentVal.data = data.value.value.value;
-        } else {
+      .pipe(
+        filter(({ event }) => event === 'averagedistance'),
+        map(({ data }) => data.value),
+        bufferTime(1000)
+        // distinctUntilKeyChanged('vin')
+      )
+      .subscribe((bufferedEvents) => {
+        for (const event of bufferedEvents) {
+          const { vin, value } = event;
+          const currentVal = (
+            (this.echartMerge.series as SeriesOption[])[0].data as any[]
+          )?.find((d) => d.name === vin);
+          if (currentVal) {
+            currentVal.data = value.value;
+            continue;
+          }
           ((this.echartMerge.series as SeriesOption[])[0].data as any[])?.push({
-            name: data.value.vin,
-            value: data.value.value.value,
+            name: vin,
+            value: value.value,
           });
         }
+
         this.echartMerge = {
           ...this.echartMerge,
         };
+        this.changeDetectionRef.detectChanges();
       });
   }
 
