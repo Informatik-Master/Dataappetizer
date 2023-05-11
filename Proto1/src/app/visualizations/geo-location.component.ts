@@ -18,7 +18,14 @@ import {
 } from 'leaflet';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { NbCardModule } from '@nebular/theme';
-import { bufferTime, debounceTime, filter, last, Subscription } from 'rxjs';
+import {
+  bufferTime,
+  debounceTime,
+  filter,
+  last,
+  Subject,
+  Subscription,
+} from 'rxjs';
 import { VisualizationComponent } from './visualization-component.interface';
 
 @Component({
@@ -64,9 +71,10 @@ import { VisualizationComponent } from './visualization-component.interface';
   ],
 })
 export class GeoLocationComponent extends VisualizationComponent {
-  vehicles = new Map<string, number>();
+  latestDataPoints = new Map<string, any>();
+  wasUpdated = new Subject<void>();
 
-  markers = new Map<string, Marker>();
+  vehicles = new Map<string, number>();
 
   override onResize(): void {
     this.map?.invalidateSize();
@@ -87,7 +95,7 @@ export class GeoLocationComponent extends VisualizationComponent {
   };
 
   private map: LefletMap | null = null;
-  private subscription: Subscription | null = null;
+  private subscriptions: Subscription[] = [];
   private isDestroyed = false;
 
   public constructor(
@@ -98,39 +106,38 @@ export class GeoLocationComponent extends VisualizationComponent {
   }
 
   public ngOnInit(): void {
-    this.subscription = this.dataPointService.dataPoint$
-      .pipe(
-        filter(({ event }) => event === 'geolocation'),
-        debounceTime(500) // TODO: debounce hilft nicht, da es verschiedene Fahrzeuge mit verschiedenen Datenpunkte gibt. Demensprechend ist latest bei jedem Fahrzeug anders. Fahrzeug 1 kann am ende sine, während Fahrzeug 2 in der Mitte von dem Stream ist.
-      ) //TODO: only latest,also  https://stackoverflow.com/questions/55404098/buffertime-with-leading-option
-      .subscribe(({ data }) => {
-         //TODO: sorting? latest, also only update leaflet on changes
-          const { vin, value } = data;
-          const lat = value.value.latitude;
-          const lng = value.value.longitude;
-          const latLng = new LatLng(lat, lng);
-          this.markers.set(
-            vin,
-            marker(latLng, {
+    this.subscriptions.push(
+      this.wasUpdated.pipe(debounceTime(250)).subscribe(() => {
+        this.markerLayer.clearLayers();
+        for (const [vin, { value }] of this.latestDataPoints)
+          this.markerLayer.addLayer(
+            marker(new LatLng(value.latitude, value.longitude), {
               title: vin,
             })
-          ),
-            this.markerLayer.clearLayers();
-          [...this.markers.values()].forEach((marker) => {
-            this.markerLayer.addLayer(marker);
-          });
-          this.map?.fitBounds(this.markerLayer.getBounds().pad(0.2), {
-            animate: true,
-            duration: 1,
-          });
-        
+          );
+
+        this.map?.fitBounds(this.markerLayer.getBounds().pad(0.2), {
+          animate: true,
+          duration: 1,
+        });
         this.cdr.detectChanges();
-      });
+      })
+    );
+    this.subscriptions.push(
+      this.dataPointService.dataPoint$
+        .pipe(filter(({ event }) => event === 'geolocation'))
+        .subscribe(({ data }) => {
+          //TODO: sorting? latest, also only update leaflet on changes
+          const { vin, value } = data;
+          this.latestDataPoints.set(vin, value);
+          this.wasUpdated.next();
+        })
+    );
   }
 
   public ngOnDestroy(): void {
     this.isDestroyed = true;
-    this.subscription?.unsubscribe();
+    this.subscriptions.forEach((s) => s.unsubscribe());
   }
 
   onMapReady(map: LefletMap) {

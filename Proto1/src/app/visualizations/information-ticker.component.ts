@@ -1,4 +1,8 @@
-import { Component, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  ChangeDetectorRef,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { DataPointService } from '../@core/data-point.service';
 import { CommonModule } from '@angular/common';
 
@@ -41,7 +45,10 @@ export class InformationTickerComponent extends VisualizationComponent {
   private subscription: Subscription | null = null;
   notifications: string[] = [];
 
-  public constructor(protected readonly dataPointService: DataPointService, private readonly changeDetectionRef: ChangeDetectorRef) {
+  public constructor(
+    protected readonly dataPointService: DataPointService,
+    private readonly changeDetectionRef: ChangeDetectorRef
+  ) {
     super();
   }
 
@@ -59,20 +66,17 @@ export class InformationTickerComponent extends VisualizationComponent {
             const lat = value.value.latitude;
             const lng = value.value.longitude;
 
-            this.notifications = [
-              `${vin} hat einen neuen Standort: ${lat} ${lng}`,
-              ...this.notifications,
-            ];
+            this.notifications.unshift(
+              `${vin} hat einen neuen Standort: ${lat} ${lng}`
+            );
           } else if (event === 'averagedistance') {
-            this.notifications = [
-              `${data.value.vin} hat einen neuen Kilometer-Durchschnitt: ${data.value.value.value}`,
-              ...this.notifications,
-            ];
+            this.notifications.unshift(
+              `${data.value.vin} hat einen neuen Kilometer-Durchschnitt: ${data.value.value.value}`
+            );
           } else if (event === 'mileage') {
-            this.notifications = [
-              `${data.vin} hat einen neuen Kilometerstand: ${data.value.value.value} ${data.value.value.unit}`,
-              ...this.notifications,
-            ];
+            this.notifications.unshift(
+              `${data.vin} hat einen neuen Kilometerstand: ${data.value.value.value} ${data.value.value.unit}`
+            );
           }
         }
         this.changeDetectionRef.detectChanges();

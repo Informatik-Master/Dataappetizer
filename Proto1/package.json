@@ -10,7 +10,6 @@
   },
   "private": true,
   "dependencies": {
-    "angular-gridster2": "^14.1.5",
     "@angular/animations": "^14.2.0",
     "@angular/cdk": "^14.0.0",
     "@angular/common": "^14.2.0",
@@ -25,6 +24,7 @@
     "@nebular/auth": "^10.0.0",
     "@nebular/eva-icons": "^10.0.0",
     "@nebular/theme": "^10.0.0",
+    "angular-gridster2": "^14.1.5",
     "bootstrap": "^5.2.3",
     "echarts": "5.0.1",
     "eva-icons": "^1.1.2",
