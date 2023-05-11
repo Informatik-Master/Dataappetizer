@@ -6,6 +6,7 @@ import { AverageDistanceComponent } from './average-distance.component';
 import { DataCountComponent } from './data-count.component';
 import { MilageComponent } from './milage.component';
 import { FuelLevelComponent } from './fuel-level.component';
+import { EnvironmentTemperatureComponent } from './environment-temperature.component';
 
 export enum VisualizationKind {
   DASHBOARD = 'dashboard',
@@ -53,6 +54,12 @@ export const AVAILABLE_VISUALIZATIONS: {
     name: 'Tankfüllstand',
     kind: VisualizationKind.DASHBOARD,
     component: FuelLevelComponent,
+  },
+  {
+    id: 'environment-temperature',
+    name: 'Außentemperatur',
+    kind: VisualizationKind.DASHBOARD,
+    component: EnvironmentTemperatureComponent
   }
 ];
 
@@ -62,7 +69,8 @@ const COMPONENTS = [
   AverageDistanceComponent,
   DataCountComponent,
   MilageComponent,
-  FuelLevelComponent
+  FuelLevelComponent,
+  EnvironmentTemperatureComponent
 ];
 
 @NgModule({
