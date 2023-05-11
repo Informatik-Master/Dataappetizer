@@ -109,13 +109,14 @@ export class GeoLocationComponent extends VisualizationComponent {
     this.subscriptions.push(
       this.wasUpdated.pipe(debounceTime(250)).subscribe(() => {
         this.markerLayer.clearLayers();
-        for (const [vin, { value }] of this.latestDataPoints)
-          this.markerLayer.addLayer(
-            marker(new LatLng(value.latitude, value.longitude), {
-              title: vin,
-            })
-          );
+        for (const [vin, { value }] of this.latestDataPoints) {
+          const m = marker(new LatLng(value.latitude, value.longitude));
+          m.bindPopup(vin)
 
+          this.markerLayer.addLayer(
+            m
+          );
+        }
         this.map?.fitBounds(this.markerLayer.getBounds().pad(0.2), {
           animate: true,
           duration: 1,
