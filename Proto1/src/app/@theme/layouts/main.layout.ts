@@ -9,7 +9,7 @@ import { Component } from '@angular/core';
         <ngx-header></ngx-header>
       </nb-layout-header>
 
-      <nb-layout-column>
+      <nb-layout-column class="p-0">
         <ng-content select="router-outlet"></ng-content>
       </nb-layout-column>
 

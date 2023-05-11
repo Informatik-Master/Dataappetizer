@@ -5,6 +5,7 @@ import { InformationTickerComponent } from './information-ticker.component';
 import { AverageDistanceComponent } from './average-distance.component';
 import { DataCountComponent } from './data-count.component';
 import { MilageComponent } from './milage.component';
+import { FuelLevelComponent } from './fuel-level.component';
 
 export enum VisualizationKind {
   DASHBOARD = 'dashboard',
@@ -46,6 +47,12 @@ export const AVAILABLE_VISUALIZATIONS: {
     name: 'Kilometerstand',
     kind: VisualizationKind.DASHBOARD,
     component: MilageComponent,
+  },
+  {
+    id: 'fuel-level',
+    name: 'Tankfüllstand',
+    kind: VisualizationKind.DASHBOARD,
+    component: FuelLevelComponent,
   }
 ];
 
@@ -54,7 +61,8 @@ const COMPONENTS = [
   InformationTickerComponent,
   AverageDistanceComponent,
   DataCountComponent,
-  MilageComponent
+  MilageComponent,
+  FuelLevelComponent
 ];
 
 @NgModule({
