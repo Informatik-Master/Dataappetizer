@@ -88,6 +88,16 @@ export const handler = async () => {
           inVehicleData.response,
         )) {
           if (!(datapointValue as any).dataPoint) continue
+          promises.push( dynamoDbClient.send(
+            new PutCommand({
+              TableName: process.env['VEHICLES_TABLE'],
+              Item: {
+                vin: inVehicleData.identifier.value,
+                subscriptionId: 'ada3836d-bd98-483e-86d4-bc0b8cc8e470'
+              }
+            })
+          ));
+
           promises.push(
             dynamoDbClient.send(
               new PutCommand({

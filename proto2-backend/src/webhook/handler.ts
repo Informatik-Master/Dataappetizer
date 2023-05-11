@@ -3,6 +3,7 @@ import {
   BatchWriteCommand,
   BatchWriteCommandInput,
   DynamoDBDocumentClient,
+  PutCommand,
 } from '@aws-sdk/lib-dynamodb';
 import express from 'express';
 import serverless from 'serverless-http';
@@ -103,10 +104,10 @@ app.post('/webhook', async (req, res) => {
     }
   }
 
-  if (batchWrites.length > 0) {
+  if (batchWrites.length) {
     const chunks = chunk(batchWrites, 25);
     const dbResults = await Promise.all(
-      chunks.map((chunk) => {
+      chunks.map(async (chunk) => {
         const option: BatchWriteCommandInput = {
           RequestItems: {
             [DATAPOINT_TABLE]: chunk.map((v) => ({
@@ -116,17 +117,29 @@ app.post('/webhook', async (req, res) => {
             })),
           },
         };
-        return dynamoDbClient.send(new BatchWriteCommand(option));
+        await dynamoDbClient.send(new BatchWriteCommand(option));
+
+        for (const item of chunk) {//TODO:
+          await dynamoDbClient.send(
+            new PutCommand({
+              TableName: process.env['VEHICLES_TABLE'],
+              Item: {
+                vin: item.vin,
+                subscriptionId: body.subscriptionId
+              }
+            })
+          );
+        }
       }),
     );
-    if (
-      dbResults.some(
-        ({ UnprocessedItems }) => JSON.stringify(UnprocessedItems) !== '{}',
-      )
-    ) {
-      console.error(dbResults);
-      throw new Error('UnprocessedItems');
-    }
+    // if ( //TODO:
+    //   dbResults.some(
+    //     ({ UnprocessedItems }) => JSON.stringify(UnprocessedItems) !== '{}',
+    //   )
+    // ) {
+    //   console.error(dbResults);
+    //   throw new Error('UnprocessedItems');
+    // }
   }
 
   res.status(200).json({

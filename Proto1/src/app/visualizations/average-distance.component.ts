@@ -30,7 +30,7 @@ import { NgxEchartsModule } from 'ngx-echarts';
   template: `
     <nb-card>
       <nb-card-header> Durchschnittsdistanz </nb-card-header>
-      <nb-card-body>
+      <nb-card-body class="gridster-item-content">
         <div
           echarts
           [options]="echartOptions"
@@ -68,8 +68,10 @@ export class AverageDistanceComponent extends VisualizationComponent {
         type: 'pie',
         center: ['50%', '50%'],
         roseType: 'area',
+        radius: ['30%', '70%'],
+        top: '30',
         itemStyle: {
-          borderRadius: 8,
+          borderRadius: 5,
         },
         tooltip: {
           trigger: 'item',

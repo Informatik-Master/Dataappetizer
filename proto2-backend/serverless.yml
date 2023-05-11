@@ -7,6 +7,7 @@ custom:
   connectionsTable: "connections-${sls:stage}"
   connectionsTableVinIndex: "connections-${sls:stage}-vinIndex"
   vehiclesTable: "vehicles-${sls:stage}"
+  vehiclesTableSubscriptionIdIndex: "vehicles-${sls:stage}-subscriptionIdIndex"
   systemsTable: "systems-${sls:stage}"
   systemsTableVehiclesTable: "systems-${sls:stage}-vehicles"
   systemsTableVehiclesTableVinIndex: "systems-${sls:stage}-vehicles-vinIndex"
@@ -72,6 +73,11 @@ provider:
                   - "index"
                   - ${self:custom.connectionsTableVinIndex}
             - Fn::GetAtt: [VehiclesTable, Arn]
+            - Fn::Join:
+                - "/"
+                - - Fn::GetAtt: [VehiclesTable, Arn]
+                  - "index"
+                  - ${self:custom.vehiclesTableSubscriptionIdIndex}
             - Fn::GetAtt: [Systems, Arn]
             - Fn::Join:
                 - "/"
@@ -87,6 +93,7 @@ provider:
     CONNECTIONS_TABLE: ${self:custom.connectionsTable}
     CONNECTIONS_TABLE_VIN_INDEX: ${self:custom.connectionsTableVinIndex}
     VEHICLES_TABLE: ${self:custom.vehiclesTable}
+    VEHICLES_TABLE_SUBSCRIPTION_ID_INDEX: ${self:custom.vehiclesTableSubscriptionIdIndex}
     SYSTEMS_TABLE: ${self:custom.systemsTable}
     SYSTEMS_VEHICLES_TABLE: ${self:custom.systemsTableVehiclesTable}
     SYSTEMS_VEHICLES_TABLE_VIN_INDEX: ${self:custom.systemsTableVehiclesTableVinIndex}
@@ -225,11 +232,20 @@ resources:
         AttributeDefinitions:
           - AttributeName: vin
             AttributeType: S
+          - AttributeName: subscriptionId
+            AttributeType: S
         KeySchema:
           - AttributeName: vin
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:custom.vehiclesTable}
+        GlobalSecondaryIndexes:
+          - KeySchema:
+              - AttributeName: subscriptionId
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+            IndexName: ${self:custom.vehiclesTableSubscriptionIdIndex}
 
     Systems:
       Type: AWS::DynamoDB::Table

@@ -39,7 +39,7 @@ import { VisualizationComponent } from './visualization-component.interface';
   template: `
     <nb-card>
       <nb-card-header> Fahrzeugstandorte </nb-card-header>
-      <nb-card-body class="p-0">
+      <nb-card-body class="p-0 gridster-item-content">
         <div
           leaflet
           [leafletOptions]="mapOptions"

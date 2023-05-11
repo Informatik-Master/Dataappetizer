@@ -21,20 +21,9 @@ const apigatewaymanagementapi = new ApiGatewayManagementApiClient({
   endpoint: 'http://localhost:3001',
 });
 
-const VEHICLES = [
-  // TODO: get from db
-  'V1RTUALV1N0000001',
-  'V1RTUALV1N0000002',
-  'V1RTUALV1N0000003',
-  'V1RTUALV1N0000004',
-  'V1RTUALV1NRAND003',
-  'V1RTUALV1NRAND004',
-  'V1RTUALV1NRAND005',
-  'V1RTUALV1N0000S06',
-  'V1RTUALV1NDETE005',
-];
 
 export const initialConnect = async ({ Records }: any) => {
+  console.log('initial connect')
   for (const record of Records) {
     const { dynamodb } = record;
 
@@ -44,7 +33,15 @@ export const initialConnect = async ({ Records }: any) => {
     console.log('payload', payload);
     const { connectionId } = unmarshall(payload);
 
-    const v = VEHICLES.map(async (vin) => {
+    const { Items: VEHICLES } = await dynamoDbClient.send(
+      new ScanCommand({
+        TableName: process.env['VEHICLES_TABLE']
+      })
+    )// TODO: subscription -> get
+
+    console.log('VEHICLES', VEHICLES)
+
+    const v = VEHICLES!.map(async ({vin}) => {
       const { Items } = await dynamoDbClient.send(
         new QueryCommand({
           TableName: process.env['DATAPOINT_TABLE'],
@@ -52,7 +49,7 @@ export const initialConnect = async ({ Records }: any) => {
           ExpressionAttributeValues: {
             ':vin': vin,
           },
-          ScanIndexForward: false,
+          ScanIndexForward: true,//todo
         }),
       );
 
@@ -63,15 +60,6 @@ export const initialConnect = async ({ Records }: any) => {
             event: datapointName,
             data: {
               vin,
-              value: item,
-            },
-          },
-
-          {
-            event: 'message',
-            data: {
-              vin,
-              datapointName,
               value: item,
             },
           },

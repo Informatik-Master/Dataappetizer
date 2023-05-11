@@ -17,7 +17,7 @@ import { VisualizationComponent } from './visualization-component.interface';
   template: `
     <nb-card>
       <nb-card-header> Datenanzahl</nb-card-header>
-      <nb-card-body>
+      <nb-card-body class="gridster-item-content">
         <h6 class="m-0">{{ vins.size }} Fahrzeuge</h6>
         <span class="caption-2"> {{ numberDataPoints }} Datenpunkte</span>
       </nb-card-body>

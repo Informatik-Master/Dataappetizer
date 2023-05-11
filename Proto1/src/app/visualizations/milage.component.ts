@@ -19,7 +19,7 @@ import { NgxEchartsModule } from 'ngx-echarts';
   template: `
     <nb-card>
       <nb-card-header> Kilometerstand </nb-card-header>
-      <nb-card-body class="p-0">
+      <nb-card-body class="p-0 gridster-item-content">
         <div
           echarts
           [options]="echartOptions"

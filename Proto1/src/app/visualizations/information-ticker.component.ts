@@ -24,7 +24,7 @@ import { VisualizationComponent } from './visualization-component.interface';
   template: `
     <nb-card>
       <nb-card-header> Informationsticker </nb-card-header>
-      <nb-card-body class="p-0">
+      <nb-card-body class="p-0 gridster-item-content">
         <nb-list>
           <nb-list-item *ngFor="let notification of notifications">
             {{ notification }}
