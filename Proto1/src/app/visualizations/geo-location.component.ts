@@ -1,4 +1,8 @@
-import { Component } from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+} from '@angular/core';
 import { DataPointService } from '../@core/data-point.service';
 import { CommonModule } from '@angular/common';
 import {
@@ -6,7 +10,6 @@ import {
   FeatureGroup,
   LatLng,
   latLng,
-  LayerGroup,
   Map as LefletMap,
   MapOptions,
   Marker,
@@ -15,17 +18,28 @@ import {
 } from 'leaflet';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { NbCardModule } from '@nebular/theme';
-import { filter, Subscription } from 'rxjs';
+import {
+  bufferTime,
+  debounceTime,
+  filter,
+  last,
+  Subject,
+  Subscription,
+} from 'rxjs';
 import { VisualizationComponent } from './visualization-component.interface';
 
 @Component({
   standalone: true,
   selector: 'ngx-geo-location',
   imports: [CommonModule, LeafletModule, NbCardModule],
+  providers: [
+    { provide: VisualizationComponent, useExisting: GeoLocationComponent },
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <nb-card>
       <nb-card-header> Fahrzeugstandorte </nb-card-header>
-      <nb-card-body class="p-0">
+      <nb-card-body class="p-0 gridster-item-content">
         <div
           leaflet
           [leafletOptions]="mapOptions"
@@ -56,10 +70,15 @@ import { VisualizationComponent } from './visualization-component.interface';
     `,
   ],
 })
-export class GeoLocationComponent implements VisualizationComponent {
+export class GeoLocationComponent extends VisualizationComponent {
+  latestDataPoints = new Map<string, any>();
+  wasUpdated = new Subject<void>();
+
   vehicles = new Map<string, number>();
 
-  markers = new Map<string, Marker>();
+  override onResize(): void {
+    this.map?.invalidateSize();
+  }
 
   private readonly markerLayer = new FeatureGroup();
   mapOptions: MapOptions = {
@@ -76,39 +95,50 @@ export class GeoLocationComponent implements VisualizationComponent {
   };
 
   private map: LefletMap | null = null;
-  private subscription: Subscription | null = null;
+  private subscriptions: Subscription[] = [];
   private isDestroyed = false;
 
-  public constructor(protected readonly dataPointService: DataPointService) {}
+  public constructor(
+    protected readonly dataPointService: DataPointService,
+    protected readonly cdr: ChangeDetectorRef
+  ) {
+    super();
+  }
 
   public ngOnInit(): void {
-    this.subscription = this.dataPointService.dataPoint$
-      .pipe(filter(({ event }) => event === 'geolocation'))
-      .subscribe(({ data }) => {
-        const { vin, value } = data;
-        const lat = value.value.latitude;
-        const lng = value.value.longitude;
-        const latLng = new LatLng(lat, lng);
-        this.markers.set(
-          vin,
-          marker(latLng, {
-            title: vin,
-          })
-        ),
-          this.markerLayer.clearLayers();
-        [...this.markers.values()].forEach((marker) => {
-          this.markerLayer.addLayer(marker);
-        });
+    this.subscriptions.push(
+      this.wasUpdated.pipe(debounceTime(250)).subscribe(() => {
+        this.markerLayer.clearLayers();
+        for (const [vin, { value }] of this.latestDataPoints) {
+          const m = marker(new LatLng(value.latitude, value.longitude));
+          m.bindPopup(vin)
+
+          this.markerLayer.addLayer(
+            m
+          );
+        }
         this.map?.fitBounds(this.markerLayer.getBounds().pad(0.2), {
           animate: true,
           duration: 1,
         });
-      });
+        this.cdr.detectChanges();
+      })
+    );
+    this.subscriptions.push(
+      this.dataPointService.dataPoint$
+        .pipe(filter(({ event }) => event === 'geolocation'))
+        .subscribe(({ data }) => {
+          //TODO: sorting? latest, also only update leaflet on changes
+          const { vin, value } = data;
+          this.latestDataPoints.set(vin, value);
+          this.wasUpdated.next();
+        })
+    );
   }
 
   public ngOnDestroy(): void {
     this.isDestroyed = true;
-    this.subscription?.unsubscribe();
+    this.subscriptions.forEach((s) => s.unsubscribe());
   }
 
   onMapReady(map: LefletMap) {

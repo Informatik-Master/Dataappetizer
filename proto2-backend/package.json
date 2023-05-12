@@ -32,12 +32,14 @@
     "serverless-offline-dynamodb-streams": "^6.2.3",
     "serverless-webpack": "^5.11.0",
     "ts-loader": "^9.4.2",
+    "ts-node-dev": "^2.0.0",
     "typescript": "^5.0.4",
     "webpack": "^5.78.0",
     "webpack-cli": "^5.0.1"
   },
   "scripts": {
     "start": "serverless offline start",
-    "postinstall": "patch-package && sls dynamodb install"
+    "postinstall": "patch-package && sls dynamodb install",
+    "seedcollector": "tsnd --respawn src/seedcollector.ts"
   }
 }

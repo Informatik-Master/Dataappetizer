@@ -3,6 +3,7 @@ import {
   DynamoDBDocumentClient,
   ScanCommand,
   QueryCommand,
+  paginateScan,
 } from '@aws-sdk/lib-dynamodb';
 import express from 'express';
 import serverless from 'serverless-http';
@@ -18,11 +19,20 @@ const dynamoDbClient = DynamoDBDocumentClient.from(client);
 app.use(express.json());
 
 app.get('/api/debug/datapoints', async function (req, res) {
-  const { Items } = await dynamoDbClient.send(
-    new ScanCommand({
+  const paginator = await paginateScan(
+    {
+      client: dynamoDbClient,
+    },
+    {
       TableName: process.env['DATAPOINT_TABLE'],
-    }),
+    },
   );
+
+  let Items: any[] = [];
+  for await (const page of paginator) {
+    Items = Items.concat(page.Items);
+  }
+
   res.json(Items);
 });
 
@@ -34,7 +44,7 @@ app.get('/api/debug/datapoints-vin', async function (req, res) {
       ScanIndexForward: false,
       KeyConditionExpression: 'vin = :vin',
       ExpressionAttributeValues: {
-        ':vin': vin
+        ':vin': vin,
       },
       // Limit: 1,
     }),

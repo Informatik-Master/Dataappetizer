@@ -8,8 +8,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { NbAuthJWTToken, NbAuthModule, NbPasswordAuthStrategy } from '@nebular/auth';
-import { SocketIoModule } from 'ngx-socket-io';
 import { CookieModule } from 'ngx-cookie';
+import { NbToastrModule } from '@nebular/theme';
 
 @NgModule({
   declarations: [AppComponent],
@@ -33,13 +33,13 @@ import { CookieModule } from 'ngx-cookie';
         }),
       ],
     }),
-    SocketIoModule.forRoot({ url: 'http://localhost:3000', options: {} }),
     NgxEchartsModule.forRoot({
       echarts: () => import('echarts'),
     }),
     CookieModule.withOptions({
       //TODO:
     }),
+    NbToastrModule.forRoot(),
   ],
   bootstrap: [AppComponent],
 })

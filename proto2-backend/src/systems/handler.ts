@@ -93,6 +93,28 @@ app.get('/api/systems', async (req, res) => {
   //TODO: add pagination
 
   res.json(systems.Items);
+  // console.log(process.env)
+  // res.json(JSON.stringify(process.env['API_URL']))
+});
+
+app.get('/api/systems/:id', async (req, res) => {
+  if (req.params.id) {
+    res.status(400).json({ message: 'Missing id' });
+    return;
+  }
+  const system = await dynamoDbClient.send(
+    new GetCommand({
+      TableName: SYSTEMS_TABLE_NAME,
+      Key: {
+        id: req.params.id,
+      }
+    })
+  );
+  if (!system.Item) {
+    res.status(404).json({ message: 'System not found' });
+    return;
+  }
+  res.json(system);
 });
 
 export const handler = serverless(app);

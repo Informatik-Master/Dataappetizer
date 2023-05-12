@@ -6,9 +6,11 @@ import {
   DynamoDBDocumentClient,
   QueryCommand,
   ScanCommand,
+  paginateQuery
 } from '@aws-sdk/lib-dynamodb';
 import { unmarshall } from '@aws-sdk/util-dynamodb';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
+import chunk from 'lodash.chunk';
 
 const client = new DynamoDBClient({
   region: 'us-east-1',
@@ -20,23 +22,9 @@ const apigatewaymanagementapi = new ApiGatewayManagementApiClient({
   endpoint: 'http://localhost:3001',
 });
 
-const VEHICLES = [
-  'V1RTUALV1N0000001',
-  'V1RTUALV1N0000002',
-  'V1RTUALV1N0000003',
-  'V1RTUALV1N0000004',
-  // 'V1RTUALV1N0000S05',
-  // 'V1RTUALV1N0000S06',
-  // 'V1RTUALV1N0000S07',
-  // 'V1RTUALV1N0000S08',
-  // 'V1RTUALV1N0000S09',
-  // 'V1RTUALV1N0000S10',
-  // 'V1RTUALV1N0000S11',
-  // 'V1RTUALV1N0000S12',
-  // 'V1RTUALV1N0000S13',
-];
 
 export const initialConnect = async ({ Records }: any) => {
+  console.log('initial connect')
   for (const record of Records) {
     const { dynamodb } = record;
 
@@ -46,18 +34,31 @@ export const initialConnect = async ({ Records }: any) => {
     console.log('payload', payload);
     const { connectionId } = unmarshall(payload);
 
-    const v = VEHICLES.map(async (vin) => {
-      const { Items } = await dynamoDbClient.send(
-        new QueryCommand({
+    const { Items: VEHICLES } = await dynamoDbClient.send(
+      new ScanCommand({
+        TableName: process.env['VEHICLES_TABLE']
+      })
+    )// TODO: subscription -> get
+
+    console.log('VEHICLES', VEHICLES)
+
+    const v = VEHICLES!.map(async ({vin}) => {
+      const paginator = await paginateQuery({
+        client: dynamoDbClient,
+      },{
           TableName: process.env['DATAPOINT_TABLE'],
           KeyConditionExpression: 'vin = :vin',
           ExpressionAttributeValues: {
             ':vin': vin,
           },
-          ScanIndexForward: false,
-        }),
-      );
+          ScanIndexForward: true,//todo
+        } )
 
+        let Items: any[] = [];
+        for await (const page of paginator) {
+          Items = Items.concat(page.Items);
+        }
+        // console.log('items', Items)
       return Items!.flatMap((item) => {
         const { vin, datapointName, value } = item;
         return [
@@ -68,29 +69,26 @@ export const initialConnect = async ({ Records }: any) => {
               value: item,
             },
           },
-          
-          {
-            event: 'message',
-            data: {
-              vin,
-              datapointName,
-              value: item,
-            },
-          },
         ];
       });
     });
     const res = (await Promise.all(v)).flat(1);
-    console.log('res',res)
-    try {
-      await apigatewaymanagementapi.send(
-        new PostToConnectionCommand({
-          ConnectionId: connectionId,
-          Data: Buffer.from(JSON.stringify(res)),
-        }),
-      );
+    console.log('res', res);
+    console.log('pushing to connectionId', connectionId);
 
-
-    } catch {}
+    await Promise.all(
+      chunk(res, 200).map(async (chunk) => {
+        try {
+          await apigatewaymanagementapi.send(
+            new PostToConnectionCommand({
+              ConnectionId: connectionId,
+              Data: Buffer.from(JSON.stringify(chunk)),
+            }),
+          );
+        } catch (e) {
+          console.log(e);
+        }
+      }),
+    );
   }
 };

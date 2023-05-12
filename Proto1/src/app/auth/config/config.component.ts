@@ -1,24 +1,22 @@
 import {
-  AnimationTriggerMetadata,
   animate,
+  AnimationTriggerMetadata,
   style,
   transition,
   trigger,
 } from '@angular/animations';
 import { Component, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { EChartsOption } from 'echarts';
-import { firstValueFrom } from 'rxjs';
-import { SystemService } from '../../@core/system.service';
-import { GeoLocationComponent } from '../../visualizations/geo-location.component';
-import { VisualizationHost } from '../../visualizations/visualization-host.directive';
-import { InformationTickerComponent } from '../../visualizations/information-ticker.component';
-import { VisualizationComponent } from '../../visualizations/visualization-component.interface';
+import {
+  AVAILABLE_VISUALIZATIONS,
+  VisualizationKind,
+} from 'src/app/visualizations/visualization.module';
 
-type DiagramConfig = {
-  name: string;
+import { SystemService } from '../../@core/system.service';
+import { VisualizationHost } from '../../visualizations/visualization-host.directive';
+
+type DiagramConfig = (typeof AVAILABLE_VISUALIZATIONS)[number] & {
   selected: boolean;
-  component?: any;
 };
 
 export function FadeInOut(
@@ -56,18 +54,11 @@ export class ConfigComponent {
   @ViewChild(VisualizationHost, { static: true })
   previewHost!: VisualizationHost;
 
-  dashboardConfigs: DiagramConfig[] = [
-    {
-      name: 'Fahrzeugstandorte',
-      selected: false,
-      component: GeoLocationComponent,
-    },
-    {
-      name: 'Informationsticker',
-      selected: false,
-      component: InformationTickerComponent,
-    },
-  ];
+  configs: DiagramConfig[] = AVAILABLE_VISUALIZATIONS.map((visualization) => ({
+    ...visualization,
+    selected: false,
+  }));
+
   hoveredChart: DiagramConfig | null = null;
 
   constructor(
@@ -86,11 +77,21 @@ export class ConfigComponent {
   async finish() {
     const newSystem = await this.systemService.createSystem({
       name: this.systemName,
-      dashboardConfig: [],
-      detailConfig: [],
+      dashboardConfig: this.configs
+        .filter(({ kind }) => kind === VisualizationKind.DASHBOARD)
+        .filter(({ selected }) => selected)
+        .map(({ id }) => id),
+      detailConfig: this.configs
+        .filter(({ kind }) => kind === VisualizationKind.DASHBOARD)
+        .filter(({ selected }) => selected)
+        .map(({ id }) => id),
       users: [],
     }); // TODO: Is a new token needed?
-    this.router.navigate(['pages', newSystem.id]);
+    this.router.navigate(['pages', newSystem.id], {
+      state: {
+        woop: newSystem.id,
+      },
+    });
   }
 
   loadVisualization(config: DiagramConfig) {
@@ -102,5 +103,10 @@ export class ConfigComponent {
       config.component
     );
     // componentRef.instance.data = adItem.data;
+  }
+
+  async copyToClipboard(value: string) {
+    await navigator.clipboard.writeText(value);
+    console.log('copied', value);
   }
 }

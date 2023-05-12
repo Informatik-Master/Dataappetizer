@@ -1,19 +1,30 @@
-import { Component } from '@angular/core';
+import {
+  Component,
+  ChangeDetectorRef,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { DataPointService } from '../@core/data-point.service';
 import { CommonModule } from '@angular/common';
 
 import { NbCardModule, NbListModule } from '@nebular/theme';
-import { filter, Subscription } from 'rxjs';
+import { bufferTime, filter, Subscription } from 'rxjs';
 import { VisualizationComponent } from './visualization-component.interface';
 
 @Component({
   standalone: true,
   selector: 'ngx-information-ticker',
   imports: [CommonModule, NbCardModule, NbListModule],
+  providers: [
+    {
+      provide: VisualizationComponent,
+      useExisting: InformationTickerComponent,
+    },
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <nb-card>
       <nb-card-header> Informationsticker </nb-card-header>
-      <nb-card-body class="p-0">
+      <nb-card-body class="p-0 gridster-item-content">
         <nb-list>
           <nb-list-item *ngFor="let notification of notifications">
             {{ notification }}
@@ -30,38 +41,45 @@ import { VisualizationComponent } from './visualization-component.interface';
     `,
   ],
 })
-export class InformationTickerComponent implements VisualizationComponent{
+export class InformationTickerComponent extends VisualizationComponent {
   private subscription: Subscription | null = null;
   notifications: string[] = [];
 
-  public constructor(protected readonly dataPointService: DataPointService) {}
-
+  public constructor(
+    protected readonly dataPointService: DataPointService,
+    private readonly changeDetectionRef: ChangeDetectorRef
+  ) {
+    super();
+  }
 
   public ngOnInit(): void {
     this.subscription = this.dataPointService.dataPoint$
-      .pipe(filter(({ event }) => event === 'geolocation'))
-      .subscribe(({ event, data }) => {
-        //TODO:
-        if (event === 'geolocation') {
-          const { vin, value } = data;
-          const lat = value.value.latitude;
-          const lng = value.value.longitude;
+      .pipe(
+        filter(({ event }) => event === 'geolocation'),
+        bufferTime(1000)
+      )
+      .subscribe((bufferedEvents) => {
+        for (const { event, data } of bufferedEvents) {
+          //TODO:
+          if (event === 'geolocation') {
+            const { vin, value } = data;
+            const lat = value.value.latitude;
+            const lng = value.value.longitude;
 
-          this.notifications = [
-            `${vin} hat einen neuen Standort: ${lat} ${lng}`,
-            ...this.notifications,
-          ];
-        } else if (event === 'averagedistance') {
-          this.notifications = [
-            `${data.value.vin} hat einen neuen Kilometer-Durchschnitt: ${data.value.value.value}`,
-            ...this.notifications,
-          ];
-        } else if (event === 'mileage') {
-          this.notifications = [
-            `${data.vin} hat einen neuen Kilometerstand: ${data.value.value.value} ${data.value.value.unit}`,
-            ...this.notifications,
-          ];
+            this.notifications.unshift(
+              `${vin} hat einen neuen Standort: ${lat} ${lng}`
+            );
+          } else if (event === 'averagedistance') {
+            this.notifications.unshift(
+              `${data.value.vin} hat einen neuen Kilometer-Durchschnitt: ${data.value.value.value}`
+            );
+          } else if (event === 'mileage') {
+            this.notifications.unshift(
+              `${data.vin} hat einen neuen Kilometerstand: ${data.value.value.value} ${data.value.value.unit}`
+            );
+          }
         }
+        this.changeDetectionRef.detectChanges();
       });
   }
 

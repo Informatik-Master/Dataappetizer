@@ -1,4 +1,4 @@
-<div class="row">
+<!-- <div class="row">
   <div class="col-8">
     <div class="row">
       <div class="col">
@@ -48,5 +48,32 @@
   <div class="col" style="max-height: 20dvh">
     <ngx-information-ticker></ngx-information-ticker>
   </div>
-</div>
+</div> -->
 
+<gridster [options]="options">
+  <gridster-item
+    [item]="item"
+    *ngFor="let item of dashboard"
+    (itemResize)="onResize(item)"
+  >
+    <ngx-geo-location></ngx-geo-location>
+  </gridster-item>
+  <gridster-item [item]="dashboard[0]">
+    <ngx-information-ticker></ngx-information-ticker>
+  </gridster-item>
+  <gridster-item [item]="dashboard[1]">
+    <ngx-average-distance></ngx-average-distance>
+  </gridster-item>
+  <gridster-item [item]="dashboard[2]">
+    <ngx-data-count></ngx-data-count>
+  </gridster-item>
+  <gridster-item [item]="dashboard[3]">
+    <ngx-milage></ngx-milage>
+  </gridster-item>
+  <gridster-item [item]="dashboard[4]">
+    <ngx-fuel-level></ngx-fuel-level>
+  </gridster-item>
+  <gridster-item [item]="dashboard[5]">
+    <ngx-environment-temperature></ngx-environment-temperature>
+  </gridster-item>
+</gridster>

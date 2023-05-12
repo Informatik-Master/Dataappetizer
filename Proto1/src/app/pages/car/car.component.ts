@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { EChartsOption } from 'echarts';
-import { Socket } from 'ngx-socket-io';
 import { map, tap } from 'rxjs/operators';
 
 
@@ -11,8 +10,6 @@ import { map, tap } from 'rxjs/operators';
   styleUrls: ['./car.component.scss'],
 })
 export class CarComponent implements OnInit {
-
-  constructor(private socket: Socket) { }
 
   dataSource: any;
 
@@ -31,11 +28,11 @@ export class CarComponent implements OnInit {
 
   ngOnInit(): void {
     this.dataSource = this.car;
-    this.socket.emit("carList");
-    this.socket.fromEvent('carList').pipe(map((data) => data), tap((data) => console.log(data))).subscribe((data: any) => {
-      console.log(data);
-      this.dataSource= data;
-    })
+    // this.socket.emit("carList");
+    // this.socket.fromEvent('carList').pipe(map((data) => data), tap((data) => console.log(data))).subscribe((data: any) => {
+    //   console.log(data);
+    //   this.dataSource= data;
+    // })
   }
 
   onRowClicked(row: any) {

@@ -12,6 +12,7 @@ import { firstValueFrom } from 'rxjs';
 @Component({
   selector: 'nb-login',
   templateUrl: './login.component.html',
+  styleUrls: ['./login.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent {

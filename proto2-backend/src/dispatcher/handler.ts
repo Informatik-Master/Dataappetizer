@@ -37,7 +37,7 @@ export const dispatcher = async ({ Records }: any) => {
       event: string;
       data: Record<string, any>;
     }) =>
-      Items!.map(async (item) => {
+      Items!.map(async (item) => { // TODO: send to correct ones
         try {
           const gatewayResponse = await apigatewaymanagementapi.send(
             // what happens if the connection is closed?

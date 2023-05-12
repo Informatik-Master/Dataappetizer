@@ -51,12 +51,22 @@ nb-layout.transparent .layout {
   min-height: unset;
 }
 
-nb-layout.fullheight div {
-  height: 100%;
+nb-layout.fullheight > div {
+  &, .layout, .layout-container {
+    height: 100%;
+  }
+
 }
 
 nb-layout .columns {
   nb-layout-column+nb-layout-column {
     border-left: solid 1px var(--border-basic-color-4);
   }
+}
+
+gridster {
+  background: unset !important;
+}
+gridster-item {
+  background: transparent !important;
 }
