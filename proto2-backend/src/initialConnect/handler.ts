@@ -6,6 +6,7 @@ import {
   DynamoDBDocumentClient,
   QueryCommand,
   ScanCommand,
+  paginateQuery
 } from '@aws-sdk/lib-dynamodb';
 import { unmarshall } from '@aws-sdk/util-dynamodb';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
@@ -42,17 +43,22 @@ export const initialConnect = async ({ Records }: any) => {
     console.log('VEHICLES', VEHICLES)
 
     const v = VEHICLES!.map(async ({vin}) => {
-      const { Items } = await dynamoDbClient.send(
-        new QueryCommand({
+      const paginator = await paginateQuery({
+        client: dynamoDbClient,
+      },{
           TableName: process.env['DATAPOINT_TABLE'],
           KeyConditionExpression: 'vin = :vin',
           ExpressionAttributeValues: {
             ':vin': vin,
           },
           ScanIndexForward: true,//todo
-        }),
-      );
+        } )
 
+        let Items: any[] = [];
+        for await (const page of paginator) {
+          Items = Items.concat(page.Items);
+        }
+        // console.log('items', Items)
       return Items!.flatMap((item) => {
         const { vin, datapointName, value } = item;
         return [

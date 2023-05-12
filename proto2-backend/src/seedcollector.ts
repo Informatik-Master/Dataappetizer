@@ -6,6 +6,10 @@ const urls = [
     filename: 'seed.json',
     url: 'http://localhost:3000/api/debug/datapoints',
   },
+  {
+    filename: 'vehicles.json',
+    url: 'http://localhost:3000/api/debug/vehicles',
+  }
 ];
 
 setInterval(async () => {

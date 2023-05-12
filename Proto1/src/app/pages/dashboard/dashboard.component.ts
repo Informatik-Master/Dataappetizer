@@ -39,7 +39,7 @@ import { map, Subject, takeUntil } from 'rxjs';
   selector: 'ngx-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
-  // changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardComponent implements OnInit {
   options!: GridsterConfig;

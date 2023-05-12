@@ -30,6 +30,10 @@ custom:
         sources:
           - table: ${self:custom.usersTable}
             sources: [./users.json]
+      vehicles:
+        sources:
+          - table: ${self:custom.vehiclesTable}
+            sources: [./vehicles.json]
   serverless-offline-dynamodb-streams:
     endpoint: http://0.0.0.0:8002
     region: us-east-1
