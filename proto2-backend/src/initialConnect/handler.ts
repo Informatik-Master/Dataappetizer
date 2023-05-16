@@ -4,9 +4,8 @@ import {
 } from '@aws-sdk/client-apigatewaymanagementapi';
 import {
   DynamoDBDocumentClient,
-  QueryCommand,
   ScanCommand,
-  paginateQuery
+  paginateQuery,
 } from '@aws-sdk/lib-dynamodb';
 import { unmarshall } from '@aws-sdk/util-dynamodb';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
@@ -22,9 +21,56 @@ const apigatewaymanagementapi = new ApiGatewayManagementApiClient({
   endpoint: 'http://localhost:3001',
 });
 
+const sendAllKnownDataForVehicle = async (
+  vin: string,
+  connectionId: string,
+) => {
+  const paginator = await paginateQuery(
+    {
+      client: dynamoDbClient,
+    },
+    {
+      TableName: process.env['DATAPOINT_TABLE'],
+      KeyConditionExpression: 'vin = :vin',
+      ExpressionAttributeValues: {
+        ':vin': vin,
+      },
+      ScanIndexForward: true,
+    },
+  );
+
+  for await (const page of paginator) {
+    const vehicleBatch = page.Items!.map((item) => {
+      const { vin, datapointName, value } = item;
+      return {
+        event: datapointName,
+        data: {
+          vin,
+          value: item,
+        },
+      };
+    });
+
+    await Promise.all(
+      chunk(vehicleBatch, 200).map(async (miniBatch) => {
+        //TODO: does order mater?
+        try {
+          await apigatewaymanagementapi.send(
+            new PostToConnectionCommand({
+              ConnectionId: connectionId,
+              Data: Buffer.from(JSON.stringify(miniBatch)),
+            }),
+          );
+        } catch (e) {
+          console.log(e);
+        }
+      }),
+    );
+  }
+};
 
 export const initialConnect = async ({ Records }: any) => {
-  console.log('initial connect')
+  console.log('initial connect');
   for (const record of Records) {
     const { dynamodb } = record;
 
@@ -36,59 +82,12 @@ export const initialConnect = async ({ Records }: any) => {
 
     const { Items: VEHICLES } = await dynamoDbClient.send(
       new ScanCommand({
-        TableName: process.env['VEHICLES_TABLE']
-      })
-    )// TODO: subscription -> get
-
-    console.log('VEHICLES', VEHICLES)
-
-    const v = VEHICLES!.map(async ({vin}) => {
-      const paginator = await paginateQuery({
-        client: dynamoDbClient,
-      },{
-          TableName: process.env['DATAPOINT_TABLE'],
-          KeyConditionExpression: 'vin = :vin',
-          ExpressionAttributeValues: {
-            ':vin': vin,
-          },
-          ScanIndexForward: true,//todo
-        } )
-
-        let Items: any[] = [];
-        for await (const page of paginator) {
-          Items = Items.concat(page.Items);
-        }
-        // console.log('items', Items)
-      return Items!.flatMap((item) => {
-        const { vin, datapointName, value } = item;
-        return [
-          {
-            event: datapointName,
-            data: {
-              vin,
-              value: item,
-            },
-          },
-        ];
-      });
-    });
-    const res = (await Promise.all(v)).flat(1);
-    console.log('res', res);
-    console.log('pushing to connectionId', connectionId);
+        TableName: process.env['VEHICLES_TABLE'],
+      }),
+    ); // TODO: subscription -> get
 
     await Promise.all(
-      chunk(res, 200).map(async (chunk) => {
-        try {
-          await apigatewaymanagementapi.send(
-            new PostToConnectionCommand({
-              ConnectionId: connectionId,
-              Data: Buffer.from(JSON.stringify(chunk)),
-            }),
-          );
-        } catch (e) {
-          console.log(e);
-        }
-      }),
+      VEHICLES!.map(({ vin }) => sendAllKnownDataForVehicle(vin, connectionId)),
     );
   }
 };

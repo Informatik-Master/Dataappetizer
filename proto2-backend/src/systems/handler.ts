@@ -5,7 +5,6 @@ import {
   PutCommand,
   ScanCommand,
 } from '@aws-sdk/lib-dynamodb';
-import { APIGatewayProxyEvent, Context } from 'aws-lambda';
 import express from 'express';
 import serverless from 'serverless-http';
 import { v4 as uuidv4 } from 'uuid';
