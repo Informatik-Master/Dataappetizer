@@ -8,6 +8,7 @@ import {
   NbThemeService,
 } from '@nebular/theme';
 import { map, Observable, Subject, takeUntil } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'ngx-header',
@@ -15,23 +16,23 @@ import { map, Observable, Subject, takeUntil } from 'rxjs';
   templateUrl: './header.component.html',
 })
 export class HeaderComponent {
-
   public constructor(
-    private readonly router: Router
-  ) {
-  }
+    private readonly router: Router,
+    private readonly route: ActivatedRoute
+  ) {}
 
   navigateHome() {
-    this.router.navigate(['pages']);
+    const systemId = this.route.snapshot.paramMap.get('systemId');
+    this.router.navigate(['pages', systemId]);
   }
 
   navigateToCars() {
-    this.router.navigate(['pages/car']);
+    const systemId = this.route.snapshot.paramMap.get('systemId');
+    this.router.navigate(['pages', systemId, 'car']);
   }
 
   navigateToSettings() {
-    this.router.navigate(['pages/settings']);
+    const systemId = this.route.snapshot.paramMap.get('systemId');
+    this.router.navigate(['pages', systemId, 'settings']);
   }
-
-
 }
