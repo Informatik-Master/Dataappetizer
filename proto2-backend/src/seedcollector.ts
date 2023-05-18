@@ -9,7 +9,11 @@ const urls = [
   {
     filename: 'vehicles.json',
     url: 'http://localhost:3000/api/debug/vehicles',
-  }
+  },
+  {
+    filename: 'systems.json',
+    url: 'http://localhost:3000/api/systems',
+  },
 ];
 
 setInterval(async () => {

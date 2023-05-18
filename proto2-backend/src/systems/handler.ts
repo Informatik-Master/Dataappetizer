@@ -35,13 +35,14 @@ app.use(express.json());
 
 app.post('/api/systems', async (req, res) => {
   //TODO: validation
-  const { name, users, dashboardConfig, detailConfig } = req.body;
+  const { name, users, dashboardConfig, detailConfig, subscriptionId } = req.body;
   const system = {
     id: uuidv4(),
     name,
     users,
     dashboardConfig,
     detailConfig,
+    subscriptionId
   };
 
   // Transaction?

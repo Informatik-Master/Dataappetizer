@@ -37,12 +37,24 @@
                   />
                 </nb-form-field>
               </div>
+              <div>
+                <label for="subscriptionId">Subscription ID</label>
+                <nb-form-field>
+                  <input
+                    id="subscriptionId"
+                    nbInput
+                    fullWidth
+                    placeholder="Subscription ID"
+                    [(ngModel)]="subscriptionId"
+                  />
+                </nb-form-field>
+              </div>
             </div>
           </nb-layout-column>
         </nb-layout>
       </nb-card-body>
       <nb-card-footer style="display: flex; justify-content: end; gap: 15px">
-        <button nbButton status="primary" (click)="next()">Weiter</button>
+        <button nbButton status="primary" (click)="next()" [disabled]="subscriptionId === '' || systemName===''">Weiter</button>
       </nb-card-footer>
     </nb-card>
   </nb-step>

@@ -5,12 +5,11 @@ custom:
   datapointTable: "datapoint-${sls:stage}"
   datapointTableDatapointIndex: "datapoint-${sls:stage}-datapointIndex"
   connectionsTable: "connections-${sls:stage}"
-  connectionsTableVinIndex: "connections-${sls:stage}-vinIndex"
+  connectionsTableSystemIndex: "connections-${sls:stage}-systemIndex"
   vehiclesTable: "vehicles-${sls:stage}"
   vehiclesTableSubscriptionIdIndex: "vehicles-${sls:stage}-subscriptionIdIndex"
   systemsTable: "systems-${sls:stage}"
-  systemsTableVehiclesTable: "systems-${sls:stage}-vehicles"
-  systemsTableVehiclesTableVinIndex: "systems-${sls:stage}-vehicles-vinIndex"
+  systemsTableSubscriptionIdIndex: "systems-${sls:stage}-subscriptionIdIndex"
   usersTable: "users-${sls:stage}"
 
 
@@ -34,12 +33,18 @@ custom:
         sources:
           - table: ${self:custom.vehiclesTable}
             sources: [./vehicles.json]
+      systems:
+        sources:
+          - table: ${self:custom.systemsTable}
+            sources: [./systems.json]
   serverless-offline-dynamodb-streams:
     endpoint: http://0.0.0.0:8002
     region: us-east-1
     accessKeyId: root
     secretAccessKey: root
 
+package:
+  individually: true
 
 plugins:
   - serverless-webpack
@@ -75,7 +80,7 @@ provider:
                 - "/"
                 - - Fn::GetAtt: [Connections, Arn]
                   - "index"
-                  - ${self:custom.connectionsTableVinIndex}
+                  - ${self:custom.connectionsTableSystemIndex}
             - Fn::GetAtt: [VehiclesTable, Arn]
             - Fn::Join:
                 - "/"
@@ -87,20 +92,18 @@ provider:
                 - "/"
                 - - Fn::GetAtt: [Systems, Arn]
                   - "index"
-                  - ${self:custom.systemsTableVehiclesTableVinIndex}
-            - Fn::GetAtt: [SystemsVehiclesTable, Arn]
+                  - ${self:custom.systemsTableSubscriptionIdIndex}
             - Fn::GetAtt: [UsersTable, Arn]
 
   environment:
     DATAPOINT_TABLE: ${self:custom.datapointTable}
     DATAPOINT_TABLE_DATAPOINT_INDEX: ${self:custom.datapointTableDatapointIndex}
     CONNECTIONS_TABLE: ${self:custom.connectionsTable}
-    CONNECTIONS_TABLE_VIN_INDEX: ${self:custom.connectionsTableVinIndex}
+    CONNECTIONS_TABLE_SYSTEM_INDEX: ${self:custom.connectionsTableSystemIndex}
     VEHICLES_TABLE: ${self:custom.vehiclesTable}
     VEHICLES_TABLE_SUBSCRIPTION_ID_INDEX: ${self:custom.vehiclesTableSubscriptionIdIndex}
     SYSTEMS_TABLE: ${self:custom.systemsTable}
-    SYSTEMS_VEHICLES_TABLE: ${self:custom.systemsTableVehiclesTable}
-    SYSTEMS_VEHICLES_TABLE_VIN_INDEX: ${self:custom.systemsTableVehiclesTableVinIndex}
+    SYSTEMS_TABLE_SUBSCRIPTION_ID_INDEX: ${self:custom.systemsTableSubscriptionIdIndex}
     USERS_TABLE: ${self:custom.usersTable}
     JWT_SECRET: PLEASE_CHANGE_ME_IN_THE_FUTURE_TO_OAUTH_FLOW
 
@@ -196,7 +199,7 @@ resources:
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:custom.connectionsTable}
         GlobalSecondaryIndexes:
-          - IndexName: ${self:custom.connectionsTableVinIndex}
+          - IndexName: ${self:custom.connectionsTableSystemIndex}
             Projection:
               ProjectionType: ALL
             KeySchema:
@@ -241,6 +244,8 @@ resources:
         KeySchema:
           - AttributeName: vin
             KeyType: HASH
+          - AttributeName: subscriptionId
+            KeyType: RANGE
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:custom.vehiclesTable}
         GlobalSecondaryIndexes:
@@ -257,33 +262,20 @@ resources:
         AttributeDefinitions:
           - AttributeName: id
             AttributeType: S
+          - AttributeName: subscriptionId
+            AttributeType: S
         KeySchema:
           - AttributeName: id
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:custom.systemsTable}
-    SystemVehicles:
-      Type: AWS::DynamoDB::Table
-      Properties:
-        AttributeDefinitions:
-          - AttributeName: systemId
-            AttributeType: S
-          - AttributeName: vin
-            AttributeType: S
-        KeySchema:
-          - AttributeName: systemId
-            KeyType: HASH
-          - AttributeName: vin
-            KeyType: RANGE
-        BillingMode: PAY_PER_REQUEST
-        TableName: ${self:custom.systemsTableVehiclesTable}
         GlobalSecondaryIndexes:
           - KeySchema:
-              - AttributeName: vin
+              - AttributeName: subscriptionId
                 KeyType: HASH
             Projection:
               ProjectionType: ALL
-            IndexName: ${self:custom.systemsTableVehiclesTableVinIndex}
+            IndexName: ${self:custom.systemsTableSubscriptionIdIndex}
     usersTable:
       Type: AWS::DynamoDB::Table
       Properties:

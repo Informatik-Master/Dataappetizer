@@ -50,6 +50,7 @@ export function FadeInOut(
 export class ConfigComponent {
   selectedIndex = 0;
   systemName = 'System Name';
+  subscriptionId = '';
 
   @ViewChild(VisualizationHost, { static: true })
   previewHost!: VisualizationHost;
@@ -86,7 +87,8 @@ export class ConfigComponent {
         .filter(({ selected }) => selected)
         .map(({ id }) => id),
       users: [],
-    }); // TODO: Is a new token needed?
+      subscriptionId: this.subscriptionId,
+    });
     this.router.navigate(['pages', newSystem.id], {
       state: {
         woop: newSystem.id,

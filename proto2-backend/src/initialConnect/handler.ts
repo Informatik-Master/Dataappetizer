@@ -4,8 +4,9 @@ import {
 } from '@aws-sdk/client-apigatewaymanagementapi';
 import {
   DynamoDBDocumentClient,
-  ScanCommand,
+  GetCommand,
   paginateQuery,
+  QueryCommand,
 } from '@aws-sdk/lib-dynamodb';
 import { unmarshall } from '@aws-sdk/util-dynamodb';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
@@ -78,13 +79,28 @@ export const initialConnect = async ({ Records }: any) => {
     if (!payload) continue;
 
     console.log('payload', payload);
-    const { connectionId } = unmarshall(payload);
+    const { connectionId, systemId } = unmarshall(payload);
+
+    const { Item: system } = await dynamoDbClient.send(
+      new GetCommand({
+        TableName: process.env['SYSTEMS_TABLE'],
+        Key: {
+          id: systemId,
+        },
+      }),
+    );
+    if (!system) continue;
 
     const { Items: VEHICLES } = await dynamoDbClient.send(
-      new ScanCommand({
+      new QueryCommand({
         TableName: process.env['VEHICLES_TABLE'],
+        IndexName: process.env['VEHICLES_TABLE_SUBSCRIPTION_ID_INDEX'],
+        KeyConditionExpression: 'subscriptionId = :subscriptionId',
+        ExpressionAttributeValues: {
+          ':subscriptionId': system['subscriptionId'],
+        },
       }),
-    ); // TODO: subscription -> get
+    );
 
     await Promise.all(
       VEHICLES!.map(({ vin }) => sendAllKnownDataForVehicle(vin, connectionId)),

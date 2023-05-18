@@ -9,6 +9,7 @@ interface System {
   users: string[];
   dashboardConfig: string[]; //TODO: später kein id-string mehr?
   detailConfig: string[];
+  subscriptionId: string;
 }
 @Injectable({
   providedIn: 'root',

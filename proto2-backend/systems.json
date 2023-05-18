@@ -1,0 +1,22 @@
+[
+  {
+    "name": "Pull Vehicles",
+    "id": "908fb78f-43db-4c50-bceb-1a4862ee49a4",
+    "dashboardConfig": [],
+    "subscriptionId": "ada3836d-bd98-483e-86d4-bc0b8cc8e470",
+    "users": [
+      "hervorragendmystischerstrauss@fliegender.fish"
+    ],
+    "detailConfig": []
+  },
+  {
+    "name": "Push System",
+    "id": "036a890e-126c-4511-98e5-f03b1295241a",
+    "dashboardConfig": [],
+    "subscriptionId": "df490a56-6a29-4055-8b90-cceb0c56e8f7",
+    "users": [
+      "hervorragendmystischerstrauss@fliegender.fish"
+    ],
+    "detailConfig": []
+  }
+]
