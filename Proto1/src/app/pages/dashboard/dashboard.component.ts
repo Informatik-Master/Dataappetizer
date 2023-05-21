@@ -55,6 +55,8 @@ export class DashboardComponent implements OnInit {
     });
   }
 
+  max: any;
+
   ngOnInit(): void {
     this.options = {
       gridType: GridType.Fit,
