@@ -81,4 +81,10 @@ export class DashboardComponent implements OnInit {
       { cols: 4, rows: 1, y: 2, x: 0 },
     ];
   }
+
+  resizeInterval() {
+    setTimeout(() => {
+      this.onResize(this.dashboard[0])
+    },500)
+  }
 }

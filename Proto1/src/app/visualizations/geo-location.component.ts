@@ -2,6 +2,8 @@ import {
   Component,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
+  NgZone,
+  HostListener,
 } from '@angular/core';
 import { DataPointService } from '../@core/data-point.service';
 import { CommonModule } from '@angular/common';
@@ -76,8 +78,17 @@ export class GeoLocationComponent extends VisualizationComponent {
 
   vehicles = new Map<string, number>();
 
+  @HostListener('window:resize', ['$event'])
   override onResize(): void {
-    this.map?.invalidateSize();
+    //TODO: debounce?
+    this.ngZone.runOutsideAngular(() => {
+      this.map?.invalidateSize();
+      this.markerLayer.getLayers().length &&
+        this.map?.fitBounds(this.markerLayer.getBounds().pad(0.2), {
+          animate: true,
+          duration: 1,
+        });
+    });
   }
 
   private readonly markerLayer = new FeatureGroup();
@@ -100,7 +111,8 @@ export class GeoLocationComponent extends VisualizationComponent {
 
   public constructor(
     protected readonly dataPointService: DataPointService,
-    protected readonly cdr: ChangeDetectorRef
+    protected readonly cdr: ChangeDetectorRef,
+    private ngZone: NgZone
   ) {
     super();
   }
@@ -108,19 +120,16 @@ export class GeoLocationComponent extends VisualizationComponent {
   public ngOnInit(): void {
     this.subscriptions.push(
       this.wasUpdated.pipe(debounceTime(250)).subscribe(() => {
-        this.markerLayer.clearLayers();
-        for (const [vin, { value }] of this.latestDataPoints) {
-          const m = marker(new LatLng(value.latitude, value.longitude));
-          m.bindPopup(vin)
+        this.ngZone.runOutsideAngular(() => {
+          this.markerLayer.clearLayers();
+          for (const [vin, { value }] of this.latestDataPoints) {
+            const m = marker(new LatLng(value.latitude, value.longitude));
+            m.bindPopup(vin);
 
-          this.markerLayer.addLayer(
-            m
-          );
-        }
-        this.map?.fitBounds(this.markerLayer.getBounds().pad(0.2), {
-          animate: true,
-          duration: 1,
+            this.markerLayer.addLayer(m);
+          }
         });
+        this.onResize();
         this.cdr.detectChanges();
       })
     );

@@ -1,19 +1,28 @@
-import { Component, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { DataPointService } from '../@core/data-point.service';
 import { CommonModule } from '@angular/common';
-
-import { NbCardModule, NbListModule } from '@nebular/theme';
-import { buffer, bufferTime, filter, Subscription } from 'rxjs';
-import { VisualizationComponent } from './visualization-component.interface';
-import { EChartsOption, SeriesOption } from 'echarts';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  HostListener,
+} from '@angular/core';
+import { NbCardModule } from '@nebular/theme';
+import { EChartsOption } from 'echarts';
+import { EChartsType } from 'echarts/core';
 import { NgxEchartsModule } from 'ngx-echarts';
+import { bufferTime, filter, Subscription } from 'rxjs';
+
+import { DataPointService } from '../@core/data-point.service';
+import { VisualizationComponent } from './visualization-component.interface';
 
 @Component({
   standalone: true,
   selector: 'ngx-environment-temperature',
   imports: [CommonModule, NbCardModule, NgxEchartsModule],
   providers: [
-    { provide: VisualizationComponent, useExisting: EnvironmentTemperatureComponent },
+    {
+      provide: VisualizationComponent,
+      useExisting: EnvironmentTemperatureComponent,
+    },
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -22,8 +31,10 @@ import { NgxEchartsModule } from 'ngx-echarts';
       <nb-card-body class="p-0 gridster-item-content">
         <div
           echarts
+          [autoResize]="false"
           [options]="echartOptions"
           [merge]="echartMerge"
+          (chartInit)="onChartInit($event)"
           style="height: 100%"
         ></div>
       </nb-card-body>
@@ -42,11 +53,30 @@ import { NgxEchartsModule } from 'ngx-echarts';
 export class EnvironmentTemperatureComponent extends VisualizationComponent {
   private subscription: Subscription | null = null;
 
+  echartsInstance: EChartsType | null = null;
+
+  onChartInit(ec: any) {
+    this.echartsInstance = ec;
+    setTimeout(() => {
+      this.onResize();
+    });
+  }
+
+  @HostListener('window:resize', ['$event'])
+  override onResize(): void {
+    this.echartsInstance?.resize({
+      animation: {
+        duration: 500,
+        easing: 'cubicOut',
+      },
+    });
+  }
+
   echartMerge: EChartsOption = {
     xAxis: {
       data: [],
     },
-    series: [{data: []}],
+    series: [{ data: [] }],
   };
 
   echartOptions: EChartsOption = {
@@ -56,10 +86,10 @@ export class EnvironmentTemperatureComponent extends VisualizationComponent {
     },
     xAxis: {
       type: 'category',
-      data: []
+      data: [],
     },
     yAxis: {
-      type: 'value'
+      type: 'value',
     },
     series: [
       {
@@ -67,13 +97,16 @@ export class EnvironmentTemperatureComponent extends VisualizationComponent {
         type: 'bar',
         showBackground: true,
         backgroundStyle: {
-          color: 'rgba(180, 180, 180, 0.2)'
-        }
-      }
+          color: 'rgba(180, 180, 180, 0.2)',
+        },
+      },
     ],
   };
 
-  public constructor(protected readonly dataPointService: DataPointService, private readonly cd: ChangeDetectorRef) {
+  public constructor(
+    protected readonly dataPointService: DataPointService,
+    private readonly cd: ChangeDetectorRef
+  ) {
     super();
   }
 
@@ -87,8 +120,8 @@ export class EnvironmentTemperatureComponent extends VisualizationComponent {
       )
       .subscribe((bufferedEvents) => {
         for (const { data } of bufferedEvents) {
-          const vin = data.vin
-          const value = data.value.value.value
+          const vin = data.vin;
+          const value = data.value.value.value;
 
           if (!this.vinSeriesMap.has(vin)) {
             this.vinSeriesMap.set(vin, this.vinSeriesMap.size);
@@ -99,7 +132,6 @@ export class EnvironmentTemperatureComponent extends VisualizationComponent {
             const index = this.vinSeriesMap.get(vin)!;
             (this.echartMerge.series as any)[0].data[index] = value;
           }
-
         }
 
         this.echartMerge = {

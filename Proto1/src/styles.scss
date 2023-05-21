@@ -84,18 +84,14 @@ gridster-item {
     height: 100%;
   }
 
+  margin-right: 0 !important;
   &.maximized {
-    width: 100% !important;
-    height: 100% !important;
-    left: 0;
+    width: calc(100% - 20px) !important;
+    height: calc(100% - 20px) !important;
+    left: 10px;
     transform: unset !important;
     z-index: 99999 !important;
     // backdrop-filter: blur(10px) grayscale(1);
-    margin-right: 0 !important;
-    >* {
-      width: calc(100% - 20px);
-      height: calc(100% - 20px);
-    }
   }
 }
 

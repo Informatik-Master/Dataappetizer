@@ -7,9 +7,33 @@ import { ThemeModule } from './@theme/theme.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NgxEchartsModule } from 'ngx-echarts';
-import { NbAuthJWTToken, NbAuthModule, NbPasswordAuthStrategy } from '@nebular/auth';
+import {
+  NbAuthJWTToken,
+  NbAuthModule,
+  NbPasswordAuthStrategy,
+} from '@nebular/auth';
 import { CookieModule } from 'ngx-cookie';
 import { NbToastrModule } from '@nebular/theme';
+
+import * as echarts from 'echarts/core';
+import { BarChart, LineChart, PieChart } from 'echarts/charts';
+import { CanvasRenderer } from 'echarts/renderers';
+import {
+  DataZoomComponent,
+  GridComponent,
+  LegendComponent,
+  TooltipComponent,
+} from 'echarts/components';
+echarts.use([
+  CanvasRenderer,
+  TooltipComponent,
+  GridComponent,
+  BarChart,
+  PieChart,
+  LegendComponent,
+  DataZoomComponent,
+  LineChart,
+]);
 
 @NgModule({
   declarations: [AppComponent],
@@ -34,7 +58,7 @@ import { NbToastrModule } from '@nebular/theme';
       ],
     }),
     NgxEchartsModule.forRoot({
-      echarts: () => import('echarts'),
+      echarts,
     }),
     CookieModule.withOptions({
       //TODO:
