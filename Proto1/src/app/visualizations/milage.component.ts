@@ -50,6 +50,7 @@ export class MilageComponent extends VisualizationComponent {
     legend: {},
     tooltip: {
       trigger: 'axis',
+      appendToBody: true,
     },
     xAxis: {
       type: 'time',

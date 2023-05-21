@@ -21,7 +21,7 @@ setInterval(async () => {
   for (const { filename, url } of urls) {
     try {
       const currentSnapshot = await (await fetch(url)).json();
-
+      if (currentSnapshot.length === 0) continue;
       const currentSnapshotString = JSON.stringify(currentSnapshot, null, 2);
 
       await writeFile(filename, currentSnapshotString);

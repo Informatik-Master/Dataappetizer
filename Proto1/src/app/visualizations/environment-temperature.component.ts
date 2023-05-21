@@ -52,6 +52,7 @@ export class EnvironmentTemperatureComponent extends VisualizationComponent {
   echartOptions: EChartsOption = {
     tooltip: {
       trigger: 'axis',
+      appendToBody: true,
     },
     xAxis: {
       type: 'category',

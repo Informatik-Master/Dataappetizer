@@ -83,7 +83,7 @@ export class ConfigComponent {
         .filter(({ selected }) => selected)
         .map(({ id }) => id),
       detailConfig: this.configs
-        .filter(({ kind }) => kind === VisualizationKind.DASHBOARD)
+        .filter(({ kind }) => kind === VisualizationKind.DETAILS)
         .filter(({ selected }) => selected)
         .map(({ id }) => id),
       users: [],

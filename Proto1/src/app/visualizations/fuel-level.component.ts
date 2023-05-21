@@ -50,7 +50,13 @@ export class FuelLevelComponent extends VisualizationComponent {
     legend: {},
     tooltip: {
       trigger: 'axis',
+      appendToBody: true,
     },
+    dataZoom: [
+      {
+        type: 'slider'
+      }
+    ],
     xAxis: {
       type: 'time',
       boundaryGap: false,
@@ -62,10 +68,10 @@ export class FuelLevelComponent extends VisualizationComponent {
     grid: {
       right: '70px',
       left: '70px',
-      bottom: '25px',
+      bottom: '75px',
       top: '70px',
     },
-    series: [],
+    series: [], 
   };
 
   public constructor(protected readonly dataPointService: DataPointService, private readonly cd: ChangeDetectorRef) {

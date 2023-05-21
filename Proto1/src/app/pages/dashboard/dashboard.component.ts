@@ -57,11 +57,11 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.options = {
-      gridType: GridType.ScrollVertical,
+      gridType: GridType.Fit,
       compactType: CompactType.None,
       maxCols: 10,
       maxRows: 10,
-      pushItems: false,
+      pushItems: true,
       draggable: {
         enabled: true,
       },
@@ -71,12 +71,12 @@ export class DashboardComponent implements OnInit {
     };
 
     this.dashboard = [
-      { cols: 2, rows: 1, y: 0, x: 0 },
       { cols: 2, rows: 2, y: 0, x: 2 },
-      { cols: 1, rows: 1, y: 0, x: 4 },
-      { cols: 3, rows: 2, y: 1, x: 4 },
-      { cols: 1, rows: 1, y: 4, x: 5 },
-      { cols: 1, rows: 1, y: 2, x: 1 },
+
+      { cols: 1, rows: 1, y: 0, x: 0 },
+      { cols: 1, rows: 1, y: 0, x: 1 },
+      { cols: 2, rows: 1, y: 1, x: 0 },
+      { cols: 4, rows: 1, y: 2, x: 0 },
     ];
   }
 }
