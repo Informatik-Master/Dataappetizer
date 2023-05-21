@@ -30,7 +30,8 @@ app.get('/api/debug/datapoints', async function (req, res) {
 
   let Items: any[] = [];
   for await (const page of paginator) {
-    Items = Items.concat(page.Items);
+    if (page.Items === undefined) continue;
+    Items.push(...page.Items);
   }
 
   res.json(Items);
