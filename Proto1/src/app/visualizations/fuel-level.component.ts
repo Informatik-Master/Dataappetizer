@@ -55,6 +55,9 @@ export class FuelLevelComponent extends VisualizationComponent {
     dataZoom: [
       {
         type: 'slider'
+      },
+      {
+        type: 'inside'
       }
     ],
     xAxis: {
@@ -71,7 +74,7 @@ export class FuelLevelComponent extends VisualizationComponent {
       bottom: '75px',
       top: '70px',
     },
-    series: [], 
+    series: [],
   };
 
   public constructor(protected readonly dataPointService: DataPointService, private readonly cd: ChangeDetectorRef) {

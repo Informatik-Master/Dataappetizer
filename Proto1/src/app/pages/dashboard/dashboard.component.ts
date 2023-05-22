@@ -71,12 +71,12 @@ export class DashboardComponent implements OnInit {
     };
 
     this.dashboard = [
-      { cols: 2, rows: 2, y: 0, x: 2 },
+      { cols: 1, rows: 2, y: 0, x: 2 },
 
       { cols: 1, rows: 1, y: 0, x: 0 },
       { cols: 1, rows: 1, y: 0, x: 1 },
       { cols: 2, rows: 1, y: 1, x: 0 },
-      { cols: 4, rows: 1, y: 2, x: 0 },
+      { cols: 3, rows: 1, y: 2, x: 0 },
     ];
   }
 }
