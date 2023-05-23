@@ -48,6 +48,15 @@ export class DashboardComponent implements OnInit {
   @ViewChildren(VisualizationComponent)
   nestedVisualizations: QueryList<VisualizationComponent> | null = null;
 
+  public constructor(private readonly activatedRoute: ActivatedRoute) {
+    this.activatedRoute.paramMap
+    .pipe(
+      map(() => window.history.state), // unsubscirpe
+    ).subscribe(({system}) => {
+      console.log('system', system)
+    })
+  }
+
   onResize(item: GridsterItem): void {
     this.nestedVisualizations?.forEach((visualization) => {
       // TODO:

@@ -54,7 +54,7 @@ app.get('/api/debug/datapoints-vin', async function (req, res) {
 });
 
 app.get('/api/debug/datapoints-vin-latest', async function (req, res) {
-  const dataPoints = ['geolocation', 'mileage'];
+  const dataPoints = ['geolocation', 'mileage', 'enginestatus'];
   let vin = req.query['vin']?.toString()!;
 
   const queries = dataPoints.map(async (dataPoint) => {

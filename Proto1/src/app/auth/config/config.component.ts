@@ -91,8 +91,8 @@ export class ConfigComponent {
     });
     this.router.navigate(['pages', newSystem.id], {
       state: {
-        woop: newSystem.id,
-      },
+        system: newSystem
+      }
     });
   }
 
