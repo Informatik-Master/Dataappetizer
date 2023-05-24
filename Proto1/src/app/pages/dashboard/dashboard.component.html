@@ -51,27 +51,56 @@
 </div> -->
 
 <gridster [options]="options">
-  <gridster-item [item]="dashboard[1]"[class.maximized]="max===1" (click)="max = max===1 ? undefined : max = 1;resizeInterval()">
+  <gridster-item [item]="dashboard[1]" [class.maximized]="max === 1">
+    <nb-icon
+      [icon]="max === 1 ? 'collapse-outline' : 'expand-outline'"
+      pack="eva"
+      (click)="max = max === 1 ? undefined : (max = 1); resizeInterval()"
+      class="enlarge-handle"
+    ></nb-icon>
     <ngx-data-count></ngx-data-count>
   </gridster-item>
-  <gridster-item [item]="dashboard[2]"[class.maximized]="max===2" (click)="max = max===2 ? undefined : max = 2;resizeInterval()">
+  <gridster-item [item]="dashboard[2]" [class.maximized]="max === 2">
+    <nb-icon
+      [icon]="max === 1 ? 'collapse-outline' : 'expand-outline'"
+      pack="eva"
+      (click)="max = max === 2 ? undefined : (max = 2); resizeInterval()"
+      class="enlarge-handle"
+    ></nb-icon>
     <ngx-average-distance></ngx-average-distance>
   </gridster-item>
-  <gridster-item [item]="dashboard[3]" [class.maximized]="max===3" (click)="max = max===3 ? undefined : max = 3;resizeInterval()">
+  <gridster-item [item]="dashboard[3]" [class.maximized]="max === 3">
+    <nb-icon
+      [icon]="max === 1 ? 'collapse-outline' : 'expand-outline'"
+      pack="eva"
+      (click)="max = max === 3 ? undefined : (max = 3); resizeInterval()"
+      class="enlarge-handle"
+    ></nb-icon>
     <ngx-fuel-level></ngx-fuel-level>
   </gridster-item>
   <gridster-item
     [item]="dashboard[0]"
     (itemResize)="onResize(dashboard[0])"
-    [class.maximized]="max===0" (click)="max = max===0 ? undefined : max =0;resizeInterval()"
+    [class.maximized]="max === 0"
   >
+    <nb-icon
+      [icon]="max === 1 ? 'collapse-outline' : 'expand-outline'"
+      pack="eva"
+      (click)="max = max === 0 ? undefined : (max = 0); resizeInterval()"
+      class="enlarge-handle"
+    ></nb-icon>
     <ngx-geo-location></ngx-geo-location>
   </gridster-item>
 
-  <gridster-item [item]="dashboard[4]" [class.maximized]="max===4" (click)="max = max===4 ? undefined : max = 4;resizeInterval()">
+  <gridster-item [item]="dashboard[4]" [class.maximized]="max === 4">
+    <nb-icon
+      [icon]="max === 1 ? 'collapse-outline' : 'expand-outline'"
+      pack="eva"
+      (click)="max = max === 4 ? undefined : (max = 4); resizeInterval()"
+      class="enlarge-handle"
+    ></nb-icon>
     <ngx-information-ticker></ngx-information-ticker>
   </gridster-item>
-
 
   <!--
 
