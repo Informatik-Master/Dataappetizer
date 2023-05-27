@@ -30,7 +30,8 @@ app.get('/api/debug/datapoints', async function (req, res) {
 
   let Items: any[] = [];
   for await (const page of paginator) {
-    Items = Items.concat(page.Items);
+    if (page.Items === undefined) continue;
+    Items.push(...page.Items);
   }
 
   res.json(Items);
@@ -53,7 +54,7 @@ app.get('/api/debug/datapoints-vin', async function (req, res) {
 });
 
 app.get('/api/debug/datapoints-vin-latest', async function (req, res) {
-  const dataPoints = ['geolocation', 'mileage'];
+  const dataPoints = ['geolocation', 'mileage', 'enginestatus'];
   let vin = req.query['vin']?.toString()!;
 
   const queries = dataPoints.map(async (dataPoint) => {

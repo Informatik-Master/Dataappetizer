@@ -1,12 +1,13 @@
-import { Component, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { DataPointService } from '../@core/data-point.service';
 import { CommonModule } from '@angular/common';
-
-import { NbCardModule, NbListModule } from '@nebular/theme';
-import { buffer, bufferTime, filter, Subscription } from 'rxjs';
-import { VisualizationComponent } from './visualization-component.interface';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostListener } from '@angular/core';
+import { NbCardModule } from '@nebular/theme';
 import { EChartsOption, SeriesOption } from 'echarts';
+import { EChartsType } from 'echarts/core';
 import { NgxEchartsModule } from 'ngx-echarts';
+import { bufferTime, filter, Subscription } from 'rxjs';
+
+import { DataPointService } from '../@core/data-point.service';
+import { VisualizationComponent } from './visualization-component.interface';
 
 @Component({
   standalone: true,
@@ -22,9 +23,11 @@ import { NgxEchartsModule } from 'ngx-echarts';
       <nb-card-body class="p-0 gridster-item-content">
         <div
           echarts
+          [autoResize]="false"
           [options]="echartOptions"
           [merge]="echartMerge"
-          style="height: 100%"
+          style="height: 100%;"
+          (chartInit)="onChartInit($event)"
         ></div>
       </nb-card-body>
     </nb-card>
@@ -41,6 +44,25 @@ import { NgxEchartsModule } from 'ngx-echarts';
 })
 export class FuelLevelComponent extends VisualizationComponent {
   private subscription: Subscription | null = null;
+
+  echartsInstance: EChartsType | null = null;
+
+  onChartInit(ec: any) {
+    this.echartsInstance = ec;
+    setTimeout(() => {
+      this.onResize();
+    });
+  }
+
+  @HostListener('window:resize', ['$event'])
+  override onResize(): void {
+    this.echartsInstance?.resize({
+      animation: {
+        duration: 500,
+        easing: 'cubicOut',
+      },
+    });
+  }
 
   echartMerge: EChartsOption = {
     series: [],
@@ -75,9 +97,13 @@ export class FuelLevelComponent extends VisualizationComponent {
       top: '70px',
     },
     series: [],
+    animationDuration: 300
   };
 
-  public constructor(protected readonly dataPointService: DataPointService, private readonly cd: ChangeDetectorRef) {
+  public constructor(
+    protected readonly dataPointService: DataPointService,
+    private readonly cd: ChangeDetectorRef
+  ) {
     super();
   }
 
@@ -100,10 +126,8 @@ export class FuelLevelComponent extends VisualizationComponent {
               areaStyle: {},
               data: new Array<any[]>(),
               markLine: {
-                data: [
-                  { type: 'average', name: 'Avg' },
-                ]
-              }
+                data: [{ type: 'average', name: 'Avg' }],
+              },
             };
             s.push(abc);
           }

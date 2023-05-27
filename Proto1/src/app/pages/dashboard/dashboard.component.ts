@@ -1,39 +1,19 @@
 import {
-  ViewChildren,
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
-  ContentChildren,
   OnInit,
   QueryList,
+  ViewChildren,
 } from '@angular/core';
-import { EChartsOption, SeriesOption } from 'echarts';
-
-import {
-  control,
-  FeatureGroup,
-  LatLng,
-  latLng,
-  LayerGroup,
-  Map as LefletMap,
-  MapOptions,
-  Marker,
-  marker,
-  tileLayer,
-} from 'leaflet';
-import ReconnectingWebSocket from 'reconnecting-websocket';
-
+import { ActivatedRoute } from '@angular/router';
 import {
   CompactType,
-  DisplayGrid,
   GridsterConfig,
   GridsterItem,
-  GridsterItemComponent,
   GridType,
 } from 'angular-gridster2';
+import { map } from 'rxjs';
 import { VisualizationComponent } from 'src/app/visualizations/visualization-component.interface';
-import { ActivatedRoute } from '@angular/router';
-import { map, Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'ngx-dashboard',
@@ -48,12 +28,24 @@ export class DashboardComponent implements OnInit {
   @ViewChildren(VisualizationComponent)
   nestedVisualizations: QueryList<VisualizationComponent> | null = null;
 
+  public constructor(private readonly activatedRoute: ActivatedRoute) {
+    this.activatedRoute.paramMap
+      .pipe(
+        map(() => window.history.state) // unsubscirpe
+      )
+      .subscribe(({ system }) => {
+        console.log('system', system);
+      });
+  }
+
   onResize(item: GridsterItem): void {
     this.nestedVisualizations?.forEach((visualization) => {
       // TODO:
       visualization.onResize();
     });
   }
+
+  max: any;
 
   ngOnInit(): void {
     this.options = {
@@ -78,5 +70,11 @@ export class DashboardComponent implements OnInit {
       { cols: 2, rows: 1, y: 1, x: 0 },
       { cols: 3, rows: 1, y: 2, x: 0 },
     ];
+  }
+
+  resizeInterval() {
+    setTimeout(() => {
+      this.onResize(this.dashboard[0]);
+    }, 500);
   }
 }

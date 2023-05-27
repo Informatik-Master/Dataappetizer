@@ -29,4 +29,4 @@ setInterval(async () => {
       console.log(e);
     }
   }
-}, 30_000);
+}, 60_000);

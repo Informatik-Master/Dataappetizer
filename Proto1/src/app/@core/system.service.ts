@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { NbAuthService } from '@nebular/auth';
 import { Observable, firstValueFrom } from 'rxjs';
 
-interface System {
+export interface System {
   id?: string;
   name: string;
   users: string[];

@@ -1,23 +1,18 @@
+import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  HostListener,
 } from '@angular/core';
-import { DataPointService } from '../@core/data-point.service';
-import { CommonModule } from '@angular/common';
-
-import { NbCardModule, NbListModule } from '@nebular/theme';
-import {
-  bufferTime,
-  distinctUntilChanged,
-  distinctUntilKeyChanged,
-  filter,
-  map,
-  Subscription,
-} from 'rxjs';
-import { VisualizationComponent } from './visualization-component.interface';
+import { NbCardModule } from '@nebular/theme';
 import { EChartsOption, SeriesOption } from 'echarts';
+import { EChartsType } from 'echarts/core';
 import { NgxEchartsModule } from 'ngx-echarts';
+import { bufferTime, filter, map, Subscription } from 'rxjs';
+
+import { DataPointService } from '../@core/data-point.service';
+import { VisualizationComponent } from './visualization-component.interface';
 
 @Component({
   standalone: true,
@@ -33,8 +28,10 @@ import { NgxEchartsModule } from 'ngx-echarts';
       <nb-card-body class="gridster-item-content">
         <div
           echarts
+          [autoResize]="false"
           [options]="echartOptions"
           [merge]="echartMerge"
+          (chartInit)="onChartInit($event)"
           style="height: 100%"
         ></div>
       </nb-card-body>
@@ -52,6 +49,25 @@ import { NgxEchartsModule } from 'ngx-echarts';
 })
 export class AverageDistanceComponent extends VisualizationComponent {
   private subscription: Subscription | null = null;
+
+  echartsInstance: EChartsType | null = null;
+
+  onChartInit(ec: any) {
+    this.echartsInstance = ec;
+    setTimeout(() => {
+      this.onResize();
+    });
+  }
+
+  @HostListener('window:resize', ['$event'])
+  override onResize(): void {
+    this.echartsInstance?.resize({
+      animation: {
+        duration: 500,
+        easing: 'cubicOut',
+      },
+    });
+  }
 
   echartMerge: EChartsOption = {
     series: [

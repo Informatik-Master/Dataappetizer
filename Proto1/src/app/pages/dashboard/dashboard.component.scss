@@ -1,9 +1,9 @@
-
 @media (max-width: 766px) {
   .md-mb-1 {
     margin-bottom: 15px;
   }
 }
+
 nb-card {
   height: 100%;
 }
@@ -26,6 +26,23 @@ nb-card {
 .row:not(:last-child) {
   margin-bottom: 30px;
 }
+
 :host {
   height: 100%;
+}
+
+.enlarge-handle {
+  color: var(--text-hint-color);
+  right: 0;
+  height: 16px;
+  top: 4px;
+  position: absolute;
+  margin: 16px;
+  width: auto;
+  cursor: pointer;
+  transition: color 0.15s ease-in-out;
+  &:hover {
+    color: var(--text-color);
+
+  }
 }

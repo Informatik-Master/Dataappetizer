@@ -30,6 +30,17 @@ import { VisualizationComponent } from './visualization-component.interface';
         height: 100%;
         max-height: 100%;
         margin: 0;
+        nb-card-body {
+          container-type: inline-size;
+          h6 {
+            line-height: 10cqw;
+            font-size: 10cqw;
+          }
+          span {
+            line-height: 5cqw;
+            font-size: 5cqw;
+          }
+        }
       }
     `,
   ],

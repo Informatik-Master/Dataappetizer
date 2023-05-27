@@ -136,10 +136,10 @@ functions:
   #   handler: src/pullVehicles/handler.handler
   #   events:
   #     - schedule: rate(1 minute)
-  pullVehicleData:
-    handler: src/pullVehicleData/handler.handler
-    events:
-      - schedule: rate(1 minute)
+  # pullVehicleData:
+  #   handler: src/pullVehicleData/handler.handler
+  #   events:
+  #     - schedule: rate(1 minute)
   connect:
     handler: src/connect/handler.connect
     events:

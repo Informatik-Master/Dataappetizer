@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { SystemService } from '../../@core/system.service';
+import { System, SystemService } from '../../@core/system.service';
 
 @Component({
   selector: 'ngx-systems',
@@ -21,10 +21,10 @@ export class SystemsComponent {
     this.router.navigate(['auth/config']);
   }
 
-  selectSystem(systemId: string) {
-    this.router.navigate(['pages', systemId], {
+  selectSystem(system: System) {
+    this.router.navigate(['pages', system.id], {
       state: {
-        woop: systemId
+        system
       }
     });
   }
