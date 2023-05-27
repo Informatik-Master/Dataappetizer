@@ -97,6 +97,7 @@ export class FuelLevelComponent extends VisualizationComponent {
       top: '70px',
     },
     series: [],
+    animationDuration: 300
   };
 
   public constructor(

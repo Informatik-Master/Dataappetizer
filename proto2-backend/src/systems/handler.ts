@@ -8,8 +8,7 @@ import {
 import express from 'express';
 import serverless from 'serverless-http';
 import { v4 as uuidv4 } from 'uuid';
-
-import { hash } from 'bcryptjs';
+// import cryptoRandomString from 'crypto-random-string';
 
 const SYSTEMS_TABLE_NAME = process.env['SYSTEMS_TABLE'] || '';
 
@@ -44,6 +43,10 @@ app.post('/api/systems', async (req, res) => {
     detailConfig,
     subscriptionId
   };
+
+
+  // const newSecret = cryptoRandomString({length: 10, type: 'ascii-printable'});
+  // console.log('newSecret', newSecret)
 
   // Transaction?
   await dynamoDbClient.send(
