@@ -5,6 +5,7 @@ import {
   NbButtonModule,
   NbCardModule,
   NbIconModule,
+  NbLayoutModule,
   NbPopoverModule
 } from '@nebular/theme';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
@@ -30,7 +31,8 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
     MatTableModule,
     MatSortModule,
     MatProgressBarModule,
-    NbEvaIconsModule
+    NbEvaIconsModule,
+    NbLayoutModule
   ]
 })
 export class CarModule {}

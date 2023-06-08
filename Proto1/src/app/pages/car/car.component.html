@@ -1,11 +1,12 @@
 <h3 style="margin-left: 50px;">Fahrzeuge</h3>
-<div>
+<nb-layout>
+  <nb-layout-column>
     <mat-table class="lessons-table mat-elevation-z8" [dataSource]="dataSource">
         <ng-container matColumnDef="vin">
             <mat-header-cell *matHeaderCellDef>VIN</mat-header-cell>
             <mat-cell *matCellDef="let car">{{car.vin}}</mat-cell>
         </ng-container>
-    
+
 <!--         <ng-container matColumnDef="oem">
             <mat-header-cell *matHeaderCellDef>Hersteller</mat-header-cell>
             <mat-cell class="oem-cell"
@@ -29,7 +30,7 @@
             <mat-cell class="fuel-cell"
                       *matCellDef="let car">{{car.fuellevel}}</mat-cell>
         </ng-container>
-    
+
         <ng-container matColumnDef="enginestatus">
             <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
             <mat-cell class="enginestatus-cell"
@@ -39,7 +40,12 @@
         <ng-container matColumnDef="icon">
             <mat-header-cell *matHeaderCellDef>Wichtige Meldung</mat-header-cell>
             <mat-cell class="icon-cell"
-                      *matCellDef="let car"><nb-icon icon={{car.icon}}></nb-icon></mat-cell>
+                      *matCellDef="let car">
+                      <div [nbPopover]="'Hier sind Daten'">
+                        <nb-icon icon={{car.icon}}></nb-icon>
+
+                      </div>
+                    </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="lastupdated">
@@ -47,11 +53,11 @@
             <mat-cell class="lastupdated-cell"
                       *matCellDef="let car">{{car.lastupdated}}</mat-cell>
         </ng-container>
-    
+
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    
+
         <mat-row *matRowDef="let row; columns: displayedColumns"
         (click)="onRowClicked(row)"></mat-row>
-    
+
     </mat-table>
-</div>
+  </nb-layout-column>
