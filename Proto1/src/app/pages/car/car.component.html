@@ -36,10 +36,10 @@
                       *matCellDef="let car">{{car.enginestatus}}</mat-cell>
         </ng-container>
 
-        <ng-container matColumnDef="controlmessages">
+        <ng-container matColumnDef="icon">
             <mat-header-cell *matHeaderCellDef>Wichtige Meldung</mat-header-cell>
-            <mat-cell class="controlmessages-cell"
-                      *matCellDef="let car">{{car.controlmessages}}</mat-cell>
+            <mat-cell class="icon-cell"
+                      *matCellDef="let car"><nb-icon icon={{car.icon}}></nb-icon></mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="lastupdated">

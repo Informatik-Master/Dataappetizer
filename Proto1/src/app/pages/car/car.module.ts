@@ -4,8 +4,10 @@ import {
   NbActionsModule,
   NbButtonModule,
   NbCardModule,
-  NbIconModule
+  NbIconModule,
+  NbPopoverModule
 } from '@nebular/theme';
+import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { CarComponent } from './car.component';
 import { CarRoutingModule } from './car-routing.module';
 import { NgxEchartsModule } from 'ngx-echarts';
@@ -23,10 +25,12 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
     NbActionsModule,
     NbButtonModule,
     NbIconModule,
+    NbPopoverModule,
     NgxEchartsModule.forChild(),
     MatTableModule,
     MatSortModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    NbEvaIconsModule
   ]
 })
 export class CarModule {}
