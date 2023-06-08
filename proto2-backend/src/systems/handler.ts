@@ -5,10 +5,10 @@ import {
   PutCommand,
   ScanCommand,
 } from '@aws-sdk/lib-dynamodb';
+import { cryptoRandomStringAsync } from 'crypto-random-string';
 import express from 'express';
 import serverless from 'serverless-http';
 import { v4 as uuidv4 } from 'uuid';
-// import cryptoRandomString from 'crypto-random-string';
 
 const SYSTEMS_TABLE_NAME = process.env['SYSTEMS_TABLE'] || '';
 
@@ -35,19 +35,19 @@ app.use(express.json());
 app.post('/api/systems', async (req, res) => {
   //TODO: validation
   const { name, users, dashboardConfig, detailConfig, subscriptionId } = req.body;
+
   const system = {
     id: uuidv4(),
     name,
     users,
     dashboardConfig,
     detailConfig,
-    subscriptionId
+    subscriptionId,
+    secret: await cryptoRandomStringAsync({ length: 10, type: 'ascii-printable' })
   };
 
 
-  // const newSecret = cryptoRandomString({length: 10, type: 'ascii-printable'});
-  // console.log('newSecret', newSecret)
-
+  
   // Transaction?
   await dynamoDbClient.send(
     new PutCommand({

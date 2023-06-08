@@ -129,7 +129,7 @@
       </nb-card-body>
       <nb-card-footer style="display: flex; justify-content: end; gap: 15px">
         <button nbButton status="secondary" (click)="previous()">Zurück</button>
-        <button nbButton status="primary" (click)="next()">Weiter</button>
+        <button nbButton status="primary" (click)="createSystem()">Erstellen</button>
       </nb-card-footer>
     </nb-card>
   </nb-step>
@@ -168,13 +168,13 @@
                     nbInput
                     fullWidth
                     readonly
-                    [value]="'localhost:3001/webhook'"
+                    [value]="'localhost:3001/webhook/'+newSystem?.id"
                   />
                   <button
                     nbSuffix
                     nbButton
                     ghost
-                    (click)="copyToClipboard('localhost:3000/webhook')"
+                    (click)="copyToClipboard('localhost:3000/webhook/'+newSystem?.id)"
                     [nbPopover]="copiedRef"
                     nbPopoverPlacement="right"
                   ><!--TODO: actual values-->
@@ -191,13 +191,13 @@
                     nbInput
                     fullWidth
                     readonly
-                    [value]="'abc123def456'"
+                    [value]="newSystem?.secret"
                   />
                   <button
                     nbSuffix
                     nbButton
                     ghost
-                    (click)="copyToClipboard('abc123def456')"
+                    (click)="copyToClipboard(newSystem?.secret)"
                     [nbPopover]="copiedRef"
                     nbPopoverPlacement="right"
                   >

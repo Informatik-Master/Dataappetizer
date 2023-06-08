@@ -129,7 +129,7 @@ functions:
     handler: src/webhook/handler.handler
     events:
       - httpApi: 
-          path: /webhook
+          path: /webhook/{proxy+}
           method: POST
 
   # pullVehicles:

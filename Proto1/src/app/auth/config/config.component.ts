@@ -10,10 +10,12 @@ import { Router } from '@angular/router';
 import {
   AVAILABLE_VISUALIZATIONS,
   VisualizationKind,
-} from 'src/app/visualizations/visualization.module';
+} from '../../visualizations/visualization.module';
 
-import { SystemService } from '../../@core/system.service';
+import { System, SystemService } from '../../@core/system.service';
 import { VisualizationHost } from '../../visualizations/visualization-host.directive';
+
+import cryptoRandomString from 'crypto-random-string';
 
 type DiagramConfig = (typeof AVAILABLE_VISUALIZATIONS)[number] & {
   selected: boolean;
@@ -75,24 +77,32 @@ export class ConfigComponent {
     this.selectedIndex++;
   }
 
-  async finish() {
-    const newSystem = await this.systemService.createSystem({
+  newSystem: System | null = null;
+
+  async createSystem() {
+    this.newSystem = await this.systemService.createSystem({
       name: this.systemName,
       dashboardConfig: this.configs
-        .filter(({ kind }) => kind === VisualizationKind.DASHBOARD)
-        .filter(({ selected }) => selected)
-        .map(({ id }) => id),
+      .filter(({ kind }) => kind === VisualizationKind.DASHBOARD)
+      .filter(({ selected }) => selected)
+      .map(({ id }) => id),
       detailConfig: this.configs
-        .filter(({ kind }) => kind === VisualizationKind.DETAILS)
-        .filter(({ selected }) => selected)
-        .map(({ id }) => id),
+      .filter(({ kind }) => kind === VisualizationKind.DETAILS)
+      .filter(({ selected }) => selected)
+      .map(({ id }) => id),
       users: [],
       subscriptionId: this.subscriptionId,
-    });
-    this.router.navigate(['pages', newSystem.id], {
+    }); // TODO: loading?
+    this.next();
+  }
+
+  finish() {
+    if (!this.newSystem) return;
+
+    this.router.navigate(['pages', this.newSystem.id], {
       state: {
-        system: newSystem
-      }
+        system: this.newSystem,
+      },
     });
   }
 
@@ -107,7 +117,8 @@ export class ConfigComponent {
     // componentRef.instance.data = adItem.data;
   }
 
-  async copyToClipboard(value: string) {
+  async copyToClipboard(value: string | undefined) {
+    if (!value) return;
     await navigator.clipboard.writeText(value);
     console.log('copied', value);
   }

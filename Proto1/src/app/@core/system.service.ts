@@ -10,6 +10,7 @@ export interface System {
   dashboardConfig: string[]; //TODO: später kein id-string mehr?
   detailConfig: string[];
   subscriptionId: string;
+  secret?: string;
 }
 @Injectable({
   providedIn: 'root',
