@@ -18,6 +18,14 @@ const routes: Routes = [
           import('./car/car.module').then((m) => m.CarModule),
       },
       //TODO: Settings
+
+      {
+        path: 'settings',
+        //redirectTo: 'auth/systems'
+        loadChildren: () => 
+          import('../auth/config/config.module').then((m) => m.ConfigModule)
+      },
+
       {
         path: '',
         redirectTo: 'dashboard',
