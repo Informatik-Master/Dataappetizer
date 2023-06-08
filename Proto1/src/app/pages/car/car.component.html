@@ -42,10 +42,10 @@
                       *matCellDef="let car">{{car.controlmessages}}</mat-cell>
         </ng-container>
 
-        <ng-container matColumnDef="detail">
-            <mat-header-cell *matHeaderCellDef>Zum Fahrzeug</mat-header-cell>
-            <mat-cell class="detail-cell"
-                      *matCellDef="let car">{{car.detail}}</mat-cell>
+        <ng-container matColumnDef="lastupdated">
+            <mat-header-cell *matHeaderCellDef>zuletzt aktualisiert</mat-header-cell>
+            <mat-cell class="lastupdated-cell"
+                      *matCellDef="let car">{{car.lastupdated}}</mat-cell>
         </ng-container>
     
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
