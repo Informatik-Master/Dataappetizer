@@ -89,6 +89,32 @@ export class AverageDistanceComponent extends VisualizationComponent {
     super();
   }
 
+  public override setMockData (): void{
+    this.echartMerge = {
+      series: [
+        {
+          data: [
+            {name: "VIN1",
+            value: 23423
+            },
+            {name: "VIN2",
+            value: 12255
+            },
+            {name: "VIN3",
+            value: 45123
+            },
+            {name: "VIN4",
+            value: 3125
+            },
+            {name: "VIN5",
+            value: 35245
+            },
+          ],
+        },
+      ],
+    };
+  }
+
   public ngOnInit(): void {
     this.subscription = this.dataPointService.dataPoint$
       .pipe(

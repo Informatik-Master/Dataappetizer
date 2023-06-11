@@ -52,14 +52,17 @@
 
 <gridster [options]="options">
   <gridster-item [item]="dashboard[1]">
-    <ngx-data-count></ngx-data-count>
+      <ngx-data-count></ngx-data-count>
   </gridster-item>
+
   <gridster-item [item]="dashboard[2]">
     <ngx-average-distance></ngx-average-distance>
   </gridster-item>
+
   <gridster-item [item]="dashboard[3]">
-    <ngx-fuel-level></ngx-fuel-level>
+    <ngx-fuel-level ></ngx-fuel-level>
   </gridster-item>
+  
   <gridster-item
     [item]="dashboard[0]"
     (itemResize)="onResize(dashboard[0])"

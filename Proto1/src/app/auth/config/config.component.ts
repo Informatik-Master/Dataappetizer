@@ -14,6 +14,7 @@ import {
 
 import { SystemService } from '../../@core/system.service';
 import { VisualizationHost } from '../../visualizations/visualization-host.directive';
+import { VisualizationComponent } from 'src/app/visualizations/visualization-component.interface';
 
 type DiagramConfig = (typeof AVAILABLE_VISUALIZATIONS)[number] & {
   selected: boolean;
@@ -94,6 +95,7 @@ export class ConfigComponent {
         woop: newSystem.id,
       },
     });
+    console.log("NEW SYSTEM:"  + JSON.stringify(newSystem));
   }
 
   loadVisualization(config: DiagramConfig) {
@@ -104,6 +106,7 @@ export class ConfigComponent {
     const componentRef = viewContainerRef.createComponent<VisualizationHost>(
       config.component
     );
+    (componentRef.instance as unknown as VisualizationComponent).setMockData();
     // componentRef.instance.data = adItem.data;
   }
 

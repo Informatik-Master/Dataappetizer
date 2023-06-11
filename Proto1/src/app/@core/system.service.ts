@@ -24,6 +24,10 @@ export class SystemService {
     return this.httpClient.get<System[]>('/api/systems');
   }
 
+  public getSystemsById(id : String) {
+    return this.httpClient.get<System>('/api/systems/:' + id);
+  }
+
   public async createSystem(system: System): Promise<System> {
     const currentUser = await firstValueFrom(this.authService.getToken());
 

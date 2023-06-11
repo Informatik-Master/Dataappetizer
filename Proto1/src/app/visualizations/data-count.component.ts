@@ -44,6 +44,11 @@ export class DataCountComponent extends VisualizationComponent {
     super();
   }
 
+  public override setMockData (): void{
+    this.numberDataPoints = 50;
+    this.vins = new Set<string>(['Test1', 'Test2', 'Test3', 'Test4', 'Test5'])
+  }
+
   public ngOnInit(): void {
     this.subscription = this.dataPointService.dataPoint$
       .pipe(bufferTime(1000))

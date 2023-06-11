@@ -73,6 +73,27 @@ export class MilageComponent extends VisualizationComponent {
     super();
   }
 
+  public override setMockData(): void {
+    this.echartMerge = {
+      series: [
+        {
+          name: "data.vin",
+          type: 'line',
+          smooth: true,
+          symbol: 'none',
+          areaStyle: {},
+          data: [
+            123,
+            3232,
+            3434,
+            344
+          ]
+        }
+      ],
+    }
+    console.log(this.echartMerge)
+  }
+
   public ngOnInit(): void {
     this.subscription = this.dataPointService.dataPoint$
       .pipe(

@@ -31,9 +31,10 @@ import {
   GridsterItemComponent,
   GridType,
 } from 'angular-gridster2';
+import { SystemService } from '../../@core/system.service';
 import { VisualizationComponent } from 'src/app/visualizations/visualization-component.interface';
 import { ActivatedRoute } from '@angular/router';
-import { map, Subject, takeUntil } from 'rxjs';
+import { firstValueFrom, map, Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'ngx-dashboard',
@@ -42,6 +43,12 @@ import { map, Subject, takeUntil } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardComponent implements OnInit {
+
+  constructor(
+    private readonly systemService: SystemService,
+    private readonly activeRoute: ActivatedRoute
+  ) { }
+
   options!: GridsterConfig;
   dashboard!: Array<GridsterItem>;
 
@@ -55,7 +62,7 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {
+   async ngOnInit(): Promise<void> {
     this.options = {
       gridType: GridType.Fit,
       compactType: CompactType.None,
@@ -69,10 +76,13 @@ export class DashboardComponent implements OnInit {
         enabled: true,
       },
     };
+    let systemId = this.activeRoute.snapshot.paramMap.get('systemId')!;
+    console.log("SYSTEMID:" + systemId);
+    let system =  await firstValueFrom(this.systemService.getSystemsById(systemId));
+    // console.log("SYSTEM:" + JSON.stringify(system));
 
     this.dashboard = [
       { cols: 1, rows: 2, y: 0, x: 2 },
-
       { cols: 1, rows: 1, y: 0, x: 0 },
       { cols: 1, rows: 1, y: 0, x: 1 },
       { cols: 2, rows: 1, y: 1, x: 0 },

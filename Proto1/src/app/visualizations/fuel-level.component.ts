@@ -81,6 +81,113 @@ export class FuelLevelComponent extends VisualizationComponent {
     super();
   }
 
+  public override setMockData(): void {
+    this.echartMerge = {
+      series: [
+        {
+          name: "VIN1",
+          type: 'line',
+          smooth: true,
+          symbol: 'none',
+          areaStyle: {},
+          data: [
+            [1683700595623, 20.97341150197138],
+            [1683700595623, 60.396212924808914],
+            [1683724083086, 58.444437939116554],
+            [1683728083086, 52.0436064083023],
+            [1683738083086, 48.49357440466658],
+            [1683758083086, 40.07196788245437]
+          ],
+          markLine: {
+            data: [
+              { type: 'average', name: 'Avg' },
+            ]
+          }
+        },
+        {
+          name: "VIN2",
+          type: 'line',
+          smooth: true,
+          symbol: 'none',
+          areaStyle: {},
+          data: [
+            [1683700595623, 80.97341150197138],
+            [1683700595623, 77.396212924808914],
+            [1683724083086, 50.444437939116554],
+            [1683728083086, 40.0436064083023],
+            [1683738083086, 30.49357440466658],
+            [1683758083086, 10.07196788245437]
+          ],
+          markLine: {
+            data: [
+              { type: 'average', name: 'Avg' },
+            ]
+          }
+        },
+        {
+          name: "VIN3",
+          type: 'line',
+          smooth: true,
+          symbol: 'none',
+          areaStyle: {},
+          data: [
+            [1683700595623, 10.97341150197138],
+            [1683700595623, 80.396212924808914],
+            [1683724083086, 59.444437939116554],
+            [1683728083086, 59.0436064083023],
+            [1683738083086, 58.49357440466658],
+            [1683758083086, 58.07196788245437]
+          ],
+          markLine: {
+            data: [
+              { type: 'average', name: 'Avg' },
+            ]
+          }
+        },
+        {
+          name: "VIN4",
+          type: 'line',
+          smooth: true,
+          symbol: 'none',
+          areaStyle: {},
+          data: [
+            [1683700595623, 48.97341150197138],
+            [1683700595623, 40.396212924808914],
+            [1683724083086, 35.444437939116554],
+            [1683728083086, 20.0436064083023],
+            [1683738083086],
+            [1683758083086]
+          ],
+          markLine: {
+            data: [
+              { type: 'average', name: 'Avg' },
+            ]
+          }
+        },
+        {
+          name: "VIN5",
+          type: 'line',
+          smooth: true,
+          symbol: 'none',
+          areaStyle: {},
+          data: [
+            [1683700595623],
+            [1683700595623],
+            [1683724083086, 20.49357440466658],
+            [1683728083086, 20.49357440466658],
+            [1683738083086, 20.49357440466658],
+            [1683758083086, 10.07196788245437]
+          ],
+          markLine: {
+            data: [
+              { type: 'average', name: 'Avg' },
+            ]
+          }
+        }
+      ]
+    }
+  }
+
   public ngOnInit(): void {
     this.subscription = this.dataPointService.dataPoint$
       .pipe(
@@ -110,7 +217,6 @@ export class FuelLevelComponent extends VisualizationComponent {
           abc.data!.push([data.value.timestamp, data.value.value.value]);
           abc.data = (abc.data as any[]).sort((a: any, b: any) => a[0] - b[0]);
         }
-
         this.echartMerge = {
           ...this.echartMerge,
         };

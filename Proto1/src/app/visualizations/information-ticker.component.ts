@@ -52,7 +52,19 @@ export class InformationTickerComponent extends VisualizationComponent {
     super();
   }
 
-  public ngOnInit(): void {
+  public override setMockData(): void {
+    this.notifications = [
+      "VIN1 hat einen neuen Standort: 46.99 8.45, 27.05.2023 16:10",
+      "VIN1 hat einen neuen Kilometerstand: 42.98 km, 27.05.2023 16:00",
+      "VIN2 hat einen neuen Standort: 49.01 8.40, 27.05.2023 15:56",
+      "VIN3 hat einen neuen Motorstatus: Eingeschaltet, 27.05.2023 15:48",
+      "VIN2 hat einen neuen Motorstatus: Eingeschaltet, 27.05.2023 15:14",
+      "VIN4 zeigt eine Warnung an: Bremsscheiben, 27.05.2023 14:47",
+    ]
+    console.log(this.notifications);
+  }
+
+    public ngOnInit(): void {
     this.subscription = this.dataPointService.dataPoint$
       .pipe(
         filter(({ event }) => event === 'geolocation'),
