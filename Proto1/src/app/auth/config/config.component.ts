@@ -15,8 +15,6 @@ import {
 import { System, SystemService } from '../../@core/system.service';
 import { VisualizationHost } from '../../visualizations/visualization-host.directive';
 
-import cryptoRandomString from 'crypto-random-string';
-
 type DiagramConfig = (typeof AVAILABLE_VISUALIZATIONS)[number] & {
   selected: boolean;
 };
