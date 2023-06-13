@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { NbAuthService } from '@nebular/auth';
-import { Observable, firstValueFrom } from 'rxjs';
+import { Observable, ReplaySubject, firstValueFrom } from 'rxjs';
 
 export interface System {
   id?: string;
@@ -16,6 +16,10 @@ export interface System {
   providedIn: 'root',
 })
 export class SystemService {
+
+  private readonly _currentSystem = new ReplaySubject<System>(1);
+  public readonly currentSystem = this._currentSystem.asObservable();
+
   public constructor(
     private readonly httpClient: HttpClient,
     private readonly authService: NbAuthService
@@ -31,5 +35,9 @@ export class SystemService {
     if (!system.users.includes(currentUser.getPayload().email))
       system.users.push(currentUser.getPayload().email);
     return firstValueFrom(this.httpClient.post<System>('/api/systems', system));
+  }
+
+  public setCurrentSystem(s: System) {
+    this._currentSystem.next(s)//TODO: logout
   }
 }

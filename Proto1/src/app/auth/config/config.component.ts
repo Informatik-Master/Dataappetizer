@@ -14,6 +14,7 @@ import {
 
 import { System, SystemService } from '../../@core/system.service';
 import { VisualizationHost } from '../../visualizations/visualization-host.directive';
+import { VisualizationComponent } from 'src/app/visualizations/visualization-component.interface';
 
 type DiagramConfig = (typeof AVAILABLE_VISUALIZATIONS)[number] & {
   selected: boolean;
@@ -97,11 +98,8 @@ export class ConfigComponent {
   finish() {
     if (!this.newSystem) return;
 
-    this.router.navigate(['pages', this.newSystem.id], {
-      state: {
-        system: this.newSystem,
-      },
-    });
+    this.systemService.setCurrentSystem(this.newSystem);
+    this.router.navigate(['pages', this.newSystem.id]);
   }
 
   loadVisualization(config: DiagramConfig) {
@@ -112,6 +110,7 @@ export class ConfigComponent {
     const componentRef = viewContainerRef.createComponent<VisualizationHost>(
       config.component
     );
+    (componentRef.instance as unknown as VisualizationComponent).setMockData();
     // componentRef.instance.data = adItem.data;
   }
 

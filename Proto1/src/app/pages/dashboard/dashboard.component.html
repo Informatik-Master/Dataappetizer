@@ -51,7 +51,7 @@
 </div> -->
 
 <gridster [options]="options">
-  <gridster-item [item]="dashboard[1]" [class.maximized]="max === 1">
+  <gridster-item *ngIf = "showDataCount" [item]="dashboard[1]" [class.maximized]="max === 1">
     <nb-icon
       [icon]="max === 1 ? 'collapse-outline' : 'expand-outline'"
       pack="eva"
@@ -60,7 +60,7 @@
     ></nb-icon>
     <ngx-data-count></ngx-data-count>
   </gridster-item>
-  <gridster-item [item]="dashboard[2]" [class.maximized]="max === 2">
+  <gridster-item *ngIf = "showAverageDistance" [item]="dashboard[2]" [class.maximized]="max === 2">
     <nb-icon
       [icon]="max === 1 ? 'collapse-outline' : 'expand-outline'"
       pack="eva"
@@ -69,7 +69,7 @@
     ></nb-icon>
     <ngx-average-distance></ngx-average-distance>
   </gridster-item>
-  <gridster-item [item]="dashboard[3]" [class.maximized]="max === 3">
+  <gridster-item *ngIf = "showFuelLevel" [item]="dashboard[3]" [class.maximized]="max === 3">
     <nb-icon
       [icon]="max === 1 ? 'collapse-outline' : 'expand-outline'"
       pack="eva"
@@ -79,6 +79,7 @@
     <ngx-fuel-level></ngx-fuel-level>
   </gridster-item>
   <gridster-item
+  *ngIf = "showGeoLocation"
     [item]="dashboard[0]"
     (itemResize)="onResize(dashboard[0])"
     [class.maximized]="max === 0"
@@ -92,7 +93,7 @@
     <ngx-geo-location></ngx-geo-location>
   </gridster-item>
 
-  <gridster-item [item]="dashboard[4]" [class.maximized]="max === 4">
+  <gridster-item *ngIf = "showInformationTicker" [item]="dashboard[4]" [class.maximized]="max === 4">
     <nb-icon
       [icon]="max === 1 ? 'collapse-outline' : 'expand-outline'"
       pack="eva"

@@ -33,8 +33,8 @@ import { VisualizationComponent } from './visualization-component.interface';
         nb-card-body {
           container-type: inline-size;
           h6 {
-            line-height: 10cqw;
-            font-size: 10cqw;
+            line-height: 5cqw;
+            font-size: 5cqw;
           }
           span {
             line-height: 5cqw;
@@ -53,6 +53,11 @@ export class DataCountComponent extends VisualizationComponent {
 
   public constructor(protected readonly dataPointService: DataPointService, private changeDetectionRef: ChangeDetectorRef) {
     super();
+  }
+
+  public override setMockData (): void{
+    this.numberDataPoints = 50;
+    this.vins = new Set<string>(['Test1', 'Test2', 'Test3', 'Test4', 'Test5'])
   }
 
   public ngOnInit(): void {

@@ -110,6 +110,17 @@ export class EnvironmentTemperatureComponent extends VisualizationComponent {
     super();
   }
 
+  public override setMockData(): void {
+    this.echartMerge = {
+      series: [
+
+      ],
+      xAxis: [
+
+      ]
+    }
+  }
+
   vinSeriesMap: Map<string, number> = new Map<string, number>();
 
   public ngOnInit(): void {

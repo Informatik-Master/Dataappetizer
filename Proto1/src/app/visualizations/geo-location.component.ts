@@ -117,6 +117,19 @@ export class GeoLocationComponent extends VisualizationComponent {
     super();
   }
 
+  public override setMockData(): void {
+    // let marker = L.marker([41.22, 8.22]);
+    // marker.addTo(this.map);
+    this.latestDataPoints.set("vin", {
+      value: {
+        latitude: 41.22,
+        longitude: 8.22
+      }
+    });
+    this.wasUpdated.next();
+    console.log(this.latestDataPoints);
+  }
+
   public ngOnInit(): void {
     this.subscriptions.push(
       this.wasUpdated.pipe(debounceTime(250)).subscribe(() => {
