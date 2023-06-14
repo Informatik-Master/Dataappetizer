@@ -108,7 +108,9 @@ export class ConfigComponent implements OnInit {
       users: [],
       subscriptionId: this.subscriptionId,
     });
-    this.next();
+    
+    this.systemService.setCurrentSystem(this.system);
+    this.router.navigate(['pages', this.system.id]);
   }
 
   async createSystem() {

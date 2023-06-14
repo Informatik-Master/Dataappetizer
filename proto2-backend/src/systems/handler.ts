@@ -32,9 +32,48 @@ app.use(express.json());
 //     //TODO: maybe another table with the this information?
 // }
 
+app.put('/api/systems', async (req, res) => {
+  const { name, users, dashboardConfig, detailConfig, subscriptionId, id } =
+    req.body;
+  if (!id) {
+    res.status(400).json({ message: 'Missing id' });
+    return;
+  }
+
+  const { Item: systemItem } = await dynamoDbClient.send(
+    new GetCommand({
+      TableName: SYSTEMS_TABLE_NAME,
+      Key: {
+        id,
+      },
+    }),
+  );
+
+  if (!systemItem) {
+    res.status(404).json({ message: 'System not found' });
+    return;
+  }
+
+  if (name) systemItem['name'] = name;
+  if (users) systemItem['users'] = users;
+  if (dashboardConfig) systemItem['dashboardConfig'] = dashboardConfig;
+  if (detailConfig) systemItem['detailConfig'] = detailConfig;
+  if (subscriptionId) systemItem['subscriptionId'] = subscriptionId;
+
+  await dynamoDbClient.send(
+    new PutCommand({
+      TableName: SYSTEMS_TABLE_NAME,
+      Item: systemItem,
+    }),
+  );
+
+  res.status(200).json(systemItem);
+});
+
 app.post('/api/systems', async (req, res) => {
   //TODO: validation
-  const { name, users, dashboardConfig, detailConfig, subscriptionId } = req.body;
+  const { name, users, dashboardConfig, detailConfig, subscriptionId } =
+    req.body;
 
   const system = {
     id: uuidv4(),
@@ -43,11 +82,12 @@ app.post('/api/systems', async (req, res) => {
     dashboardConfig,
     detailConfig,
     subscriptionId,
-    secret: await cryptoRandomStringAsync({ length: 10, type: 'ascii-printable' })
+    secret: await cryptoRandomStringAsync({
+      length: 10,
+      type: 'ascii-printable',
+    }),
   };
 
-
-  
   // Transaction?
   await dynamoDbClient.send(
     new PutCommand({
@@ -110,8 +150,8 @@ app.get('/api/systems/:id', async (req, res) => {
       TableName: SYSTEMS_TABLE_NAME,
       Key: {
         id: req.params.id,
-      }
-    })
+      },
+    }),
   );
   if (!system.Item) {
     res.status(404).json({ message: 'System not found' });
