@@ -1,52 +1,31 @@
-<nb-stepper
-  orientation="horizontal"
-  [disableStepNavigation]="true"
-  [selectedIndex]="selectedIndex"
->
+<nb-stepper orientation="horizontal" [disableStepNavigation]="true" [selectedIndex]="selectedIndex">
   <nb-step label="Systemname">
     <nb-card>
       <nb-card-header>
         <h2>Wählen Sie einen Namen für das Kundensystem</h2>
-        <span class="caption-2"
-          >Der Name diehnt zur einfacheren Identifikation des erstellten
-          Systems</span
-        > </nb-card-header
-      ><!--TODO: Validation-->
+        <span class="caption-2">Der Name diehnt zur einfacheren Identifikation des erstellten
+          Systems</span>
+      </nb-card-header><!--TODO: Validation-->
       <nb-card-body>
         <nb-layout class="transparent fullheight">
-          <nb-layout-column
-            style="display: flex; justify-content: center; align-items: center"
-          >
-            <div
-              style="
+          <nb-layout-column style="display: flex; justify-content: center; align-items: center">
+            <div style="
                 gap: 30px;
                 display: flex;
                 flex-direction: column;
                 width: 50%;
-              "
-            >
+              ">
               <div>
                 <label for="systemname">Systemname</label>
                 <nb-form-field>
-                  <input
-                    id="systemname"
-                    nbInput
-                    fullWidth
-                    placeholder="Systemname"
-                    [(ngModel)]="systemName"
-                  />
+                  <input id="systemname" nbInput fullWidth placeholder="Systemname" [(ngModel)]="systemName" />
                 </nb-form-field>
               </div>
               <div>
                 <label for="subscriptionId">Subscription ID</label>
                 <nb-form-field>
-                  <input
-                    id="subscriptionId"
-                    nbInput
-                    fullWidth
-                    placeholder="Subscription ID"
-                    [(ngModel)]="subscriptionId"
-                  />
+                  <input id="subscriptionId" nbInput fullWidth placeholder="Subscription ID"
+                    [(ngModel)]="subscriptionId" />
                 </nb-form-field>
               </div>
             </div>
@@ -54,7 +33,8 @@
         </nb-layout>
       </nb-card-body>
       <nb-card-footer style="display: flex; justify-content: end; gap: 15px">
-        <button nbButton status="primary" (click)="next()" [disabled]="subscriptionId === '' || systemName===''">Weiter</button>
+        <button nbButton status="primary" (click)="next()"
+          [disabled]="subscriptionId === '' || systemName===''">Weiter</button>
       </nb-card-footer>
     </nb-card>
   </nb-step>
@@ -94,35 +74,23 @@
     <nb-card>
       <nb-card-header>
         <h2>Wählen Sie die Datenvisualisierungen für das Kundensystem</h2>
-        <span class="caption-2"
-          >Datenvisualisierungen bestimmen, welche die Fahrzeugdaten im System
-          angezeigt werden. Bei den dargestellten Daten handelt es sich hierbei nicht um Ihre tatsächlichen Fahrzeugdaten. Diese zeigen beispielhaft an, wie die Daten visualisiert werden.</span
-        >
+        <span class="caption-2">Datenvisualisierungen bestimmen, welche die Fahrzeugdaten im System
+          angezeigt werden. Bei den dargestellten Daten handelt es sich hierbei nicht um Ihre tatsächlichen
+          Fahrzeugdaten. Diese zeigen beispielhaft an, wie die Daten visualisiert werden.</span>
       </nb-card-header>
       <nb-card-body style="padding: 0">
         <nb-layout class="transparent fullheight">
           <nb-layout-column>
-            <nb-tabset>
-              <nb-tab tabTitle="Allgemeiner Überblick">
-                <nb-list>
-                  <nb-list-item
-                    *ngFor="let dashboardConfig of configs"
-                    style="gap: 5px"
-                    (mouseenter)="loadVisualization(dashboardConfig)"
-                  ><!--TODO: filter kind-->
-                    <nb-checkbox
-                      [(checked)]="dashboardConfig.selected"
-                    ></nb-checkbox
-                    >{{ dashboardConfig.name }}
-                  </nb-list-item>
-                </nb-list>
-              </nb-tab>
-              <nb-tab tabTitle="Fahrzeugübersicht">
-                <nb-list> </nb-list>
-              </nb-tab>
-            </nb-tabset>
+            <h5 style="margin-top: 0%; margin-bottom: 3%;">Allgemeiner Überblick</h5>
+            <nb-list>
+              <nb-list-item *ngFor="let dashboardConfig of configs" style="gap: 5px"
+                (mouseenter)="loadVisualization(dashboardConfig)"><!--TODO: filter kind-->
+                <nb-checkbox [(checked)]="dashboardConfig.selected"></nb-checkbox>{{ dashboardConfig.name }}
+              </nb-list-item>
+            </nb-list>
           </nb-layout-column>
           <nb-layout-column>
+            <h5 style="margin-top: 0%; margin-bottom: 3%">Preview</h5>
             <ng-template visualizationHost></ng-template>
           </nb-layout-column>
         </nb-layout>
@@ -138,24 +106,18 @@
     <nb-card>
       <nb-card-header>
         <h2>System ist bereit</h2>
-        <span class="caption-2"
-          >Tragen Sie die folgenden Daten in den Markeplace ein, sodass Daten
-          ihrer Subscription empfangen werden können</span
-        >
+        <span class="caption-2">Tragen Sie die folgenden Daten in den Markeplace ein, sodass Daten
+          ihrer Subscription empfangen werden können</span>
       </nb-card-header>
       <nb-card-body>
         <nb-layout class="transparent fullheight">
-          <nb-layout-column
-            style="display: flex; justify-content: center; align-items: center"
-          >
-            <div
-              style="
+          <nb-layout-column style="display: flex; justify-content: center; align-items: center">
+            <div style="
                 gap: 30px;
                 display: flex;
                 flex-direction: column;
                 width: 50%;
-              "
-            >
+              ">
               <ng-template #copiedRef>
                 <div style="padding: 15px">
                   <span>Kopiert!</span>
@@ -164,21 +126,9 @@
               <div>
                 <label for="webhook">Push-Url</label>
                 <nb-form-field>
-                  <input
-                    id="webhook"
-                    nbInput
-                    fullWidth
-                    readonly
-                    [value]="'localhost:3001/webhook/'+system?.id"
-                  />
-                  <button
-                    nbSuffix
-                    nbButton
-                    ghost
-                    (click)="copyToClipboard('localhost:3000/webhook/'+system?.id)"
-                    [nbPopover]="copiedRef"
-                    nbPopoverPlacement="right"
-                  ><!--TODO: actual values-->
+                  <input id="webhook" nbInput fullWidth readonly [value]="'localhost:3001/webhook/'+system?.id" />
+                  <button nbSuffix nbButton ghost (click)="copyToClipboard('localhost:3000/webhook/'+system?.id)"
+                    [nbPopover]="copiedRef" nbPopoverPlacement="right"><!--TODO: actual values-->
                     <nb-icon [icon]="'clipboard-outline'" pack="eva"> </nb-icon>
                   </button>
                 </nb-form-field>
@@ -187,21 +137,9 @@
               <div>
                 <label for="secret">Secret</label>
                 <nb-form-field>
-                  <input
-                    id="secret"
-                    nbInput
-                    fullWidth
-                    readonly
-                    [value]="system?.secret"
-                  />
-                  <button
-                    nbSuffix
-                    nbButton
-                    ghost
-                    (click)="copyToClipboard(system?.secret)"
-                    [nbPopover]="copiedRef"
-                    nbPopoverPlacement="right"
-                  >
+                  <input id="secret" nbInput fullWidth readonly [value]="system?.secret" />
+                  <button nbSuffix nbButton ghost (click)="copyToClipboard(system?.secret)" [nbPopover]="copiedRef"
+                    nbPopoverPlacement="right">
                     <nb-icon [icon]="'clipboard-outline'" pack="eva"> </nb-icon>
                   </button>
                 </nb-form-field>
