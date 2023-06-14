@@ -22,6 +22,7 @@ export class SystemsComponent {
   }
 
   selectSystem(system: System) {
+    this.systemService.setCurrentSystem(system);
     this.router.navigate(['pages', system.id], {
       state: {
         system

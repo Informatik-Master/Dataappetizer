@@ -5,7 +5,7 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import {
   AVAILABLE_VISUALIZATIONS,
@@ -48,13 +48,16 @@ export function FadeInOut(
   styleUrls: ['./config.component.scss'],
   animations: [FadeInOut(200, 300, true)],
 })
-export class ConfigComponent {
+export class ConfigComponent implements OnInit {
   selectedIndex = 0;
   systemName = 'System Name';
   subscriptionId = '';
 
   @ViewChild(VisualizationHost, { static: true })
   previewHost!: VisualizationHost;
+
+  @Input()
+  system: System | undefined;
 
   configs: DiagramConfig[] = AVAILABLE_VISUALIZATIONS.map((visualization) => ({
     ...visualization,
@@ -68,6 +71,20 @@ export class ConfigComponent {
     private readonly systemService: SystemService
   ) {}
 
+  ngOnInit() {
+    console.log('config', this.system);
+    if (!this.system) return;
+    this.systemName = this.system.name;
+    this.subscriptionId = this.system.subscriptionId;
+    this.configs = this.configs.map((config) => {
+      config.selected =
+        this.system?.dashboardConfig.includes(config.id) ||
+        this.system?.detailConfig.includes(config.id) ||
+        false;
+      return config;
+    });
+  }
+
   previous() {
     this.selectedIndex--;
   }
@@ -76,30 +93,46 @@ export class ConfigComponent {
     this.selectedIndex++;
   }
 
-  newSystem: System | null = null;
-
-  async createSystem() {
-    this.newSystem = await this.systemService.createSystem({
+  async updateSystem() {
+    this.system = await this.systemService.updateSystem({
+      id: this.system?.id,
       name: this.systemName,
       dashboardConfig: this.configs
-      .filter(({ kind }) => kind === VisualizationKind.DASHBOARD)
-      .filter(({ selected }) => selected)
-      .map(({ id }) => id),
+        .filter(({ kind }) => kind === VisualizationKind.DASHBOARD)
+        .filter(({ selected }) => selected)
+        .map(({ id }) => id),
       detailConfig: this.configs
-      .filter(({ kind }) => kind === VisualizationKind.DETAILS)
-      .filter(({ selected }) => selected)
-      .map(({ id }) => id),
+        .filter(({ kind }) => kind === VisualizationKind.DETAILS)
+        .filter(({ selected }) => selected)
+        .map(({ id }) => id),
       users: [],
       subscriptionId: this.subscriptionId,
-    }); // TODO: loading?
+    });
+    this.next();
+  }
+
+  async createSystem() {
+    this.system = await this.systemService.createSystem({
+      name: this.systemName,
+      dashboardConfig: this.configs
+        .filter(({ kind }) => kind === VisualizationKind.DASHBOARD)
+        .filter(({ selected }) => selected)
+        .map(({ id }) => id),
+      detailConfig: this.configs
+        .filter(({ kind }) => kind === VisualizationKind.DETAILS)
+        .filter(({ selected }) => selected)
+        .map(({ id }) => id),
+      users: [],
+      subscriptionId: this.subscriptionId,
+    });
     this.next();
   }
 
   finish() {
-    if (!this.newSystem) return;
+    if (!this.system) return;
 
-    this.systemService.setCurrentSystem(this.newSystem);
-    this.router.navigate(['pages', this.newSystem.id]);
+    this.systemService.setCurrentSystem(this.system);
+    this.router.navigate(['pages', this.system.id]);
   }
 
   loadVisualization(config: DiagramConfig) {

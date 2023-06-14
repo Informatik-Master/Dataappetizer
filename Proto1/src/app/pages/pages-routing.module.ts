@@ -17,13 +17,11 @@ const routes: Routes = [
         loadChildren: () =>
           import('./car/car.module').then((m) => m.CarModule),
       },
-      //TODO: Settings
-
       {
         path: 'settings',
         //redirectTo: 'auth/systems'
         loadChildren: () => 
-          import('../auth/config/config.module').then((m) => m.ConfigModule)
+          import('./settings/settings.module').then((m) => m.SettingsModule)
       },
 
       {

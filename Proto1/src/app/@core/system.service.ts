@@ -37,6 +37,14 @@ export class SystemService {
     return firstValueFrom(this.httpClient.post<System>('/api/systems', system));
   }
 
+  public async updateSystem(system: System): Promise<System> {
+    const currentUser = await firstValueFrom(this.authService.getToken());
+
+    if (!system.users.includes(currentUser.getPayload().email))
+      system.users.push(currentUser.getPayload().email);
+    return firstValueFrom(this.httpClient.put<System>('/api/systems', system)); // TODO: implement this in the backend
+  }
+
   public setCurrentSystem(s: System) {
     this._currentSystem.next(s)//TODO: logout
   }

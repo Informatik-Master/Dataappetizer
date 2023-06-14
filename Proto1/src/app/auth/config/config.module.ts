@@ -22,6 +22,7 @@ import { VisualizationModule } from '../../visualizations/visualization.module';
 
 @NgModule({
   declarations: [ConfigComponent],
+  exports: [ConfigComponent],
   imports: [
     CommonModule,
     ConfigRoutingModule,
@@ -41,5 +42,6 @@ import { VisualizationModule } from '../../visualizations/visualization.module';
     NbFormFieldModule,
     NbPopoverModule
   ],
+  
 })
 export class ConfigModule {}
