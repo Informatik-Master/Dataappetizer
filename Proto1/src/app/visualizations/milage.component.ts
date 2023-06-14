@@ -107,16 +107,16 @@ export class MilageComponent extends VisualizationComponent {
     this.echartMerge = {
       series: [
         {
-          name: "data.vin",
+          name: "VIN1",
           type: 'line',
           smooth: true,
           symbol: 'none',
           areaStyle: {},
           data: [
-            123,
-            3232,
-            3434,
-            344
+            [1683700595623, 123],
+            [1683724083086, 3232],
+            [1683728083086, 3434],
+            [1683738083086, 5434]
           ]
         }
       ],

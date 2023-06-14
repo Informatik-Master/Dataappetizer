@@ -112,12 +112,12 @@ export class EnvironmentTemperatureComponent extends VisualizationComponent {
 
   public override setMockData(): void {
     this.echartMerge = {
-      series: [
-
-      ],
-      xAxis: [
-
-      ]
+      series:  [{
+        data: [20,19,21]
+      }],
+      xAxis: {
+        data: ['VIN1', 'VIN2', 'VIN3']
+      }
     }
   }
 
