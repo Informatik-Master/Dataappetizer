@@ -1,9 +1,7 @@
 <div class="header-container">
   <div class="logo-container">
-
     <div>
-      <a class="logo"> DataAppetizer
-      </a>
+      <a class="logo"> DataAppetizer </a>
     </div>
   </div>
 
@@ -23,9 +21,11 @@
       </nb-action>
     </nb-actions>
   </div>
-  <nb-user [name]="(nbAuth.getToken() | async)?.getPayload().email || ''"
-            [onlyPicture]="true"
-           [nbContextMenu]="items"
-           nbContextMenuTag="user-menu">
+  <nb-user
+    [name]="(nbAuth.getToken() | async)?.getPayload().email || ''"
+    [onlyPicture]="true"
+    [nbContextMenu]="items"
+    nbContextMenuTag="user-menu"
+  >
   </nb-user>
 </div>

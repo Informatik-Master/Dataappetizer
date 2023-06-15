@@ -4,6 +4,7 @@ import {
   NbButtonModule,
   NbCardModule,
   NbIconModule,
+  NbLayoutModule,
   NbListModule
 } from '@nebular/theme';
 import { DashboardComponent } from './dashboard.component';
@@ -25,7 +26,8 @@ import { GridsterModule } from 'angular-gridster2';
     NbListModule,
     LeafletModule,
     VisualizationModule,
-    GridsterModule
+    GridsterModule,
+    NbLayoutModule
   ],
 })
 export class DashboardModule {}

@@ -50,6 +50,13 @@
   </div>
 </div> -->
 
+<nb-layout>
+  <nb-layout-column style="
+  padding-right: 0;
+  padding-left: 0;
+">
+
+
 <gridster [options]="options">
   <gridster-item *ngIf = "showDataCount" [item]="dashboard[1]" [class.maximized]="max === 1">
     <nb-icon
@@ -114,3 +121,6 @@
     <ngx-environment-temperature></ngx-environment-temperature>
   </gridster-item> -->
 </gridster>
+
+</nb-layout-column>
+</nb-layout>
