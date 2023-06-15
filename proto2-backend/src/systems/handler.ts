@@ -141,7 +141,7 @@ app.get('/api/systems', async (req, res) => {
 });
 
 app.get('/api/systems/:id', async (req, res) => {
-  if (req.params.id) {
+  if (!req.params.id) {
     res.status(400).json({ message: 'Missing id' });
     return;
   }
@@ -157,7 +157,7 @@ app.get('/api/systems/:id', async (req, res) => {
     res.status(404).json({ message: 'System not found' });
     return;
   }
-  res.json(system);
+  res.json(system.Item);
 });
 
 export const handler = serverless(app);

@@ -1,7 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { NbAuthService } from '@nebular/auth';
+import { CookieService } from 'ngx-cookie';
 import { Observable, ReplaySubject, firstValueFrom } from 'rxjs';
+import { DataPointService } from './data-point.service';
 
 export interface System {
   id?: string;
@@ -22,11 +24,18 @@ export class SystemService {
 
   public constructor(
     private readonly httpClient: HttpClient,
-    private readonly authService: NbAuthService
+    private readonly authService: NbAuthService,
+
+    private readonly dataPointService: DataPointService,
+    private readonly cookieService: CookieService,
   ) {}
 
   public getSystems() {
     return this.httpClient.get<System[]>('/api/systems');
+  }
+
+  public getSystem(id: string): Observable<System> {
+    return this.httpClient.get<System>(`/api/systems/${id}`);
   }
 
   public async createSystem(system: System): Promise<System> {
@@ -46,6 +55,13 @@ export class SystemService {
   }
 
   public setCurrentSystem(s: System) {
+    console.log('setting', s.id)
+    this.cookieService.put('systemId', s.id);
+    this.dataPointService.connect();
+
     this._currentSystem.next(s)//TODO: logout
+
+    // this.cookieService.remove('systemId');
+    // this.dataPointService.disconnect();
   }
 }

@@ -17,6 +17,7 @@ export const connect = async ({
   requestContext: { connectionId },
   headers,
 }: APIGatewayProxyEvent) => {
+  console.log('HERE1')
   if (!connectionId) throw new Error('missing connectionId');
 
   const cookieHeader = headers['cookie'] || headers['Cookie'];
@@ -25,8 +26,9 @@ export const connect = async ({
   const { systemId } = cookie.parse(cookieHeader);
   if (!systemId) throw new Error('missing systemId');
 
+  console.log('HERE2')
   //TODO: Store vins denormalized?
-  await dynamoDbClient.send(
+  await dynamoDbClient.send( // TODO: make unique?
     new PutCommand({
       TableName: process.env['CONNECTIONS_TABLE'],
       Item: {

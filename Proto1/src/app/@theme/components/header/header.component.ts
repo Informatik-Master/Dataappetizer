@@ -9,6 +9,7 @@ import {
 } from '@nebular/theme';
 import { map, Observable, Subject, takeUntil } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
+import { NbAuthService } from '@nebular/auth';
 
 @Component({
   selector: 'ngx-header',
@@ -16,14 +17,23 @@ import { ActivatedRoute } from '@angular/router';
   templateUrl: './header.component.html',
 })
 export class HeaderComponent {
+  items: NbMenuItem[] = [
+    { title: 'System wechseln', icon: 'flip-2-outline', link: '/auth/systems' },
+    { title: 'Logout', icon: 'log-out-outline',  link:'/auth/login'}, // TODO: logout
+  ];
+
   public constructor(
     private readonly router: Router,
-    private readonly route: ActivatedRoute
+    private readonly route: ActivatedRoute,
+    readonly nbAuth: NbAuthService
   ) {}
 
   navigateHome() {
     const systemId = this.route.snapshot.paramMap.get('systemId');
     this.router.navigate(['pages', systemId]);
+    this.nbAuth.getToken().subscribe((token) => {
+      token.getPayload().email
+    })
   }
 
   navigateToCars() {

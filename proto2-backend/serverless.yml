@@ -115,7 +115,7 @@ functions:
     handler: src/systems/handler.handler
     events:
       - httpApi: 
-          path: /api/systems
+          path: /api/systems/{proxy+}
           method: ANY
 
   debug:

@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { DataPointService } from '../@core/data-point.service';
 import { CookieService } from 'ngx-cookie';
 import { ActivatedRoute } from '@angular/router';
+import { Subscription, firstValueFrom } from 'rxjs';
+import { SystemService } from '../@core/system.service';
 
 @Component({
   selector: 'ngx-pages',
@@ -14,22 +16,23 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class PagesComponent {
 
+  paramSubscription : Subscription | null = null;
+
   constructor(
-    private readonly dataPointService: DataPointService,
-    private readonly cookieService: CookieService,
-    private readonly activeRoute: ActivatedRoute
+    private readonly activeRoute: ActivatedRoute,
+    private readonly systemService: SystemService
   ) {}
 
   ngOnInit(): void {
-    const systemId = this.activeRoute.snapshot.paramMap.get('systemId')!;
-    console.log('init', systemId);
-    this.cookieService.put('systemId', systemId); // TODO: create auth service? Also the whole login is missing :D
-    this.dataPointService.connect(); // TODO: Is this better per dashboard?
+    this.paramSubscription = this.activeRoute.paramMap.subscribe(async params => {
+      const systemId = params.get('systemId');
+      const newSystem = await firstValueFrom(this.systemService.getSystem(systemId!))
+      this.systemService.setCurrentSystem(newSystem);
+    });
+
   }
 
   ngOnDestroy(): void {
-    console.log('destroying');
-    this.cookieService.remove('systemId');
-    this.dataPointService.disconnect();
+    this.paramSubscription?.unsubscribe();
   }
 }
