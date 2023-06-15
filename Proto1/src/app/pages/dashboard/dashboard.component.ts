@@ -1,5 +1,6 @@
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   OnInit,
   QueryList,
@@ -29,7 +30,7 @@ export class DashboardComponent implements OnInit {
   @ViewChildren(VisualizationComponent)
   nestedVisualizations: QueryList<VisualizationComponent> | null = null;
 
-  public constructor(private readonly activatedRoute: ActivatedRoute, private readonly systemService: SystemService) {
+  public constructor(private readonly activatedRoute: ActivatedRoute, private readonly systemService: SystemService, private readonly changeRef: ChangeDetectorRef) {
 
   }
 
@@ -73,7 +74,7 @@ export class DashboardComponent implements OnInit {
       { cols: 2, rows: 1, y: 1, x: 0 },
       { cols: 3, rows: 1, y: 2, x: 0 },
     ];
-    await this.checkTags(); 
+    await this.checkTags();
   }
 
   async checkTags() {
@@ -97,6 +98,7 @@ export class DashboardComponent implements OnInit {
         this.showEnvironmentTemperature = true;
       }
     }
+    this.changeRef.detectChanges();
   }
 
   resizeInterval() {
