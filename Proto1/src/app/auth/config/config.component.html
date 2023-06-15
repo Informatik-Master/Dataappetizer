@@ -2,9 +2,9 @@
   <nb-step label="Systemname">
     <nb-card>
       <nb-card-header>
-        <h2>Wählen Sie einen Namen für das Kundensystem</h2>
+        <h2>Wählen Sie einen Namen für das Kundensystem und geben Sie eine Subscription-ID an</h2>
         <span class="caption-2">Der Name diehnt zur einfacheren Identifikation des erstellten
-          Systems</span>
+          Systems.</span>
       </nb-card-header><!--TODO: Validation-->
       <nb-card-body>
         <nb-layout class="transparent fullheight">
@@ -22,7 +22,7 @@
                 </nb-form-field>
               </div>
               <div>
-                <label for="subscriptionId">Subscription ID</label>
+                <label for="subscriptionId">Subscription-ID</label>
                 <nb-form-field>
                   <input id="subscriptionId" nbInput fullWidth placeholder="Subscription ID"
                     [(ngModel)]="subscriptionId" />
