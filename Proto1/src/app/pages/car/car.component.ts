@@ -58,7 +58,8 @@ export class CarComponent implements OnInit {
         let entry: CarListEntry = {
           timestamp: 0,
           icon: "loader-outline",
-          lastupdated: "gerade eben"
+          lastupdated: "gerade eben",
+          controlmessages: ["Keine speziellen Hinweise!"]
         }
         let existEntry = this.carMap.find(({ vin }) => vin === element.data.vin)
         if(!existEntry){
@@ -73,10 +74,15 @@ export class CarComponent implements OnInit {
             entry.enginestatus = element.data.value.value.value
           }
           if(element.event == "checkcontrolmessages"){
-            let messages = element.data.value.value.value
-            messages?.forEach( (entry: any) => {
-              this.hoverMessage.push(entry.status)
+            entry.controlmessages = []
+            let messages = element.data.value.value.value 
+            messages.forEach((entry: any) => { 
+              let statusEntry = (entry.status +": "+ entry.message) 
+              if(!entry?.controlmessages?.includes(statusEntry)){
+                this.hoverMessage.push(statusEntry)
+              }
             })
+            entry.controlmessages = this.hoverMessage
           }
           else {
             entry.icon = "checkmark-outline"
@@ -87,7 +93,7 @@ export class CarComponent implements OnInit {
           existEntry.timestamp = 0
           existEntry.icon= "loader-outline"
           existEntry.lastupdated = "gerade eben"
-          existEntry.controlmessages = []
+          existEntry.controlmessages = ["Keine speziellen Hinweise!"]
           if(element.event == "mileage"){
             existEntry.mileage = element.data.value.value.value
           }
@@ -98,9 +104,12 @@ export class CarComponent implements OnInit {
             existEntry.enginestatus = element.data.value.value.value
           }
           if(element.event == "checkcontrolmessages"){
+            existEntry.controlmessages = []
             let messages = element.data.value.value.value
             messages.forEach((entry: any) => { 
-              this.hoverMessage.push(entry.status + entry.message)
+              let statusEntry = ("entry.status +"+ "+ entry.message") 
+              if(existEntry?.controlmessages?.includes(statusEntry))
+              this.hoverMessage.push(statusEntry)
             })
             existEntry.controlmessages = this.hoverMessage
           }

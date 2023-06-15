@@ -41,10 +41,12 @@
             <mat-header-cell *matHeaderCellDef>Wichtige Meldung</mat-header-cell>
             <mat-cell class="icon-cell"
                       *matCellDef="let car">
-                      <div [nbPopover]="'Hier sind Daten'">
+                      <div [nbPopover]="controlmessages" nbPopoverPlacement="right">
                         <nb-icon icon={{car.icon}}></nb-icon>
-
                       </div>
+                      <ng-template #controlmessages>
+                        <li *ngFor="let item of car.controlmessages">{{item}}</li>
+                      </ng-template>
                     </mat-cell>
         </ng-container>
 
