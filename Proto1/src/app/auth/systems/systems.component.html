@@ -1,8 +1,8 @@
-<h1 id="title" class="title">Hallo Gwen!</h1>
+<h1 id="title" class="title">Hello Gwen!</h1>
 
-<nb-card size="medium">
+<nb-card size="medium" [nbSpinner]="!loaded" [nbSpinnerMessage]="'We are loading your systems, hang on tight :)'" nbSpinnerSize="giant">
   <nb-card-header>
-    Kundensysteme
+    Systems
   </nb-card-header>
   <nb-list>
     <nb-list-item *ngFor="let system of (systems | async)" class="system-entry" (click)="selectSystem(system)">
@@ -12,7 +12,7 @@
   </nb-list>
   <nb-card-footer>
     <button nbButton status="primary" (click)="createCustomerSystem()" fullWidth>
-      Neues System erstellen
+      Create a new system
       <nb-icon icon="plus-outline"></nb-icon>
     </button>
 

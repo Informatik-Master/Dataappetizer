@@ -30,11 +30,10 @@ export class DashboardComponent implements OnInit {
   @ViewChildren(VisualizationComponent)
   nestedVisualizations: QueryList<VisualizationComponent> | null = null;
 
-  public constructor(private readonly activatedRoute: ActivatedRoute, private readonly systemService: SystemService, private readonly changeRef: ChangeDetectorRef) {
+  public constructor(private readonly systemService: SystemService, private readonly changeRef: ChangeDetectorRef) {
 
   }
 
-  systemData: any;
   showGeoLocation: boolean = false;
   showInformationTicker: boolean = false;
   showAverageDistance: boolean = false;
@@ -55,7 +54,9 @@ export class DashboardComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     this.options = {
       gridType: GridType.Fit,
-      compactType: CompactType.None,
+      compactType: CompactType.CompactLeftAndUp,
+      pushResizeItems: true,
+
       maxCols: 10,
       maxRows: 10,
       pushItems: true,

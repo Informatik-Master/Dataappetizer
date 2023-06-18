@@ -24,7 +24,7 @@ import { VisualizationComponent } from './visualization-component.interface';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <nb-card>
-      <nb-card-header> Durchschnittsdistanz </nb-card-header>
+      <nb-card-header> Average Distance </nb-card-header>
       <nb-card-body class="gridster-item-content">
         <div
           echarts

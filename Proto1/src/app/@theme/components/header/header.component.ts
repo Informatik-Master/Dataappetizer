@@ -18,7 +18,7 @@ import { NbAuthService } from '@nebular/auth';
 })
 export class HeaderComponent {
   items: NbMenuItem[] = [
-    { title: 'System wechseln', icon: 'flip-2-outline', link: '/auth/systems' },
+    { title: 'Switch system', icon: 'flip-2-outline', link: '/auth/systems' },
     { title: 'Logout', icon: 'log-out-outline',  link:'/auth/login'}, // TODO: logout
   ];
 

@@ -5,6 +5,7 @@ import {
   NbCardModule,
   NbIconModule,
   NbListModule,
+  NbSpinnerModule,
   NbStepperModule,
 } from '@nebular/theme';
 import { SystemsRoutingModule } from './systems-routing.module';
@@ -19,7 +20,8 @@ import { SystemsComponent } from './systems.component';
     NbStepperModule,
     NbButtonModule,
     NbIconModule,
-    NbListModule
+    NbListModule,
+    NbSpinnerModule
   ],
 })
 export class SystemsModule {}

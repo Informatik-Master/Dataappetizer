@@ -1,10 +1,9 @@
 <nb-stepper orientation="horizontal" [disableStepNavigation]="true" [selectedIndex]="selectedIndex">
-  <nb-step label="Systemname">
+  <nb-step label="System name">
     <nb-card>
       <nb-card-header>
-        <h2>Wählen Sie einen Namen für das Kundensystem und geben Sie eine Subscription-ID an</h2>
-        <span class="caption-2">Der Name diehnt zur einfacheren Identifikation des erstellten
-          Systems.</span>
+        <h2>Please choose a name for your new system and set the vehicle subscription</h2>
+        <span class="caption-2">The name is used for identifying the system. The subscription defines which vehicles are later displayed. It can be looked up in the Caruso Marketplace.</span>
       </nb-card-header><!--TODO: Validation-->
       <nb-card-body>
         <nb-layout class="transparent fullheight">
@@ -16,9 +15,9 @@
                 width: 50%;
               ">
               <div>
-                <label for="systemname">Systemname</label>
+                <label for="systemname">System name</label>
                 <nb-form-field>
-                  <input id="systemname" nbInput fullWidth placeholder="Systemname" [(ngModel)]="systemName" />
+                  <input id="systemname" nbInput fullWidth placeholder="System name" [(ngModel)]="systemName" />
                 </nb-form-field>
               </div>
               <div>
@@ -34,7 +33,7 @@
       </nb-card-body>
       <nb-card-footer style="display: flex; justify-content: end; gap: 15px">
         <button nbButton status="primary" (click)="next()"
-          [disabled]="subscriptionId === '' || systemName===''">Weiter</button>
+          [disabled]="subscriptionId === '' || systemName===''">Next</button>
       </nb-card-footer>
     </nb-card>
   </nb-step>
@@ -70,18 +69,17 @@
       </nb-card-footer>
     </nb-card>
   </nb-step> -->
-  <nb-step label="Datenvisualisierung">
+  <nb-step label="Visualizations">
     <nb-card>
       <nb-card-header>
-        <h2>Wählen Sie die Datenvisualisierungen für das Kundensystem</h2>
-        <span class="caption-2">Datenvisualisierungen bestimmen, welche die Fahrzeugdaten im System
-          angezeigt werden. Bei den dargestellten Daten handelt es sich hierbei nicht um Ihre tatsächlichen
-          Fahrzeugdaten. Diese zeigen beispielhaft an, wie die Daten visualisiert werden.</span>
+        <h2>Choose your visualizations</h2>
+        <span class="caption-2">A visualization defines what and how vehicle data is being displayed to you.
+          The preview shows an example how a visualization will later be displayed.</span>
       </nb-card-header>
       <nb-card-body style="padding: 0">
         <nb-layout class="transparent fullheight">
           <nb-layout-column>
-            <h5 style="margin-top: 0%; margin-bottom: 3%;">Allgemeiner Überblick</h5>
+            <h5 style="margin-top: 0%; margin-bottom: 3%;">Dashboard</h5>
             <nb-list>
               <nb-list-item *ngFor="let dashboardConfig of configs" style="gap: 5px"
                 (mouseenter)="loadVisualization(dashboardConfig)"><!--TODO: filter kind-->
@@ -96,18 +94,17 @@
         </nb-layout>
       </nb-card-body>
       <nb-card-footer style="display: flex; justify-content: end; gap: 15px">
-        <button nbButton status="secondary" (click)="previous()">Zurück</button>
-        <button nbButton status="primary" (click)="createSystem()" *ngIf="!system">Erstellen</button>
-        <button nbButton status="primary" (click)="updateSystem()" *ngIf="system">Speichern</button>
+        <button nbButton status="secondary" (click)="previous()">Back</button>
+        <button nbButton status="primary" (click)="createSystem()" *ngIf="!system">Create</button>
+        <button nbButton status="primary" (click)="updateSystem()" *ngIf="system">Save</button>
       </nb-card-footer>
     </nb-card>
   </nb-step>
-  <nb-step label="Fertig">
+  <nb-step label="Finish">
     <nb-card>
       <nb-card-header>
-        <h2>System ist bereit</h2>
-        <span class="caption-2">Tragen Sie die folgenden Daten in den Markeplace ein, sodass Daten
-          ihrer Subscription empfangen werden können</span>
+        <h2>Your system is ready</h2>
+        <span class="caption-2">Copy these values into the Marketplace to allow us to receive your vehicle data</span>
       </nb-card-header>
       <nb-card-body>
         <nb-layout class="transparent fullheight">
@@ -120,7 +117,7 @@
               ">
               <ng-template #copiedRef>
                 <div style="padding: 15px">
-                  <span>Kopiert!</span>
+                  <span>Copied!</span>
                 </div>
               </ng-template>
               <div>
@@ -145,7 +142,7 @@
                 </nb-form-field>
               </div>
               <button nbButton status="primary" (click)="finish()" fullWidth>
-                Zum System
+                Let's go!
               </button>
             </div>
           </nb-layout-column>

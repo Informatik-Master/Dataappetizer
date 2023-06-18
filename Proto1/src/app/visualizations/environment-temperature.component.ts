@@ -27,7 +27,7 @@ import { VisualizationComponent } from './visualization-component.interface';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <nb-card>
-      <nb-card-header> Außentemperatur </nb-card-header>
+      <nb-card-header> Environment temperature </nb-card-header>
       <nb-card-body class="p-0 gridster-item-content">
         <div
           echarts

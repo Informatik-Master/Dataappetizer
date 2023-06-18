@@ -17,7 +17,7 @@ import { firstValueFrom } from 'rxjs';
 })
 export class LoginComponent {
   user: any = {};
-  submitted = false;
+  loggingIn = false;
 
   constructor(
     protected readonly router: Router,
@@ -25,9 +25,9 @@ export class LoginComponent {
   ) {}
 
   async login() {
-    console.log('woop');
+    this.loggingIn = true;
     this.nbAuth.authenticate('email', this.user).subscribe((authResult) => {
-      console.log(authResult);
+      this.loggingIn = false;
       if (authResult.isSuccess()) {
         this.router.navigateByUrl('/auth/systems');
       }

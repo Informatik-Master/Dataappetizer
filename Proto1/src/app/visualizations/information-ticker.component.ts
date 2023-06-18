@@ -23,7 +23,7 @@ import { VisualizationComponent } from './visualization-component.interface';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <nb-card>
-      <nb-card-header> Informationsticker </nb-card-header>
+      <nb-card-header> Informationticker </nb-card-header>
       <nb-card-body class="p-0 gridster-item-content">
         <nb-list>
           <nb-list-item *ngFor="let notification of notifications">
@@ -54,14 +54,13 @@ export class InformationTickerComponent extends VisualizationComponent {
 
   public override setMockData(): void {
     this.notifications = [
-      'VIN1 hat einen neuen Standort: 46.99 8.45, 27.05.2023 16:10',
-      'VIN1 hat einen neuen Kilometerstand: 42.98 km, 27.05.2023 16:00',
-      'VIN2 hat einen neuen Standort: 49.01 8.40, 27.05.2023 15:56',
-      'VIN3 hat einen neuen Motorstatus: Eingeschaltet, 27.05.2023 15:48',
-      'VIN2 hat einen neuen Motorstatus: Eingeschaltet, 27.05.2023 15:14',
-      'VIN4 zeigt eine Warnung an: Bremsscheiben, 27.05.2023 14:47',
+      'VIN1 has a new location: 46.99 8.45, 27.05.2023 16:10',
+      'VIN1 has a new milage: 42.98 km, 27.05.2023 16:00',
+      'VIN2 has a new location: 49.01 8.40, 27.05.2023 15:56',
+      'VIN3 has a new engine status: ON, 27.05.2023 15:48',
+      'VIN2 has a new engine status: ON, 27.05.2023 15:14',
+      'VIN4 shows warning: Breakpad, 27.05.2023 14:47',
     ];
-    console.log(this.notifications);
   }
 
   public ngOnInit(): void {
@@ -79,94 +78,94 @@ export class InformationTickerComponent extends VisualizationComponent {
             const lng = value.value.longitude;
 
             this.notifications.unshift(
-              `${vin} hat einen neuen Standort: ${lat} ${lng}`
+              `${vin} has a new location: ${lat} ${lng}`
             );
           } else if (event === 'averagedistance') {
             this.notifications.unshift(
-              `${data.value.vin} hat einen neuen Kilometer-Durchschnitt: ${data.value.value.value}`
+              `${data.value.vin} has a new average distance: ${data.value.value.value}`
             );
           } else if (event === 'mileage') {
             this.notifications.unshift(
-              `${data.vin} hat einen neuen Kilometerstand: ${data.value.value.value} ${data.value.value.unit}`
+              `${data.vin} has a new milage: ${data.value.value.value} ${data.value.value.unit}`
             );
           } else if (event === 'enginestatus')
             this.notifications.unshift(
-              `${data.vin} hat den Motorstatus: ${data.value.value.value}`
+              `${data.vin} has a new engine status: ${data.value.value.value}`
             );
           else if (event === 'soclowlevel')
             this.notifications.unshift(
-              `${data.vin} hat einen SOC-Stand: ${data.value.value.value} ${data.value.value.unit}`
+              `${data.vin} has a new soclevel: ${data.value.value.value} ${data.value.value.unit}`
             );
           else if (event === 'fueldoorlockstatus')
             this.notifications.unshift(
-              `${data.vin} hat nun den Türsperrstatus der Tanköffnung: ${data.value.value.value}`
+              `${data.vin} fueldoor is now in lock status: ${data.value.value.value}`
             );
           else if (event === 'nextservicedistance')
             this.notifications.unshift(
-              `${data.vin} sollte bei ${data.value.value.value} ${data.value.value.unit} in die Wartung`
+              `${data.vin} needs a service at ${data.value.value.value} ${data.value.value.unit}`
             );
           else if (event === 'hoodlockstatus')
             this.notifications.unshift(
-              `${data.vin} hat nun den Türsperrstatus der Haube: ${data.value.value.value}`
+              `${data.vin} has a new lock status of the hook lock: ${data.value.value.value}`
             );
           else if (event === 'hoodstatus')
             this.notifications.unshift(
-              `${data.vin} hat eine offene Haube: ${data.value.value.value}`
+              `${data.vin} has a new hoodstatus: ${data.value.value.value}`
             );
           else if (event === 'convertibletopstatus')
             this.notifications.unshift(
-              `${data.vin} hat nun ein den Verdeckstatus: ${data.value.value.value} ${data.value.value.unit}`
+              `${data.vin} has a convertible top status: ${data.value.value.value} ${data.value.value.unit}`
             );
           else if (event === 'rearrightdoorlockstatus')
             this.notifications.unshift(
-              `${data.vin} hat nun den Türsperrstatus der rechten hinteren Tür: ${data.value.value.value}`
+              `${data.vin} has a new lock status of the rear righthand door: ${data.value.value.value}`
             );
           else if (event === 'rearleftwindowstatus')
             this.notifications.unshift(
-              `${data.vin} hat nun den Türsperrstatus der linken hinteren Tür: ${data.value.value.value}`
+              `${data.vin} has a new window status of the rear lefthand window: ${data.value.value.value}`
             );
           else if (event === 'environmentaltemperature')
             this.notifications.unshift(
-              `${data.vin} hat die Umgebungstemperatur: ${data.value.value.value} ${data.value.value.unit}`
+              `${data.vin} has environment temperature: ${data.value.value.value} ${data.value.value.unit}`
             );
           else if (event === 'coolanttemperature')
             this.notifications.unshift(
-              `${data.vin} hat die Kühlflüssigkeitstermeratur: ${data.value.value.value} ${data.value.value.unit}`
+              `${data.vin} has coolant temperature: ${data.value.value.value} ${data.value.value.unit}`
             );
           else if (event === 'checkcontrolmessages')
             this.notifications.unshift(
-              `${data.vin} hat die Kontrollwarnung: ${data.value.value.message}`
+              `${data.vin} has control message: ${data.value.value.message}`
             );
 
 
             else if (event === 'fuelremaining')
             this.notifications.unshift(
-              `${data.vin} hat noch Treibstoff: ${data.value.value.value} ${data.value.value.unit}`
+              `${data.vin} has fuel remaining for: ${data.value.value.value} ${data.value.value.unit}`
             );
 
             else if (event === 'frontleftdoorstatus')
             this.notifications.unshift(
-              `${data.vin} hat nun den Türsperrstatus der linken vorderen Tür: ${data.value.value.value}`
+              `${data.vin} has a new door status of the front lefthand door: ${data.value.value.value}`
             );
 
             else if (event === 'vehicleheading')
             this.notifications.unshift(
-              `${data.vin} hat nun die Ausrichtung: ${data.value.value.value} ${data.value.value.unit}`
+              `${data.vin} is now heading: ${data.value.value.value} ${data.value.value.unit}`
             );
 
             else if (event === 'vehiclelockstatus')
             this.notifications.unshift(
-              `${data.vin} hat nun den Absperrstatus: ${data.value.value.value} ${data.value.value.unit}`
+              `${data.vin} is now in lock status: ${data.value.value.value} ${data.value.value.unit}`
             );
 
             else if (event === 'trunkstatus')
             this.notifications.unshift(
-              `${data.vin} hat nun den Türsperrstatus des Kofferaums: ${data.value.value.value}`
+              `${data.vin} has a new trunk status: ${data.value.value.value}`
             );
 
             else if (event === 'ignitionstatus')
             this.notifications.unshift(
-              `${data.vin} hat nun den Zündungsstatus: ${data.value.value.value}`
+              `${data.vin} has the ignition status: ${data.value.value.value}`
             );
 
         }

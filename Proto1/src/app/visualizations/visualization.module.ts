@@ -21,43 +21,43 @@ export const AVAILABLE_VISUALIZATIONS: {
 }[] = [
   {
     id: 'geo-location',
-    name: 'Standorte',
+    name: 'Vehicle locations',
     kind: VisualizationKind.DASHBOARD,
     component: GeoLocationComponent,
   },
   {
     id: 'information-ticker',
-    name: 'Live-Ticker',
+    name: 'Informationticker',
     kind: VisualizationKind.DASHBOARD,
     component: InformationTickerComponent,
   },
   {
     id: 'average-distance',
-    name: 'Durchschnittsdistanz',
+    name: 'Average Distance',
     kind: VisualizationKind.DASHBOARD,
     component: AverageDistanceComponent,
   },
   {
     id: 'data-count',
-    name: 'Datenanzahl',
+    name: 'Datacount',
     kind: VisualizationKind.DASHBOARD,
     component: DataCountComponent,
   },
   {
     id: 'milage',
-    name: 'Kilometerstand',
+    name: 'Milage',
     kind: VisualizationKind.DASHBOARD,
     component: MilageComponent,
   },
   {
     id: 'fuel-level',
-    name: 'Tankfüllstand',
+    name: 'Fuellevel',
     kind: VisualizationKind.DASHBOARD,
     component: FuelLevelComponent,
   },
   {
     id: 'environment-temperature',
-    name: 'Außentemperatur',
+    name: 'Environment temperature',
     kind: VisualizationKind.DASHBOARD,
     component: EnvironmentTemperatureComponent
   }
