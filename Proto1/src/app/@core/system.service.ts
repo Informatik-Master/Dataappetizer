@@ -19,7 +19,7 @@ export interface System {
 })
 export class SystemService {
 
-  private readonly _currentSystem = new ReplaySubject<System>(1);
+  private readonly _currentSystem = new ReplaySubject<System | null>(1);
   public readonly currentSystem = this._currentSystem.asObservable();
 
   public constructor(
@@ -54,12 +54,17 @@ export class SystemService {
     return firstValueFrom(this.httpClient.put<System>('/api/systems', system)); // TODO: implement this in the backend
   }
 
-  public setCurrentSystem(s: System) {
+  public setCurrentSystem(s: System | null) {
+    this._currentSystem.next(s)
+    if (!s) {
+      this.cookieService.remove('systemId');
+      this.dataPointService.disconnect();
+      return;
+    }
     console.log('setting', s.id)
     this.cookieService.put('systemId', s.id);
     this.dataPointService.connect();
 
-    this._currentSystem.next(s)//TODO: logout
 
     // this.cookieService.remove('systemId');
     // this.dataPointService.disconnect();

@@ -33,6 +33,7 @@ export class PagesComponent {
   }
 
   ngOnDestroy(): void {
+    this.systemService.setCurrentSystem(null);
     this.paramSubscription?.unsubscribe();
   }
 }

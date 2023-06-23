@@ -80,6 +80,9 @@ export class DashboardComponent implements OnInit {
 
   async checkTags() {
     const currentSystem = await firstValueFrom(this.systemService.currentSystem)
+    if (currentSystem == null) {
+      return;
+    }
     let dashboardConfig = currentSystem.dashboardConfig;
     console.log('current', currentSystem)
     for (let i = 0; i < dashboardConfig?.length; i++) {

@@ -14,7 +14,10 @@
     "id": "036a890e-126c-4511-98e5-f03b1295241a",
     "dashboardConfig": [
       "geo-location",
-      "average-distance"
+      "data-count",
+      "average-distance",
+      "fuel-level",
+      "information-ticker"
     ],
     "subscriptionId": "df490a56-6a29-4055-8b90-cceb0c56e8f7",
     "users": [
