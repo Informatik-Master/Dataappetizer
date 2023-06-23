@@ -16,7 +16,7 @@ import { VisualizationComponent } from './visualization-component.interface';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <nb-card>
-      <nb-card-header> Datacount</nb-card-header>
+      <nb-card-header> Data Count</nb-card-header>
       <nb-card-body class="gridster-item-content">
         <h6 class="m-0">{{ vins.size }} Vehicles</h6>
         <span class="caption-2"> {{ numberDataPoints }} Datapoints</span>

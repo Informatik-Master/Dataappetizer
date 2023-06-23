@@ -27,7 +27,7 @@ export const AVAILABLE_VISUALIZATIONS: {
   },
   {
     id: 'information-ticker',
-    name: 'Informationticker',
+    name: 'Information Ticker',
     kind: VisualizationKind.DASHBOARD,
     component: InformationTickerComponent,
   },
@@ -39,19 +39,19 @@ export const AVAILABLE_VISUALIZATIONS: {
   },
   {
     id: 'data-count',
-    name: 'Datacount',
+    name: 'Data Count',
     kind: VisualizationKind.DASHBOARD,
     component: DataCountComponent,
   },
   {
     id: 'milage',
-    name: 'Milage',
+    name: 'Mileage',
     kind: VisualizationKind.DASHBOARD,
     component: MilageComponent,
   },
   {
     id: 'fuel-level',
-    name: 'Fuellevel',
+    name: 'Fuel Level',
     kind: VisualizationKind.DASHBOARD,
     component: FuelLevelComponent,
   },

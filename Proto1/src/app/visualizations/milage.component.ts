@@ -24,7 +24,7 @@ import { VisualizationComponent } from './visualization-component.interface';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <nb-card>
-      <nb-card-header> Milage </nb-card-header>
+      <nb-card-header> Mileage </nb-card-header>
       <nb-card-body class="p-0 gridster-item-content">
         <div
           echarts
@@ -113,12 +113,38 @@ export class MilageComponent extends VisualizationComponent {
           symbol: 'none',
           areaStyle: {},
           data: [
+            [1683700595623, 5444],
+            [1683724083086, 5444],
+            [1683728083086, 6000],
+            [1683738083086, 6400]
+          ]
+        },
+        {
+          name: "VIN2",
+          type: 'line',
+          smooth: true,
+          symbol: 'none',
+          areaStyle: {},
+          data: [
             [1683700595623, 123],
             [1683724083086, 3232],
             [1683728083086, 3434],
             [1683738083086, 5434]
           ]
-        }
+        },
+        {
+          name: "VIN3",
+          type: 'line',
+          smooth: true,
+          symbol: 'none',
+          areaStyle: {},
+          data: [
+            [1683700595623, 123],
+            [1683724083086, 3232],
+            [1683728083086, 3434],
+            [1683738083086, 5434]
+          ]
+        },
       ],
     }
     console.log(this.echartMerge)

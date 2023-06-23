@@ -23,7 +23,7 @@ import { VisualizationComponent } from './visualization-component.interface';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <nb-card>
-      <nb-card-header> Informationticker </nb-card-header>
+      <nb-card-header> Information Ticker </nb-card-header>
       <nb-card-body class="p-0 gridster-item-content">
         <nb-list>
           <nb-list-item *ngFor="let notification of notifications">
