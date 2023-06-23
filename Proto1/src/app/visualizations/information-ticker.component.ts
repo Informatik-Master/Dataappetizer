@@ -6,14 +6,14 @@ import {
 import { DataPointService } from '../@core/data-point.service';
 import { CommonModule } from '@angular/common';
 
-import { NbCardModule, NbListModule } from '@nebular/theme';
+import { NbCardModule, NbListModule, NbTreeGridModule } from '@nebular/theme';
 import { bufferTime, filter, Subscription } from 'rxjs';
 import { VisualizationComponent } from './visualization-component.interface';
 
 @Component({
   standalone: true,
   selector: 'ngx-information-ticker',
-  imports: [CommonModule, NbCardModule, NbListModule],
+  imports: [CommonModule, NbCardModule, NbListModule, NbTreeGridModule],
   providers: [
     {
       provide: VisualizationComponent,
@@ -25,11 +25,19 @@ import { VisualizationComponent } from './visualization-component.interface';
     <nb-card>
       <nb-card-header> Information Ticker </nb-card-header>
       <nb-card-body class="p-0 gridster-item-content">
-        <nb-list>
-          <nb-list-item *ngFor="let notification of notifications">
-            {{ notification }}
-          </nb-list-item>
-        </nb-list>
+      <table [nbTreeGrid]="data" equalColumnsWidth>
+
+          <tr nbTreeGridHeaderRow *nbTreeGridHeaderRowDef="defaultColumns"></tr>
+          <tr nbTreeGridRow *nbTreeGridRowDef="let row; columns: defaultColumns "></tr>
+
+          <ng-container *ngFor="let column of defaultColumns" [nbTreeGridColumnDef]="column">
+          <th nbTreeGridHeaderCell *nbTreeGridHeaderCellDef>
+            {{column}}
+          </th>
+            <td nbTreeGridCell *nbTreeGridCellDef="let row">{{row.data[column]}}</td>
+          </ng-container>
+
+          </table>
       </nb-card-body>
     </nb-card>
   `,
@@ -44,6 +52,17 @@ import { VisualizationComponent } from './visualization-component.interface';
 export class InformationTickerComponent extends VisualizationComponent {
   private subscription: Subscription | null = null;
   notifications: string[] = [];
+
+  data: any[] = [
+    {
+      data: { TIME: new Date().toISOString(), VIN: 'ABC', DATAPOINT: "test", VALUE: 'ABC' },
+    },
+    {
+      data: { TIME: new Date().toISOString(), VIN: 'ABC', DATAPOINT: "test2", VALUE: 'Woop' },
+    },
+  ]
+  defaultColumns = [ 'TIME', 'VIN', 'DATAPOINT', 'VALUE' ];
+
 
   public constructor(
     protected readonly dataPointService: DataPointService,
