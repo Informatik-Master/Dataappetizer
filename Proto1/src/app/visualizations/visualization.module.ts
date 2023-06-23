@@ -21,7 +21,7 @@ export const AVAILABLE_VISUALIZATIONS: {
 }[] = [
   {
     id: 'geo-location',
-    name: 'Vehicle locations',
+    name: 'Vehicle Locations',
     kind: VisualizationKind.DASHBOARD,
     component: GeoLocationComponent,
   },
