@@ -85,7 +85,7 @@ app.post('/webhook/:systemId', async (req, res) => {
   if (!system) {
     const { Item: loadedSystem } = await dynamoDbClient.send(
       new GetCommand({
-        TableName: process.env['SYSTEMS_TABLE_NAME'],
+        TableName: process.env['SYSTEMS_TABLE'],
         Key: {
           id: systemId,
         },
