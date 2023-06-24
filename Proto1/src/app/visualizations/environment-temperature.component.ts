@@ -114,10 +114,10 @@ export class EnvironmentTemperatureComponent extends VisualizationComponent {
     super.setMockData();
     this.echartMerge = {
       series:  [{
-        data: [20,19,21]
+        data: [20,19,21, 18, 26]
       }],
       xAxis: {
-        data: ['VIN1', 'VIN2', 'VIN3']
+        data: ['VIN1', 'VIN2', 'VIN3', 'VIN4', 'VIN5']
       }
     }
   }

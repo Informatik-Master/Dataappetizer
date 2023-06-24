@@ -146,6 +146,32 @@ export class MilageComponent extends VisualizationComponent {
             [1683738083086, 5434],
           ],
         },
+        {
+          name: 'VIN4',
+          type: 'line',
+          smooth: true,
+          symbol: 'none',
+          areaStyle: {},
+          data: [
+            [1683700595623, 2054],
+            [1683724083086, 2400],
+            [1683728083086, 2400],
+            [1683738083086, 2400],
+          ],
+        },
+        {
+          name: 'VIN5',
+          type: 'line',
+          smooth: true,
+          symbol: 'none',
+          areaStyle: {},
+          data: [
+            [1683700595623, 1203],
+            [1683724083086, 1521],
+            [1683728083086, 1843],
+            [1683738083086, 2111],
+          ],
+        },
       ],
     };
     console.log(this.echartMerge);
