@@ -100,7 +100,7 @@ export class InformationTickerComponent extends VisualizationComponent {
               { data: {Vehicle: `${vin}`, Message: 'New Location', Value: `Lat: ${lat} Long: ${lng}`, Timestamp: `${dateString}`}}
               // `${vin} has a new location: ${lat} ${lng}`
             );
-          } 
+          }
           else if (event === 'averagedistance') {
             this.notifications.unshift(
               { data: {Vehicle: `${data.value.vin}`, Message: 'New Average Distance', Value: `${data.value.value.value}`, Timestamp: `${dateString}`}}
@@ -210,6 +210,7 @@ export class InformationTickerComponent extends VisualizationComponent {
             );
 
         }
+        this.notifications = [...this.notifications]
         this.changeDetectionRef.detectChanges();
       });
   }
