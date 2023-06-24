@@ -118,6 +118,7 @@ export class GeoLocationComponent extends VisualizationComponent {
   }
 
   public override setMockData(): void {
+    super.setMockData();
     // let marker = L.marker([41.22, 8.22]);
     // marker.addTo(this.map);
     this.latestDataPoints.set("vin", {
@@ -131,6 +132,7 @@ export class GeoLocationComponent extends VisualizationComponent {
   }
 
   public ngOnInit(): void {
+    if (this.previewMode) return;
     this.subscriptions.push(
       this.wasUpdated.pipe(debounceTime(250)).subscribe(() => {
         this.ngZone.runOutsideAngular(() => {

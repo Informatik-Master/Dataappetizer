@@ -108,6 +108,7 @@ export class FuelLevelComponent extends VisualizationComponent {
   }
 
   public override setMockData(): void {
+    super.setMockData();
     this.echartMerge = {
       series: [
         {
@@ -215,6 +216,7 @@ export class FuelLevelComponent extends VisualizationComponent {
   }
 
   public ngOnInit(): void {
+    if (this.previewMode) return;
     this.subscription = this.dataPointService.dataPoint$
       .pipe(
         filter(({ event }) => event === 'fuellevel'),

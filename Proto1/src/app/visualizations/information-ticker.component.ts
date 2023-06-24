@@ -71,6 +71,7 @@ export class InformationTickerComponent extends VisualizationComponent {
   }
 
   public override setMockData(): void {
+    super.setMockData();
     this.notifications = [
       { data: {Vehicle: 'VIN1' , Message: 'New Location' , Value: 'Lat: 46.99, Long: 8.45' , Timestamp: '27.05.2023 16:10'}},
       { data: {Vehicle: 'VIN1' , Message: 'New Milage' , Value: '42.98 km' , Timestamp: '27.05.2023 16:10'}},
@@ -82,6 +83,7 @@ export class InformationTickerComponent extends VisualizationComponent {
   }
 
   public ngOnInit(): void {
+    if (this.previewMode) return;
     this.subscription = this.dataPointService.dataPoint$
       .pipe(
         filter(({ event }: any) => event === 'geolocation'),

@@ -111,6 +111,7 @@ export class EnvironmentTemperatureComponent extends VisualizationComponent {
   }
 
   public override setMockData(): void {
+    super.setMockData();
     this.echartMerge = {
       series:  [{
         data: [20,19,21]
@@ -124,6 +125,7 @@ export class EnvironmentTemperatureComponent extends VisualizationComponent {
   vinSeriesMap: Map<string, number> = new Map<string, number>();
 
   public ngOnInit(): void {
+    if (this.previewMode) return;
     this.subscription = this.dataPointService.dataPoint$
       .pipe(
         filter(({ event }) => event === 'environmentaltemperature'),

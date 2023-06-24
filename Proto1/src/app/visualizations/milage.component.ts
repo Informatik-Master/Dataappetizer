@@ -104,10 +104,11 @@ export class MilageComponent extends VisualizationComponent {
   }
 
   public override setMockData(): void {
+    super.setMockData();
     this.echartMerge = {
       series: [
         {
-          name: "VIN1",
+          name: 'VIN1',
           type: 'line',
           smooth: true,
           symbol: 'none',
@@ -116,11 +117,11 @@ export class MilageComponent extends VisualizationComponent {
             [1683700595623, 5444],
             [1683724083086, 5444],
             [1683728083086, 6000],
-            [1683738083086, 6400]
-          ]
+            [1683738083086, 6400],
+          ],
         },
         {
-          name: "VIN2",
+          name: 'VIN2',
           type: 'line',
           smooth: true,
           symbol: 'none',
@@ -129,11 +130,11 @@ export class MilageComponent extends VisualizationComponent {
             [1683700595623, 123],
             [1683724083086, 3232],
             [1683728083086, 3434],
-            [1683738083086, 5434]
-          ]
+            [1683738083086, 5434],
+          ],
         },
         {
-          name: "VIN3",
+          name: 'VIN3',
           type: 'line',
           smooth: true,
           symbol: 'none',
@@ -142,15 +143,16 @@ export class MilageComponent extends VisualizationComponent {
             [1683700595623, 123],
             [1683724083086, 3232],
             [1683728083086, 3434],
-            [1683738083086, 5434]
-          ]
+            [1683738083086, 5434],
+          ],
         },
       ],
-    }
-    console.log(this.echartMerge)
+    };
+    console.log(this.echartMerge);
   }
 
   public ngOnInit(): void {
+    if (this.previewMode) return;
     this.subscription = this.dataPointService.dataPoint$
       .pipe(
         filter(({ event }) => event === 'mileage'),

@@ -80,7 +80,7 @@ type DatabaseItem = {
 
 app.post('/webhook/:systemId', async (req, res) => {
   const systemId = req.params['systemId'];
-
+  if (!systemId) throw new Error('Missing systemId');
   let system = SYSTEM_CACHE.get(systemId) as Record<string, any> | undefined;
   if (!system) {
     const { Item: loadedSystem } = await dynamoDbClient.send(
@@ -140,22 +140,23 @@ app.post('/webhook/:systemId', async (req, res) => {
             })),
           },
         };
-        await dynamoDbClient.send(new BatchWriteCommand(option));
-
-        for (const item of chunk) {
-          //TODO:
-          await dynamoDbClient.send(
-            new PutCommand({
-              TableName: process.env['VEHICLES_TABLE'],
-              Item: {
-                vin: item.vin,
-                subscriptionId: body.subscriptionId,
-              },
-            }),
-          );
-        }
+        await Promise.all([
+          dynamoDbClient.send(new BatchWriteCommand(option)),
+          ...chunk.map((item) =>
+            dynamoDbClient.send(
+              new PutCommand({
+                TableName: process.env['VEHICLES_TABLE'],
+                Item: {
+                  vin: item.vin,
+                  subscriptionId: body.subscriptionId,
+                },
+              }),
+            ),
+          ),
+        ]);
       }),
     );
+
     // if ( //TODO:
     //   dbResults.some(
     //     ({ UnprocessedItems }) => JSON.stringify(UnprocessedItems) !== '{}',

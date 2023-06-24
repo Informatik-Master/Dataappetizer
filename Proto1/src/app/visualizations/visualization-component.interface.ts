@@ -1,6 +1,8 @@
 export abstract class VisualizationComponent {
-  onResize(): void {};
-  // data: any;
+  onResize(): void {}
+  previewMode = false;
 
-  setMockData():void {};
+  setMockData(): void {
+    this.previewMode = true;
+  }
 }
