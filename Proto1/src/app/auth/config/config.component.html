@@ -83,7 +83,8 @@
             <nb-list>
               <nb-list-item *ngFor="let dashboardConfig of configs" style="gap: 5px"
                 (mouseenter)="loadVisualization(dashboardConfig)"><!--TODO: filter kind-->
-                <nb-checkbox [(checked)]="dashboardConfig.selected"></nb-checkbox>{{ dashboardConfig.name }}
+                <nb-checkbox *ngIf="dashboardConfig.id == 'data-count' || dashboardConfig.id == 'information-ticker' || dashboardConfig.id == 'geo-location'" [(checked)]="dashboardConfig.selected" disabled>{{ dashboardConfig.name }}</nb-checkbox>
+                <nb-checkbox *ngIf="dashboardConfig.id != 'data-count' && dashboardConfig.id != 'information-ticker' && dashboardConfig.id != 'geo-location'" [(checked)]="dashboardConfig.selected">{{ dashboardConfig.name }}</nb-checkbox>
               </nb-list-item>
             </nb-list>
           </nb-layout-column>

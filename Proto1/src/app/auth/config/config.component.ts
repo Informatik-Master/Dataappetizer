@@ -59,17 +59,20 @@ export class ConfigComponent implements OnInit {
   @Input()
   system: System | undefined;
 
-  configs: DiagramConfig[] = AVAILABLE_VISUALIZATIONS.map((visualization) => ({
-    ...visualization,
-    selected: false,
-  }));
+  configs: DiagramConfig[] = AVAILABLE_VISUALIZATIONS.map((visualization) => {
+    if (visualization.id == 'data-count' || visualization.id == 'information-ticker' || visualization.id == 'geo-location') {
+      return { ...visualization, selected: true }
+    } else {
+      return { ...visualization, selected: false };
+    }
+  });
 
   hoveredChart: DiagramConfig | null = null;
 
   constructor(
     private readonly router: Router,
     private readonly systemService: SystemService
-  ) {}
+  ) { }
 
   ngOnInit() {
     console.log('config', this.system);
@@ -108,7 +111,7 @@ export class ConfigComponent implements OnInit {
       users: [],
       subscriptionId: this.subscriptionId,
     });
-    
+
     this.systemService.setCurrentSystem(this.system);
     this.router.navigate(['pages', this.system.id]);
   }

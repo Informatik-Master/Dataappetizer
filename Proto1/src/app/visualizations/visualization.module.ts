@@ -20,6 +20,12 @@ export const AVAILABLE_VISUALIZATIONS: {
   component: any; //FIXME:
 }[] = [
   {
+    id: 'data-count',
+    name: 'Data Count',
+    kind: VisualizationKind.DASHBOARD,
+    component: DataCountComponent,
+  },
+  {
     id: 'geo-location',
     name: 'Vehicle Locations',
     kind: VisualizationKind.DASHBOARD,
@@ -36,12 +42,6 @@ export const AVAILABLE_VISUALIZATIONS: {
     name: 'Average Distance',
     kind: VisualizationKind.DASHBOARD,
     component: AverageDistanceComponent,
-  },
-  {
-    id: 'data-count',
-    name: 'Data Count',
-    kind: VisualizationKind.DASHBOARD,
-    component: DataCountComponent,
   },
   {
     id: 'milage',
