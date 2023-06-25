@@ -44,7 +44,7 @@ export class CarComponent implements OnInit {
     setInterval(() => {
       this.carMap.forEach(function (entry){
         entry.timestamp += 1;
-        entry.lastupdated = "vor "+entry.timestamp+" Min."
+        entry.lastupdated = entry.timestamp+" min. ago"
       })
     }, 60000);
     this.dataPointService.dataPoint$
@@ -58,8 +58,8 @@ export class CarComponent implements OnInit {
         let entry: CarListEntry = {
           timestamp: 0,
           icon: "loader-outline",
-          lastupdated: "gerade eben",
-          controlmessages: ["Keine speziellen Hinweise!"]
+          lastupdated: "Just now",
+          controlmessages: ["No notifications!"]
         }
         let existEntry = this.carMap.find(({ vin }) => vin === element.data.vin)
         if(!existEntry){
@@ -92,8 +92,8 @@ export class CarComponent implements OnInit {
         else {
           existEntry.timestamp = 0
           existEntry.icon= "loader-outline"
-          existEntry.lastupdated = "gerade eben"
-          existEntry.controlmessages = ["Keine speziellen Hinweise!"]
+          existEntry.lastupdated = "Just now"
+          existEntry.controlmessages = ["No notifications!"]
           if(element.event == "mileage"){
             existEntry.mileage = element.data.value.value.value
           }
