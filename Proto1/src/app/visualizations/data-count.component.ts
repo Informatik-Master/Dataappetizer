@@ -9,11 +9,12 @@ import { bufferTime, Subscription } from 'rxjs';
 
 import { DataPointService } from '../@core/data-point.service';
 import { VisualizationComponent } from './visualization-component.interface';
+import { DateAgoModule } from '../@core/date-ago.module';
 
 @Component({
   standalone: true,
   selector: 'ngx-data-count',
-  imports: [CommonModule, NbCardModule],
+  imports: [CommonModule, NbCardModule, DateAgoModule],
   providers: [
     { provide: VisualizationComponent, useExisting: DataCountComponent },
   ],
@@ -23,7 +24,7 @@ import { VisualizationComponent } from './visualization-component.interface';
       <nb-card-header>
         <div style="display:flex; justify-content:space-between;margin-right: 1rem;">
           <span> Data Count </span>
-          <span> {{ currentDate }} </span>
+          <span *ngIf="ago"> (Last updated: {{ ago|dateAgo }}) </span>
         </div>
       </nb-card-header>
       <nb-card-body class="gridster-item-content">
@@ -59,7 +60,7 @@ export class DataCountComponent extends VisualizationComponent {
 
   vins = new Set<string>();
   numberDataPoints = 0;
-  currentDate: string = '';
+  ago = 0;
 
   public constructor(
     protected readonly dataPointService: DataPointService,
@@ -82,22 +83,8 @@ export class DataCountComponent extends VisualizationComponent {
         for (const { data } of bufferedEvents) {
           this.vins.add(data.vin);
           this.numberDataPoints++;
-          let rawTimeStamp = Date.now() - data.value.timestamp;
+          this.ago = data.value.timestamp;
 
-          const rtf2 = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
-
-          console.log(rtf2.format(rawTimeStamp / 1000 / 60 / 60 / 24, 'days'));
-
-          if (rawTimeStamp == 0) {
-            this.currentDate = '(Last updated: Just now.)';
-          } else {
-            this.currentDate =
-              '(Last updated: ' +
-              new Date(rawTimeStamp).getMinutes() +
-              ' min. ago)';
-          }
-
-          console.log('TIMESTAMP: ' + this.currentDate + 'min.');
         }
         this.changeDetectionRef.detectChanges();
       });
