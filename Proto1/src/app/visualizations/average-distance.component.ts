@@ -24,7 +24,7 @@ import { VisualizationComponent } from './visualization-component.interface';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <nb-card>
-      <nb-card-header> Average Distance </nb-card-header>
+      <nb-card-header> Average Distance {{ currentDate }}</nb-card-header>
       <nb-card-body class="gridster-item-content">
         <div
           echarts
@@ -51,6 +51,8 @@ export class AverageDistanceComponent extends VisualizationComponent {
   private subscription: Subscription | null = null;
 
   echartsInstance: EChartsType | null = null;
+
+  currentDate = "";
 
   onChartInit(ec: any) {
     this.echartsInstance = ec;
@@ -155,6 +157,12 @@ export class AverageDistanceComponent extends VisualizationComponent {
             name: vin,
             value: value.value,
           });
+          let rawTimeStamp = Date.now() - event.value.timestamp;
+          if (rawTimeStamp == 0) {
+            this.currentDate = "(Last updated: Just now.)"
+          } else {
+            this.currentDate = "(Last updated: " + new Date(rawTimeStamp).getMinutes() + " min. ago)"
+          }
         }
 
         this.echartMerge = {

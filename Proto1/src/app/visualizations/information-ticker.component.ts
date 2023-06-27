@@ -23,7 +23,7 @@ import { VisualizationComponent } from './visualization-component.interface';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <nb-card>
-      <nb-card-header> Information Ticker </nb-card-header>
+      <nb-card-header> Information Ticker {{ currentDate }}</nb-card-header>
       <nb-card-body class="p-0 gridster-item-content">
       <table [nbTreeGrid]="notifications" equalColumnsWidth>
 
@@ -53,6 +53,7 @@ export class InformationTickerComponent extends VisualizationComponent {
   private subscription: Subscription | null = null;
   notifications: any[] = [];
   allColumns = ['Vehicle', 'Message', 'Value', 'Timestamp'];
+  currentDate = "";
 
   // data: any[] = [
   //   {
@@ -210,7 +211,12 @@ export class InformationTickerComponent extends VisualizationComponent {
               { data: {Vehicle: `${data.vin}`, Message: 'New Ignition Status', Value: `${data.value.value.value}`, Timestamp: `${dateString}`}}
               // `${data.vin} has the ignition status: ${data.value.value.value}`
             );
-
+            let rawTimeStamp = Date.now() - data.value.timestamp;
+            if (rawTimeStamp == 0) {
+              this.currentDate = "(Last updated: Just now.)"
+            } else {
+              this.currentDate = "(Last updated: " + new Date(rawTimeStamp).getMinutes() + " min. ago)"
+            }
         }
         this.notifications = [...this.notifications]
         this.changeDetectionRef.detectChanges();

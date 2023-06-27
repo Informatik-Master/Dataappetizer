@@ -16,7 +16,7 @@ import { VisualizationComponent } from './visualization-component.interface';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <nb-card>
-      <nb-card-header> Data Count</nb-card-header>
+      <nb-card-header> Data Count {{ currentDate }}</nb-card-header>
       <nb-card-body class="gridster-item-content">
         <h6 class="m-0">{{ vins.size }} Vehicles</h6>
         <span class="caption-2"> {{ numberDataPoints }} Datapoints</span>
@@ -50,12 +50,13 @@ export class DataCountComponent extends VisualizationComponent {
 
   vins = new Set<string>();
   numberDataPoints = 0;
+  currentDate: string = "";
 
   public constructor(protected readonly dataPointService: DataPointService, private changeDetectionRef: ChangeDetectorRef) {
     super();
   }
 
-  public override setMockData (): void{
+  public override setMockData(): void {
     super.setMockData();
     this.numberDataPoints = 50;
     this.vins = new Set<string>(['Test1', 'Test2', 'Test3', 'Test4', 'Test5'])
@@ -69,6 +70,14 @@ export class DataCountComponent extends VisualizationComponent {
         for (const { data } of bufferedEvents) {
           this.vins.add(data.vin);
           this.numberDataPoints++;
+          let rawTimeStamp = Date.now() - data.value.timestamp;
+          if (rawTimeStamp == 0) {
+            this.currentDate = "(Last updated: Just now.)"
+          } else {
+            this.currentDate = "(Last updated: " + new Date(rawTimeStamp).getMinutes() + " min. ago)"
+          }
+
+          console.log("TIMESTAMP: " + this.currentDate + "min.");
         }
         this.changeDetectionRef.detectChanges();
       });

@@ -40,7 +40,7 @@ import { VisualizationComponent } from './visualization-component.interface';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <nb-card>
-      <nb-card-header> Vehicle locations </nb-card-header>
+      <nb-card-header> Vehicle locations {{ currentDate }}</nb-card-header>
       <nb-card-body class="p-0 gridster-item-content">
         <div
           leaflet
@@ -77,6 +77,8 @@ export class GeoLocationComponent extends VisualizationComponent {
   wasUpdated = new Subject<void>();
 
   vehicles = new Map<string, number>();
+
+  currentDate = "";
 
   @HostListener('window:resize', ['$event'])
   override onResize(): void {
@@ -156,6 +158,12 @@ export class GeoLocationComponent extends VisualizationComponent {
           const { vin, value } = data;
           this.latestDataPoints.set(vin, value);
           this.wasUpdated.next();
+          let rawTimeStamp = Date.now() - data.value.timestamp;
+          if (rawTimeStamp == 0) {
+            this.currentDate = "(Last updated: Just now.)"
+          } else {
+            this.currentDate = "(Last updated: " + new Date(rawTimeStamp).getMinutes() + " min. ago)"
+          }
         })
     );
   }
