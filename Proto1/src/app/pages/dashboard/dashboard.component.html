@@ -3,6 +3,7 @@
     <gridster [options]="options">
       <gridster-item
         *ngIf="showDataCount"
+        (itemResize)="onResize(dashboard[1])"
         [item]="dashboard[1]"
         [class.maximized]="max === 1"
       >
@@ -17,6 +18,7 @@
       <gridster-item
         *ngIf="showMileage"
         [item]="dashboard[2]"
+        (itemResize)="onResize(dashboard[2])"
         [class.maximized]="max === 2"
       >
         <nb-icon
@@ -30,6 +32,7 @@
       <gridster-item
         *ngIf="showFuelLevel"
         [item]="dashboard[3]"
+        (itemResize)="resizeInterval()"
         [class.maximized]="max === 3"
       >
         <nb-icon
@@ -58,6 +61,7 @@
       <gridster-item
         *ngIf="showInformationTicker"
         [item]="dashboard[4]"
+        (itemResize)="onResize(dashboard[4])"
         [class.maximized]="max === 4"
       >
         <nb-icon
@@ -71,6 +75,7 @@
       <gridster-item
       *ngIf="showEnvironmentTemperature"
       [item]="dashboard[5]"
+      (itemResize)="onResize(dashboard[5])"
       [class.maximized]="max ===5"
     >
       <nb-icon
