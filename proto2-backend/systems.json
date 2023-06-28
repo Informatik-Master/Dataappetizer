@@ -1,48 +1,15 @@
 [
   {
-    "name": "Pull Vehicles",
-    "id": "908fb78f-43db-4c50-bceb-1a4862ee49a4",
-    "dashboardConfig": [],
-    "subscriptionId": "ada3836d-bd98-483e-86d4-bc0b8cc8e470",
-    "users": [
-      "hervorragendmystischerstrauss@fliegender.fish"
-    ],
-    "detailConfig": []
-  },
-  {
     "name": "Push System",
     "id": "036a890e-126c-4511-98e5-f03b1295241a",
     "dashboardConfig": [
       "geo-location",
       "data-count",
       "average-distance",
-      "fuel-level",
-      "information-ticker"
+      "information-ticker",
+      "milage"
     ],
     "subscriptionId": "df490a56-6a29-4055-8b90-cceb0c56e8f7",
-    "users": [
-      "hervorragendmystischerstrauss@fliegender.fish"
-    ],
-    "detailConfig": []
-  },
-  {
-    "name": "System Name",
-    "id": "8c4bef07-e58b-485e-a419-cbf63555e269",
-    "dashboardConfig": [
-      "geo-location",
-      "average-distance"
-    ],
-    "subscriptionId": "123124124124",
-    "users": [
-      "hervorragendmystischerstrauss@fliegender.fish"
-    ],
-    "detailConfig": []
-  },
-  {
-    "name": "System Name",
-    "id": "d4c99b90-5f19-41cc-917d-767ed58ea301",
-    "dashboardConfig": [],
-    "subscriptionId": "fgfgh",
     "users": [
       "hervorragendmystischerstrauss@fliegender.fish"
     ],

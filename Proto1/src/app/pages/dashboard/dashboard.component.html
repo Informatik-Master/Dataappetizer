@@ -86,6 +86,20 @@
       ></nb-icon>
       <ngx-environment-temperature></ngx-environment-temperature>
     </gridster-item>
+    <gridster-item
+    *ngIf="showAverageDistance"
+    [item]="dashboard[6]"
+    (itemResize)="onResize(dashboard[6])"
+    [class.maximized]="max ===6"
+  >
+    <nb-icon
+      [icon]="max === 1 ? 'collapse-outline' : 'expand-outline'"
+      pack="eva"
+      (click)="max = max === 6 ? undefined : (max = 6); resizeInterval()"
+      class="enlarge-handle"
+    ></nb-icon>
+    <ngx-average-distance></ngx-average-distance>
+  </gridster-item>
 
       <!--
 

@@ -77,34 +77,62 @@ export class AverageDistanceComponent extends VisualizationComponent {
     });
   }
 
+  // echartMerge: EChartsOption = {
+  //   series: [
+  //     {
+  //       data: [],
+  //     },
+  //   ],
+  // };
+
   echartMerge: EChartsOption = {
-    series: [
-      {
-        data: [],
-      },
-    ],
+    series: [],
   };
 
   echartOptions: EChartsOption = {
     legend: {},
-    series: [
-      {
-        type: 'pie',
-        center: ['50%', '50%'],
-        roseType: 'area',
-        radius: ['30%', '70%'],
-        top: '30',
-        itemStyle: {
-          borderRadius: 5,
-        },
-        tooltip: {
-          trigger: 'item',
-          formatter: '{a} <br/>{b}: {c} ({d}%)',
-        },
-        data: [],
-      },
-    ],
+    tooltip: {
+      trigger: 'axis',
+      appendToBody: true,
+    },
+    xAxis: {
+      type: 'category',
+      boundaryGap: false,
+    },
+    yAxis: {
+      type: 'value',
+      boundaryGap: [0, '100%'],
+    },
+    grid: {
+      right: '70px',
+      left: '70px',
+      bottom: '75px',
+      top: '70px',
+    },
+    series: [],
+    animationDuration: 300
   };
+
+  // echartOptions: EChartsOption = {
+  //   legend: {},
+  //   series: [
+  //     {
+  //       type: 'pie',
+  //       center: ['50%', '50%'],
+  //       roseType: 'area',
+  //       radius: ['30%', '70%'],
+  //       top: '30',
+  //       itemStyle: {
+  //         borderRadius: 5,
+  //       },
+  //       tooltip: {
+  //         trigger: 'item',
+  //         formatter: '{a} <br/>{b}: {c} ({d}%)',
+  //       },
+  //       data: [],
+  //     },
+  //   ],
+  // };
 
   public constructor(
     protected readonly dataPointService: DataPointService,
@@ -118,32 +146,145 @@ export class AverageDistanceComponent extends VisualizationComponent {
     this.echartMerge = {
       series: [
         {
+          name: "VIN1",
+          type: 'line',
+          smooth: true,
+          symbol: 'none',
+          areaStyle: {},
           data: [
-            {
-              name: "VIN1",
-              value: 23423
-            },
-            {
-              name: "VIN2",
-              value: 12255
-            },
-            {
-              name: "VIN3",
-              value: 45123
-            },
-            {
-              name: "VIN4",
-              value: 3125
-            },
-            {
-              name: "VIN5",
-              value: 35245
-            },
+            ['18 May 2023', 20.97341150197138],
+            ['19 May 2023', 32.396212924808914],
+            ['20 May 2023', 10.444437939116554],
+            ['21 May 2023', 42.0436064083023],
+            ['22 May 2023', 0.49357440466658],
+            ['23 May 2023', 0.07196788245437],
+            ['24 May 2023', 10.07196788245437]
           ],
+          markLine: {
+            data: [
+              { type: 'average', name: 'Avg' },
+            ]
+          }
         },
-      ],
-    };
+        {
+          name: "VIN2",
+          type: 'line',
+          smooth: true,
+          symbol: 'none',
+          areaStyle: {},
+          data: [
+            ['18 May 2023', 80.97341150197138],
+            ['19 May 2023', 77.396212924808914],
+            ['20 May 2023', 50.444437939116554],
+            ['21 May 2023', 40.0436064083023],
+            ['22 May 2023', 30.49357440466658],
+            ['23 May 2023', 10.07196788245437],
+            ['24 May 2023', 2],
+          ],
+          markLine: {
+            data: [
+              { type: 'average', name: 'Avg' },
+            ]
+          }
+        },
+        {
+          name: "VIN3",
+          type: 'line',
+          smooth: true,
+          symbol: 'none',
+          areaStyle: {},
+          data: [
+            ['18 May 2023', 10.97341150197138],
+            ['19 May 2023', 80.396212924808914],
+            ['20 May 2023', 59.444437939116554],
+            ['21 May 2023', 59.0436064083023],
+            ['22 May 2023', 58.49357440466658],
+            ['23 May 2023', 58.07196788245437],
+            ['24 May 2023', 58.07196788245437]
+          ],
+          markLine: {
+            data: [
+              { type: 'average', name: 'Avg' },
+            ]
+          }
+        },
+        {
+          name: "VIN4",
+          type: 'line',
+          smooth: true,
+          symbol: 'none',
+          areaStyle: {},
+          data: [
+            ['18 May 2023', 48.97341150197138],
+            ['19 May 2023', 40.396212924808914],
+            ['20 May 2023', 35.444437939116554],
+            ['21 May 2023', 20.0436064083023],
+            ['22 May 2023'],
+            ['23 May 2023'],
+            ['24 May 2023']
+          ],
+          markLine: {
+            data: [
+              { type: 'average', name: 'Avg' },
+            ]
+          }
+        },
+        {
+          name: "VIN5",
+          type: 'line',
+          smooth: true,
+          symbol: 'none',
+          areaStyle: {},
+          data: [
+            ['18 May 2023'],
+            ['19 May 2023'],
+            ['20 May 2023', 20.49357440466658],
+            ['21 May 2023', 20.49357440466658],
+            ['22 May 2023', 20.49357440466658],
+            ['23 May 2023', 10.07196788245437],
+            ['24 May 2023', 10.07196788245437]
+          ],
+          markLine: {
+            data: [
+              { type: 'average', name: 'Avg' },
+            ]
+          }
+        }
+      ]
+    }
   }
+
+  // public override setMockData(): void {
+  //   super.setMockData();
+  //   this.echartMerge = {
+  //     series: [
+  //       {
+  //         data: [
+  //           {
+  //             name: "VIN1",
+  //             value: 23423
+  //           },
+  //           {
+  //             name: "VIN2",
+  //             value: 12255
+  //           },
+  //           {
+  //             name: "VIN3",
+  //             value: 45123
+  //           },
+  //           {
+  //             name: "VIN4",
+  //             value: 3125
+  //           },
+  //           {
+  //             name: "VIN5",
+  //             value: 35245
+  //           },
+  //         ],
+  //       },
+  //     ],
+  //   };
+  // }
 
   public ngOnInit(): void {
     if (this.previewMode) return;
