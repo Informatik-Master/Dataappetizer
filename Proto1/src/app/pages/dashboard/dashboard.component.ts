@@ -73,7 +73,8 @@ export class DashboardComponent implements OnInit {
       { cols: 1, rows: 1, y: 0, x: 0 },
       { cols: 1, rows: 1, y: 0, x: 1 },
       { cols: 2, rows: 1, y: 1, x: 0 },
-      { cols: 3, rows: 1, y: 2, x: 0 },
+      { cols: 2, rows: 1, y: 2, x: 0 },
+      { cols: 1, rows: 1, y: 2, x: 1 }
     ];
     await this.checkTags();
   }

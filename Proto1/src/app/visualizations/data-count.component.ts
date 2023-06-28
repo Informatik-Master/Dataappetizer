@@ -24,7 +24,7 @@ import { DateAgoModule } from '../@core/date-ago.module';
       <nb-card-header>
         <div style="display:flex; justify-content:space-between;margin-right: 1rem;">
           <span> Data Count </span>
-          <span *ngIf="ago"> (Last updated: {{ ago|dateAgo }}) </span>
+          <span class= "lastUpdated" *ngIf="ago"> (Last updated: {{ ago|dateAgo }}) </span>
         </div>
       </nb-card-header>
       <nb-card-body class="gridster-item-content">
@@ -45,6 +45,9 @@ import { DateAgoModule } from '../@core/date-ago.module';
           h6 {
             line-height: 5cqw;
             font-size: 5cqw;
+          }
+          .lastUpdated {
+            font-style: italic;
           }
           span {
             line-height: 5cqw;

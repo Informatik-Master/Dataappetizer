@@ -13,11 +13,12 @@ import { bufferTime, filter, Subscription } from 'rxjs';
 
 import { DataPointService } from '../@core/data-point.service';
 import { VisualizationComponent } from './visualization-component.interface';
+import { DateAgoModule } from '../@core/date-ago.module';
 
 @Component({
   standalone: true,
   selector: 'ngx-environment-temperature',
-  imports: [CommonModule, NbCardModule, NgxEchartsModule],
+  imports: [CommonModule, NbCardModule, NgxEchartsModule, DateAgoModule],
   providers: [
     {
       provide: VisualizationComponent,
@@ -27,7 +28,12 @@ import { VisualizationComponent } from './visualization-component.interface';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <nb-card>
-      <nb-card-header> Environment temperature {{ currentDate }}</nb-card-header>
+      <nb-card-header>      
+      <div style="display:flex; justify-content:space-between;margin-right: 1rem;">
+       <span> Environment Temperature </span>
+       <span *ngIf="ago"> (Last updated: {{ ago|dateAgo }}) </span>
+      </div>
+      </nb-card-header>
       <nb-card-body class="p-0 gridster-item-content">
         <div
           echarts
@@ -55,7 +61,7 @@ export class EnvironmentTemperatureComponent extends VisualizationComponent {
 
   echartsInstance: EChartsType | null = null;
 
-  currentDate = "";
+  ago = 0;
 
   onChartInit(ec: any) {
     this.echartsInstance = ec;
@@ -147,12 +153,7 @@ export class EnvironmentTemperatureComponent extends VisualizationComponent {
             const index = this.vinSeriesMap.get(vin)!;
             (this.echartMerge.series as any)[0].data[index] = value;
           }
-          let rawTimeStamp = Date.now() - data.value.timestamp;
-          if (rawTimeStamp == 0) {
-            this.currentDate = "(Last updated: Just now.)"
-          } else {
-            this.currentDate = "(Last updated: " + new Date(rawTimeStamp).getMinutes() + " min. ago)"
-          }
+          this.ago = data.value.timestamp;
         }
 
         this.echartMerge = {

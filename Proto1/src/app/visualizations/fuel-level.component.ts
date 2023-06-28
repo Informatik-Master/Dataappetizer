@@ -8,18 +8,24 @@ import { bufferTime, filter, Subscription } from 'rxjs';
 
 import { DataPointService } from '../@core/data-point.service';
 import { VisualizationComponent } from './visualization-component.interface';
+import { DateAgoModule } from '../@core/date-ago.module';
 
 @Component({
   standalone: true,
   selector: 'ngx-fuel-level',
-  imports: [CommonModule, NbCardModule, NgxEchartsModule],
+  imports: [CommonModule, NbCardModule, NgxEchartsModule, DateAgoModule],
   providers: [
     { provide: VisualizationComponent, useExisting: FuelLevelComponent },
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <nb-card>
-      <nb-card-header> Fuel Level {{ currentDate }}</nb-card-header>
+      <nb-card-header>
+        <div style="display:flex; justify-content:space-between;margin-right: 1rem;">
+          <span> Fuel Level </span>
+          <span *ngIf="ago"> (Last updated: {{ ago|dateAgo }}) </span>
+        </div>
+      </nb-card-header>
       <nb-card-body class="p-0 gridster-item-content">
         <div
           echarts
@@ -107,7 +113,7 @@ export class FuelLevelComponent extends VisualizationComponent {
     super();
   }
 
-  currentDate = "";
+  ago = 0;
 
   public override setMockData(): void {
     super.setMockData();
@@ -244,12 +250,7 @@ export class FuelLevelComponent extends VisualizationComponent {
           }
           abc.data!.push([data.value.timestamp, data.value.value.value]);
           abc.data = (abc.data as any[]).sort((a: any, b: any) => a[0] - b[0]);
-          let rawTimeStamp = Date.now() - data.value.timestamp;
-          if (rawTimeStamp == 0) {
-            this.currentDate = "(Last updated: Just now.)"
-          } else {
-            this.currentDate = "(Last updated: " + new Date(rawTimeStamp).getMinutes() + " min. ago)"
-          }
+          this.ago = data.value.timestamp;
         }
 
         this.echartMerge = {

@@ -13,18 +13,24 @@ import { bufferTime, filter, Subscription } from 'rxjs';
 
 import { DataPointService } from '../@core/data-point.service';
 import { VisualizationComponent } from './visualization-component.interface';
+import { DateAgoModule } from '../@core/date-ago.module';
 
 @Component({
   standalone: true,
   selector: 'ngx-milage',
-  imports: [CommonModule, NbCardModule, NgxEchartsModule],
+  imports: [CommonModule, NbCardModule, NgxEchartsModule, DateAgoModule],
   providers: [
     { provide: VisualizationComponent, useExisting: MilageComponent },
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <nb-card>
-      <nb-card-header> Mileage {{ currentDate }}</nb-card-header>
+      <nb-card-header>      
+      <div style="display:flex; justify-content:space-between;margin-right: 1rem;">
+        <span> Mileage </span>
+        <span *ngIf="ago"> (Last updated: {{ ago|dateAgo }}) </span>
+      </div>
+      </nb-card-header>
       <nb-card-body class="p-0 gridster-item-content">
         <div
           echarts
@@ -52,7 +58,7 @@ export class MilageComponent extends VisualizationComponent {
 
   echartsInstance: EChartsType | null = null;
 
-  currentDate = "";
+  ago = 0;
 
   onChartInit(ec: any) {
     this.echartsInstance = ec;
@@ -72,30 +78,52 @@ export class MilageComponent extends VisualizationComponent {
   }
 
   echartMerge: EChartsOption = {
-    series: [],
+    series: [
+      {
+        data: [],
+      },
+    ],
   };
 
   echartOptions: EChartsOption = {
+    // legend: {},
+    // tooltip: {
+    //   trigger: 'axis',
+    //   appendToBody: true,
+    // },
+    // xAxis: {
+    //   type: 'time',
+    //   boundaryGap: false,
+    // },
+    // yAxis: {
+    //   type: 'value',
+    //   boundaryGap: [0, '100%'],
+    // },
+    // grid: {
+    //   right: '10px',
+    //   left: '70px',
+    //   bottom: '25px',
+    //   top: '35px',
+    // },
+    // series: [],
     legend: {},
-    tooltip: {
-      trigger: 'axis',
-      appendToBody: true,
-    },
-    xAxis: {
-      type: 'time',
-      boundaryGap: false,
-    },
-    yAxis: {
-      type: 'value',
-      boundaryGap: [0, '100%'],
-    },
-    grid: {
-      right: '10px',
-      left: '70px',
-      bottom: '25px',
-      top: '35px',
-    },
-    series: [],
+    series: [
+      {
+        type: 'pie',
+        center: ['50%', '50%'],
+        roseType: 'area',
+        radius: ['30%', '70%'],
+        top: '30',
+        itemStyle: {
+          borderRadius: 5,
+        },
+        tooltip: {
+          trigger: 'item',
+          formatter: '{a} <br/>{b}: {c} ({d}%)',
+        },
+        data: [],
+      },
+    ],
   };
 
   public constructor(
@@ -105,78 +133,110 @@ export class MilageComponent extends VisualizationComponent {
     super();
   }
 
+  // public override setMockData(): void {
+  //   super.setMockData();
+  //   this.echartMerge = {
+  //     series: [
+  //       {
+  //         name: 'VIN1',
+  //         type: 'line',
+  //         smooth: true,
+  //         symbol: 'none',
+  //         areaStyle: {},
+  //         data: [
+  //           [1683700595623, 5444],
+  //           [1683724083086, 5444],
+  //           [1683728083086, 6000],
+  //           [1683738083086, 6400],
+  //         ],
+  //       },
+  //       {
+  //         name: 'VIN2',
+  //         type: 'line',
+  //         smooth: true,
+  //         symbol: 'none',
+  //         areaStyle: {},
+  //         data: [
+  //           [1683700595623, 123],
+  //           [1683724083086, 3232],
+  //           [1683728083086, 3434],
+  //           [1683738083086, 5434],
+  //         ],
+  //       },
+  //       {
+  //         name: 'VIN3',
+  //         type: 'line',
+  //         smooth: true,
+  //         symbol: 'none',
+  //         areaStyle: {},
+  //         data: [
+  //           [1683700595623, 123],
+  //           [1683724083086, 3232],
+  //           [1683728083086, 3434],
+  //           [1683738083086, 5434],
+  //         ],
+  //       },
+  //       {
+  //         name: 'VIN4',
+  //         type: 'line',
+  //         smooth: true,
+  //         symbol: 'none',
+  //         areaStyle: {},
+  //         data: [
+  //           [1683700595623, 2054],
+  //           [1683724083086, 2400],
+  //           [1683728083086, 2400],
+  //           [1683738083086, 2400],
+  //         ],
+  //       },
+  //       {
+  //         name: 'VIN5',
+  //         type: 'line',
+  //         smooth: true,
+  //         symbol: 'none',
+  //         areaStyle: {},
+  //         data: [
+  //           [1683700595623, 1203],
+  //           [1683724083086, 1521],
+  //           [1683728083086, 1843],
+  //           [1683738083086, 2111],
+  //         ],
+  //       },
+  //     ],
+  //   };
+  //   console.log(this.echartMerge);
+  // }
+
   public override setMockData(): void {
     super.setMockData();
     this.echartMerge = {
       series: [
         {
-          name: 'VIN1',
-          type: 'line',
-          smooth: true,
-          symbol: 'none',
-          areaStyle: {},
           data: [
-            [1683700595623, 5444],
-            [1683724083086, 5444],
-            [1683728083086, 6000],
-            [1683738083086, 6400],
-          ],
-        },
-        {
-          name: 'VIN2',
-          type: 'line',
-          smooth: true,
-          symbol: 'none',
-          areaStyle: {},
-          data: [
-            [1683700595623, 123],
-            [1683724083086, 3232],
-            [1683728083086, 3434],
-            [1683738083086, 5434],
-          ],
-        },
-        {
-          name: 'VIN3',
-          type: 'line',
-          smooth: true,
-          symbol: 'none',
-          areaStyle: {},
-          data: [
-            [1683700595623, 123],
-            [1683724083086, 3232],
-            [1683728083086, 3434],
-            [1683738083086, 5434],
-          ],
-        },
-        {
-          name: 'VIN4',
-          type: 'line',
-          smooth: true,
-          symbol: 'none',
-          areaStyle: {},
-          data: [
-            [1683700595623, 2054],
-            [1683724083086, 2400],
-            [1683728083086, 2400],
-            [1683738083086, 2400],
-          ],
-        },
-        {
-          name: 'VIN5',
-          type: 'line',
-          smooth: true,
-          symbol: 'none',
-          areaStyle: {},
-          data: [
-            [1683700595623, 1203],
-            [1683724083086, 1521],
-            [1683728083086, 1843],
-            [1683738083086, 2111],
+            {
+              name: "VIN123",
+              value: 23423
+            },
+            {
+              name: "VIN2",
+              value: 12255
+            },
+            {
+              name: "VIN3",
+              value: 45123
+            },
+            {
+              name: "VIN4",
+              value: 3125
+            },
+            {
+              name: "VIN5",
+              value: 35245
+            },
           ],
         },
       ],
     };
-    console.log(this.echartMerge);
   }
 
   public ngOnInit(): void {
@@ -188,27 +248,30 @@ export class MilageComponent extends VisualizationComponent {
       )
       .subscribe((bufferedEvents) => {
         for (const { data } of bufferedEvents) {
-          const s = this.echartMerge.series as SeriesOption[];
-          let abc: any = s.find((s) => s.name === data.vin);
-          if (!abc) {
-            abc = {
+          // const s = this.echartMerge.series as SeriesOption[];
+          // let abc: any = s.find((s) => s.name === data.vin);
+          // if (!abc) {
+          //   abc = {
+          //     name: data.vin,
+          //     type: 'line',
+          //     smooth: true,
+          //     symbol: 'none',
+          //     areaStyle: {},
+          //     data: new Array<any[]>(),
+          //   };
+          //   s.push(abc);
+          // }
+          // abc.data!.push([data.value.timestamp, data.value.value.value]);
+          // abc.data = (abc.data as any[]).sort((a: any, b: any) => a[0] - b[0]);
+          
+          let val = ((this.echartMerge.series as SeriesOption[])[0].data as any[]).find((d) => d.name ===data.vin)
+          if(!val){
+            ((this.echartMerge.series as SeriesOption[])[0].data as any[])?.push({
               name: data.vin,
-              type: 'line',
-              smooth: true,
-              symbol: 'none',
-              areaStyle: {},
-              data: new Array<any[]>(),
-            };
-            s.push(abc);
+              value: data.value.value.value,
+            });
           }
-          abc.data!.push([data.value.timestamp, data.value.value.value]);
-          abc.data = (abc.data as any[]).sort((a: any, b: any) => a[0] - b[0]);
-          let rawTimeStamp = Date.now() - data.value.timestamp;
-          if (rawTimeStamp == 0) {
-            this.currentDate = "(Last updated: Just now.)"
-          } else {
-            this.currentDate = "(Last updated: " + new Date(rawTimeStamp).getMinutes() + " min. ago)"
-          }
+          this.ago = data.value.timestamp;
         }
 
         this.echartMerge = {

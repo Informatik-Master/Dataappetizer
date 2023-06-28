@@ -9,11 +9,12 @@ import { CommonModule } from '@angular/common';
 import { NbCardModule, NbListModule, NbTreeGridModule } from '@nebular/theme';
 import { bufferTime, filter, Subscription } from 'rxjs';
 import { VisualizationComponent } from './visualization-component.interface';
+import { DateAgoModule } from '../@core/date-ago.module';
 
 @Component({
   standalone: true,
   selector: 'ngx-information-ticker',
-  imports: [CommonModule, NbCardModule, NbListModule, NbTreeGridModule],
+  imports: [CommonModule, NbCardModule, NbListModule, NbTreeGridModule, DateAgoModule],
   providers: [
     {
       provide: VisualizationComponent,
@@ -23,7 +24,12 @@ import { VisualizationComponent } from './visualization-component.interface';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <nb-card>
-      <nb-card-header> Information Ticker {{ currentDate }}</nb-card-header>
+      <nb-card-header>
+      <div style="display:flex; justify-content:space-between;margin-right: 1rem;">
+        <span> Information Ticker </span>
+        <span *ngIf="ago"> (Last updated: {{ ago|dateAgo }}) </span>
+      </div>
+      </nb-card-header>
       <nb-card-body class="p-0 gridster-item-content">
       <table [nbTreeGrid]="notifications" equalColumnsWidth>
 
@@ -53,7 +59,7 @@ export class InformationTickerComponent extends VisualizationComponent {
   private subscription: Subscription | null = null;
   notifications: any[] = [];
   allColumns = ['Vehicle', 'Message', 'Value', 'Timestamp'];
-  currentDate = "";
+  ago = 0;
 
   // data: any[] = [
   //   {
@@ -211,12 +217,7 @@ export class InformationTickerComponent extends VisualizationComponent {
               { data: {Vehicle: `${data.vin}`, Message: 'New Ignition Status', Value: `${data.value.value.value}`, Timestamp: `${dateString}`}}
               // `${data.vin} has the ignition status: ${data.value.value.value}`
             );
-            let rawTimeStamp = Date.now() - data.value.timestamp;
-            if (rawTimeStamp == 0) {
-              this.currentDate = "(Last updated: Just now.)"
-            } else {
-              this.currentDate = "(Last updated: " + new Date(rawTimeStamp).getMinutes() + " min. ago)"
-            }
+            this.ago = data.value.timestamp;
         }
         this.notifications = [...this.notifications]
         this.changeDetectionRef.detectChanges();

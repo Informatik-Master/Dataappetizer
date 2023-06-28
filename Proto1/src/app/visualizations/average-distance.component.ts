@@ -13,18 +13,24 @@ import { bufferTime, filter, map, Subscription } from 'rxjs';
 
 import { DataPointService } from '../@core/data-point.service';
 import { VisualizationComponent } from './visualization-component.interface';
+import { DateAgoModule } from '../@core/date-ago.module';
 
 @Component({
   standalone: true,
   selector: 'ngx-average-distance',
-  imports: [CommonModule, NbCardModule, NgxEchartsModule],
+  imports: [CommonModule, NbCardModule, NgxEchartsModule, DateAgoModule],
   providers: [
     { provide: VisualizationComponent, useExisting: AverageDistanceComponent },
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <nb-card>
-      <nb-card-header> Average Distance {{ currentDate }}</nb-card-header>
+      <nb-card-header>
+        <div style="display:flex; justify-content:space-between;margin-right: 1rem;">
+        <span> Average Distance </span>
+        <span *ngIf="ago"> (Last updated: {{ ago|dateAgo }}) </span>
+    </div>
+      </nb-card-header>
       <nb-card-body class="gridster-item-content">
         <div
           echarts
@@ -52,7 +58,7 @@ export class AverageDistanceComponent extends VisualizationComponent {
 
   echartsInstance: EChartsType | null = null;
 
-  currentDate = "";
+  ago = 0;
 
   onChartInit(ec: any) {
     this.echartsInstance = ec;
@@ -107,26 +113,31 @@ export class AverageDistanceComponent extends VisualizationComponent {
     super();
   }
 
-  public override setMockData (): void{
+  public override setMockData(): void {
     super.setMockData();
     this.echartMerge = {
       series: [
         {
           data: [
-            {name: "VIN1",
-            value: 23423
+            {
+              name: "VIN1",
+              value: 23423
             },
-            {name: "VIN2",
-            value: 12255
+            {
+              name: "VIN2",
+              value: 12255
             },
-            {name: "VIN3",
-            value: 45123
+            {
+              name: "VIN3",
+              value: 45123
             },
-            {name: "VIN4",
-            value: 3125
+            {
+              name: "VIN4",
+              value: 3125
             },
-            {name: "VIN5",
-            value: 35245
+            {
+              name: "VIN5",
+              value: 35245
             },
           ],
         },
@@ -157,12 +168,7 @@ export class AverageDistanceComponent extends VisualizationComponent {
             name: vin,
             value: value.value,
           });
-          let rawTimeStamp = Date.now() - event.value.timestamp;
-          if (rawTimeStamp == 0) {
-            this.currentDate = "(Last updated: Just now.)"
-          } else {
-            this.currentDate = "(Last updated: " + new Date(rawTimeStamp).getMinutes() + " min. ago)"
-          }
+          this.ago = event.value.timestamp;
         }
 
         this.echartMerge = {

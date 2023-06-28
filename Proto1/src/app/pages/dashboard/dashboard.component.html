@@ -15,7 +15,7 @@
         <ngx-data-count></ngx-data-count>
       </gridster-item>
       <gridster-item
-        *ngIf="showAverageDistance"
+        *ngIf="showMileage"
         [item]="dashboard[2]"
         [class.maximized]="max === 2"
       >
@@ -25,7 +25,7 @@
           (click)="max = max === 2 ? undefined : (max = 2); resizeInterval()"
           class="enlarge-handle"
         ></nb-icon>
-        <ngx-average-distance></ngx-average-distance>
+        <ngx-milage></ngx-milage>
       </gridster-item>
       <gridster-item
         *ngIf="showFuelLevel"
@@ -68,6 +68,19 @@
         ></nb-icon>
         <ngx-information-ticker></ngx-information-ticker>
       </gridster-item>
+      <gridster-item
+      *ngIf="showAverageDistance"
+      [item]="dashboard[5]"
+      [class.maximized]="max ===5"
+    >
+      <nb-icon
+        [icon]="max === 1 ? 'collapse-outline' : 'expand-outline'"
+        pack="eva"
+        (click)="max = max === 5 ? undefined : (max = 5); resizeInterval()"
+        class="enlarge-handle"
+      ></nb-icon>
+      <ngx-average-distance></ngx-average-distance>
+    </gridster-item>
 
       <!--
 
