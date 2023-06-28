@@ -86,26 +86,11 @@ export class MilageComponent extends VisualizationComponent {
   };
 
   echartOptions: EChartsOption = {
-    // legend: {},
-    // tooltip: {
-    //   trigger: 'axis',
-    //   appendToBody: true,
-    // },
-    // xAxis: {
-    //   type: 'time',
-    //   boundaryGap: false,
-    // },
-    // yAxis: {
-    //   type: 'value',
-    //   boundaryGap: [0, '100%'],
-    // },
-    // grid: {
-    //   right: '10px',
-    //   left: '70px',
-    //   bottom: '25px',
-    //   top: '35px',
-    // },
-    // series: [],
+    tooltip: {
+      trigger: 'item',
+      appendToBody: true,
+      show:true
+    },
     legend: {},
     series: [
       {
@@ -214,7 +199,7 @@ export class MilageComponent extends VisualizationComponent {
         {
           data: [
             {
-              name: "VIN123",
+              name: "VIN1",
               value: 23423
             },
             {

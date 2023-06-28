@@ -55,26 +55,26 @@ export class DashboardComponent implements OnInit {
     this.options = {
       gridType: GridType.Fit,
       compactType: CompactType.CompactLeftAndUp,
-      pushResizeItems: true,
+      pushResizeItems: false,
 
       maxCols: 10,
       maxRows: 10,
-      pushItems: true,
+      pushItems: false,
       draggable: {
-        enabled: true,
+        enabled: false,
       },
       resizable: {
-        enabled: true,
+        enabled: false,
       },
     };
 
     this.dashboard = [
-      { cols: 1, rows: 2, y: 0, x: 2 },
-      { cols: 1, rows: 1, y: 0, x: 0 },
-      { cols: 1, rows: 1, y: 0, x: 1 },
-      { cols: 2, rows: 1, y: 1, x: 0 },
-      { cols: 2, rows: 1, y: 2, x: 0 },
-      { cols: 1, rows: 1, y: 2, x: 1 }
+      { cols: 2, rows: 4, y: 0, x: 2 }, //geolocation
+      { cols: 1, rows: 2, y: 0, x: 0 }, //data count
+      { cols: 1, rows: 2, y: 0, x: 1 }, //mileage
+      { cols: 2, rows: 2, y: 1, x: 0 }, //fuel level
+      { cols: 3, rows: 2, y: 2, x: 0 }, //information ticker
+      { cols: 1, rows: 2, y: 2, x: 1 }  //env. temp.
     ];
     await this.checkTags();
   }

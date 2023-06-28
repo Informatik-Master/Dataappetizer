@@ -95,6 +95,12 @@ export class EnvironmentTemperatureComponent extends VisualizationComponent {
     xAxis: {
       type: 'category',
       data: [],
+      axisLabel: {
+        width: 100,
+        overflow: 'truncate',
+        interval: 0,
+        rotate: 20
+      },
     },
     yAxis: {
       type: 'value',
