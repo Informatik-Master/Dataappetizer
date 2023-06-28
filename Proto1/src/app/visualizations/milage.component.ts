@@ -104,7 +104,7 @@ export class MilageComponent extends VisualizationComponent {
         },
         tooltip: {
           trigger: 'item',
-          formatter: '{a} <br/>{b}: {c} ({d}%)',
+          formatter: '{b}: {c} ({d}%)',
         },
         data: [],
       },
