@@ -27,7 +27,6 @@ export class DateAgoPipe implements PipeTransform {
 
     for (const [unit,i] of Object.entries(intervals)) {
       const counter = Math.floor(seconds / i);
-      console.log(counter, unit);
       if (counter > 0) return rtf.format(-counter, unit as Intl.RelativeTimeFormatUnit);
     }
 
