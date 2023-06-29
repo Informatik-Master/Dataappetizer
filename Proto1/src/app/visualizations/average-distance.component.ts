@@ -32,7 +32,7 @@ import { DateAgoModule } from '../@core/date-ago.module';
     </div>
       </nb-card-header>
       <nb-card-body class="gridster-item-content">
-        <div
+        <div *ngIf="previewMode; else dontShow"
           echarts
           [autoResize]="false"
           [options]="echartOptions"
@@ -40,6 +40,7 @@ import { DateAgoModule } from '../@core/date-ago.module';
           (chartInit)="onChartInit($event)"
           style="height: 100%"
         ></div>
+        <ng-template #dontShow>No data available!</ng-template>
       </nb-card-body>
     </nb-card>
   `,
