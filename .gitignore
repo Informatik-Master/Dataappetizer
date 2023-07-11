@@ -1,2 +1,4 @@
 proto2-backend/.dynamodb/
 proto2-backend/dist/
+Backend/dist/
+Backend/.dynamodb/

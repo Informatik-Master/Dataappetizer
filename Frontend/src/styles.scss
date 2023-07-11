@@ -1,0 +1,100 @@
+@use 'themes' as *;
+
+@use '@nebular/theme/styles/globals' as *;
+
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,600,700&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Roboto:200,300,400,500,600,700,800&display=swap');
+
+@import 'bootstrap/scss/bootstrap-grid.scss';
+@import 'bootstrap/scss/bootstrap-utilities.scss';
+
+@include nb-install() {
+  @include nb-theme-global();
+}
+
+nb-action i {
+  color: var(--actions-icon-color);
+}
+
+nb-auth-block {
+  max-width: unset !important;
+  width: calc(100% - 30px) !important;
+}
+
+
+.leaflet-touch .leaflet-control-layers,
+.leaflet-touch .leaflet-bar {
+  border: var(--card-border-width) var(--card-border-style) var(--card-border-color) !important;
+  border-radius: var(--card-border-radius) !important;
+  box-shadow: var(--card-shadow) !important;
+}
+
+.leaflet-bar a {
+  border-bottom: 1px solid var(--card-border-color) !important;
+}
+
+.leaflet-top,
+.leaflet-bottom {
+  z-index: 998 !important;
+}
+
+.leaflet-control-attribution {
+  display: none;
+}
+
+nb-stepper .step-content {
+  padding: 0;
+}
+
+nb-layout.transparent .layout {
+  background-color: inherit;
+  min-height: unset;
+}
+
+nb-layout.fullheight > div {
+  &, .layout, .layout-container {
+    height: 100%;
+  }
+
+}
+
+nb-layout .columns {
+  nb-layout-column+nb-layout-column {
+    border-left: solid 1px var(--border-basic-color-4);
+  }
+}
+
+gridster {
+  background: unset !important;
+}
+gridster-item {
+  background: transparent !important;
+  box-shadow: unset !important;
+  transition:
+    width 0.3s linear,
+    height 0.3s linear,
+    transform 0.3 linear
+     !important;
+
+  display: flex !important;
+  justify-content: center;
+
+  >* {
+    width: 100%;
+    height: 100%;
+  }
+
+  margin-right: 0 !important;
+  &.maximized {
+    width: calc(100% - 20px) !important;
+    height: calc(100% - 20px) !important;
+    left: 10px;
+    transform: unset !important;
+    z-index: 99999 !important;
+    // backdrop-filter: blur(10px) grayscale(1);
+  }
+}
+
+
+
+

@@ -1,0 +1,22 @@
+diff --git a/node_modules/dynamodb-streams-readable/src/index.js b/node_modules/dynamodb-streams-readable/src/index.js
+index 4534d61..2dd435d 100644
+--- a/node_modules/dynamodb-streams-readable/src/index.js
++++ b/node_modules/dynamodb-streams-readable/src/index.js
+@@ -121,7 +121,7 @@ function DynamoDBStreamReadable(client, arn, options) {
+         }
+ 
+         if (data.Records.length === 0) {
+-          if (!drain) return setTimeout(read, options.readInterval || 500, callback);
++          if (!drain) return setTimeout(read, 5, callback);
+           data.Records = null;
+         }
+ 
+@@ -133,7 +133,7 @@ function DynamoDBStreamReadable(client, arn, options) {
+   readable._read = function () {
+     function gotRecords(err, data) {
+       if (err) return checkpoint.emit('error', err);
+-      setTimeout(readable.push.bind(readable), options.readInterval || 500, data.Records);
++      setTimeout(readable.push.bind(readable), 5, data.Records);
+     }
+ 
+     if (iterator) return read(gotRecords);

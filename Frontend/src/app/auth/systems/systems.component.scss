@@ -1,0 +1,10 @@
+.system-entry:hover {
+  background-color: #f5f5f5;
+  cursor: pointer;
+}
+
+:host {
+  max-width: 786px;
+  display: block;
+  margin: auto;
+}

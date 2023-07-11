@@ -1,0 +1,21 @@
+<h1 id="title" class="title">Hello Gwen!</h1>
+
+<nb-card size="medium" [nbSpinner]="!loaded" [nbSpinnerMessage]="'We are loading your systems, hang on tight :)'" nbSpinnerSize="giant">
+  <nb-card-header>
+    Systems
+  </nb-card-header>
+  <nb-list>
+    <nb-list-item *ngFor="let system of (systems | async)" class="system-entry" (click)="selectSystem(system)">
+      <span style="flex:1">{{ system.name }}</span>
+      <nb-icon icon="arrow-forward-outline"></nb-icon>
+    </nb-list-item>
+  </nb-list>
+  <nb-card-footer>
+    <button nbButton status="primary" (click)="createCustomerSystem()" fullWidth>
+      Create a new system
+      <nb-icon icon="plus-outline"></nb-icon>
+    </button>
+
+  </nb-card-footer>
+</nb-card>
+

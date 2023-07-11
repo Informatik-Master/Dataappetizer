@@ -1,0 +1,291 @@
+service: proto2-backend
+frameworkVersion: "3"
+
+custom:
+  datapointTable: "datapoint-${sls:stage}"
+  datapointTableDatapointIndex: "datapoint-${sls:stage}-datapointIndex"
+  connectionsTable: "connections-${sls:stage}"
+  connectionsTableSystemIndex: "connections-${sls:stage}-systemIndex"
+  vehiclesTable: "vehicles-${sls:stage}"
+  vehiclesTableSubscriptionIdIndex: "vehicles-${sls:stage}-subscriptionIdIndex"
+  systemsTable: "systems-${sls:stage}"
+  systemsTableSubscriptionIdIndex: "systems-${sls:stage}-subscriptionIdIndex"
+  usersTable: "users-${sls:stage}"
+
+
+  dynamodb:
+    stages:
+      - dev
+    start:
+      port: 8002
+      migrate: true
+      seed: true
+    seed:
+      datapoints:
+        sources:
+          - table: ${self:custom.datapointTable}
+            sources: [./seed.json]
+      users:
+        sources:
+          - table: ${self:custom.usersTable}
+            sources: [./users.json]
+      vehicles:
+        sources:
+          - table: ${self:custom.vehiclesTable}
+            sources: [./vehicles.json]
+      systems:
+        sources:
+          - table: ${self:custom.systemsTable}
+            sources: [./systems.json]
+  serverless-offline-dynamodb-streams:
+    endpoint: http://0.0.0.0:8002
+    region: us-east-1
+    accessKeyId: root
+    secretAccessKey: root
+
+package:
+  individually: true
+
+plugins:
+  - serverless-webpack
+  - serverless-dynamodb-local
+  - serverless-offline-dynamodb-streams
+  - serverless-offline
+
+provider:
+  name: aws
+  timeout: 30
+  runtime: nodejs18.x
+  region: us-east-1
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource:
+            - Fn::GetAtt: [DataPointTable, Arn]
+            # - Fn::Join:
+            #     - "/"
+            #     - - Fn::GetAtt: [Connections, Arn]
+            #       - "index"
+            #       - ${self:custom.datapointTableDatapointIndex}
+            - Fn::GetAtt: [Connections, Arn]
+            - Fn::Join:
+                - "/"
+                - - Fn::GetAtt: [Connections, Arn]
+                  - "index"
+                  - ${self:custom.connectionsTableSystemIndex}
+            - Fn::GetAtt: [VehiclesTable, Arn]
+            - Fn::Join:
+                - "/"
+                - - Fn::GetAtt: [VehiclesTable, Arn]
+                  - "index"
+                  - ${self:custom.vehiclesTableSubscriptionIdIndex}
+            - Fn::GetAtt: [Systems, Arn]
+            - Fn::Join:
+                - "/"
+                - - Fn::GetAtt: [Systems, Arn]
+                  - "index"
+                  - ${self:custom.systemsTableSubscriptionIdIndex}
+            - Fn::GetAtt: [UsersTable, Arn]
+
+  environment:
+    DATAPOINT_TABLE: ${self:custom.datapointTable}
+    DATAPOINT_TABLE_DATAPOINT_INDEX: ${self:custom.datapointTableDatapointIndex}
+    CONNECTIONS_TABLE: ${self:custom.connectionsTable}
+    CONNECTIONS_TABLE_SYSTEM_INDEX: ${self:custom.connectionsTableSystemIndex}
+    VEHICLES_TABLE: ${self:custom.vehiclesTable}
+    VEHICLES_TABLE_SUBSCRIPTION_ID_INDEX: ${self:custom.vehiclesTableSubscriptionIdIndex}
+    SYSTEMS_TABLE: ${self:custom.systemsTable}
+    SYSTEMS_TABLE_SUBSCRIPTION_ID_INDEX: ${self:custom.systemsTableSubscriptionIdIndex}
+    USERS_TABLE: ${self:custom.usersTable}
+    JWT_SECRET: PLEASE_CHANGE_ME_IN_THE_FUTURE_TO_OAUTH_FLOW
+
+    API_URL: !GetAtt HttpApi.ApiEndpoint
+
+functions:
+
+  systems:
+    handler: src/systems/handler.handler
+    events:
+      - httpApi: 
+          path: /api/systems/{proxy+}
+          method: ANY
+
+  debug:
+    handler: index.handler
+    events:
+      - httpApi: 
+          path: /api/debug/{proxy+}
+          method: ANY
+
+  webhook:
+    handler: src/webhook/handler.handler
+    events:
+      - httpApi: 
+          path: /webhook/{proxy+}
+          method: POST
+
+  # pullVehicles:
+  #   handler: src/pullVehicles/handler.handler
+  #   events:
+  #     - schedule: rate(1 minute)
+  # pullVehicleData:
+  #   handler: src/pullVehicleData/handler.handler
+  #   events:
+  #     - schedule: rate(1 minute)
+  connect:
+    handler: src/connect/handler.connect
+    events:
+      - websocket:
+          route: $connect
+          # npx wscat -c ws://localhost:3001
+  disconnect:
+    handler: src/disconnect/handler.disconnect
+    events:
+      - websocket:
+          route: $disconnect
+  dispatcher:
+    handler: src/dispatcher/handler.dispatcher
+    events:
+      - stream:
+          parallelizationFactor: 10
+          type: dynamodb
+          batchSize: 1
+          startingPosition: LATEST
+          arn:
+            Fn::GetAtt:
+              - DataPointTable
+              - StreamArn
+  initialConnect:
+    handler: src/initialConnect/handler.initialConnect
+    events:
+      - stream:
+          type: dynamodb
+          batchSize: 1
+          startingPosition: LATEST
+          arn:
+            Fn::GetAtt:
+              - Connections
+              - StreamArn
+  login:
+    handler: src/login/handler.handler
+    events:
+      - httpApi: 
+          path: /api/login
+          method: POST
+
+resources:
+  Resources:
+    Connections:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        StreamSpecification:
+          StreamViewType: NEW_IMAGE
+        AttributeDefinitions:
+          - AttributeName: connectionId
+            AttributeType: S
+          - AttributeName: systemId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: connectionId
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.connectionsTable}
+        GlobalSecondaryIndexes:
+          - IndexName: ${self:custom.connectionsTableSystemIndex}
+            Projection:
+              ProjectionType: ALL
+            KeySchema:
+              - AttributeName: systemId
+                KeyType: HASH
+    DataPointTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        StreamSpecification:
+          StreamViewType: NEW_IMAGE
+        AttributeDefinitions:
+          - AttributeName: vin
+            AttributeType: S
+          - AttributeName: timestamp
+            AttributeType: N
+          - AttributeName: vinWithDataPointName
+            AttributeType: S
+        KeySchema:
+          - AttributeName: vin
+            KeyType: HASH
+          - AttributeName: timestamp
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.datapointTable}
+        GlobalSecondaryIndexes:
+        - IndexName: ${self:custom.datapointTableDatapointIndex}
+          Projection:
+            ProjectionType: ALL
+          KeySchema:
+            - AttributeName: vinWithDataPointName
+              KeyType: HASH
+            - AttributeName: timestamp
+              KeyType: RANGE
+    VehiclesTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: vin
+            AttributeType: S
+          - AttributeName: subscriptionId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: vin
+            KeyType: HASH
+          - AttributeName: subscriptionId
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.vehiclesTable}
+        GlobalSecondaryIndexes:
+          - KeySchema:
+              - AttributeName: subscriptionId
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+            IndexName: ${self:custom.vehiclesTableSubscriptionIdIndex}
+
+    Systems:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+          - AttributeName: subscriptionId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.systemsTable}
+        GlobalSecondaryIndexes:
+          - KeySchema:
+              - AttributeName: subscriptionId
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+            IndexName: ${self:custom.systemsTableSubscriptionIdIndex}
+    usersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: email
+            AttributeType: S
+        KeySchema:
+          - AttributeName: email
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.usersTable}
+
+              
